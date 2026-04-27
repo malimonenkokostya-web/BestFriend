@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TORI_STATION_FINAL</title>
+    <title>TORI_CORE_OS_V4</title>
     <style>
         :root {
-            --accent: #7d5fff;
-            --secondary: #ff4d8d;
-            --trit: #00d2ff;
-            --bg-dark: #080810;
-            --surface: rgba(16, 16, 28, 0.9);
-            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --primary: #8e44ad;
+            --secondary: #ff2d55;
+            --accent: #00e5ff;
+            --bg: #030305;
+            --card: rgba(15, 15, 25, 0.95);
+            --border: rgba(142, 68, 173, 0.3);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        
         body {
-            background: var(--bg-dark);
-            color: #e0e0e0;
-            font-family: var(--font);
+            background: var(--bg);
+            color: #ececec;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -27,352 +27,374 @@
             justify-content: center;
         }
 
-        #v-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        #bg-fx { position: fixed; top: 0; left: 0; z-index: 0; filter: blur(2px); }
 
-        .app-shell {
+        .os-container {
             width: 96vw;
-            height: 92vh;
-            background: var(--surface);
-            border: 1px solid rgba(125, 95, 255, 0.3);
-            border-radius: 12px;
+            height: 94vh;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             position: relative;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            backdrop-filter: blur(40px);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
-        .top-bar {
-            padding: 12px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .os-header {
+            padding: 14px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: var(--accent);
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px 16px 0 0;
         }
 
-        .view-port { flex: 1; position: relative; overflow: hidden; }
+        .sys-info { font-family: monospace; font-size: 10px; color: var(--accent); letter-spacing: 2px; }
 
-        .view {
+        .main-view { flex: 1; position: relative; }
+
+        .stage {
             position: absolute;
             inset: 0;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 40px;
             text-align: center;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .view.active { display: flex; animation: v-in 0.5s ease-out forwards; }
+        .stage.active { display: flex; animation: slideIn 0.6s forwards; }
 
-        @keyframes v-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .h-title {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 800;
-            background: linear-gradient(to right, #fff, var(--accent));
+        .hero-text {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 30%, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            margin-bottom: 20px;
         }
 
-        .c-button {
-            padding: 14px 32px;
-            background: transparent;
-            border: 1px solid var(--accent);
+        .btn-ui {
+            padding: 16px 40px;
+            background: rgba(142, 68, 173, 0.1);
+            border: 1px solid var(--primary);
             color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 600;
-            border-radius: 4px;
-        }
-
-        .c-button:hover {
-            background: var(--accent);
-            box-shadow: 0 0 25px rgba(125, 95, 255, 0.4);
-        }
-
-        .t-wrap {
-            width: 90%;
-            height: 75%;
-            background: rgba(0, 0, 0, 0.4);
             border-radius: 8px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            color: var(--trit);
-            overflow-y: auto;
-            text-align: left;
-            font-size: 13px;
-            border: 1px solid rgba(0, 210, 255, 0.2);
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .k-ui {
+        .btn-ui:hover {
+            background: var(--primary);
+            box-shadow: 0 0 30px rgba(142, 68, 173, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .term-area {
             width: 100%;
-            max-width: 700px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            max-width: 800px;
+            height: 70%;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+            text-align: left;
+            overflow-y: auto;
+            line-height: 1.4;
         }
 
-        .l-flow {
-            height: 120px;
+        .karaoke-shell {
+            width: 100%;
+            max-width: 750px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            padding: 50px 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .lyric-item {
+            height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin-bottom: 30px;
+            gap: 10px;
         }
 
-        .l-line {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.1);
-            transition: 0.3s;
-            margin: 4px 0;
-        }
-
-        .l-line.on {
+        .l-prev, .l-next { font-size: 1.1rem; opacity: 0.2; filter: blur(1px); transition: 0.4s; }
+        .l-active {
+            font-size: 2.2rem;
+            font-weight: 800;
             color: var(--secondary);
-            font-size: 1.8rem;
-            text-shadow: 0 0 20px rgba(255, 77, 141, 0.5);
-            font-weight: 700;
+            text-shadow: 0 0 25px rgba(255, 45, 85, 0.4);
+            transition: 0.4s;
         }
 
-        .r-grid {
+        .reasons-box {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 12px;
-            height: 100%;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
             width: 100%;
+            height: 85%;
             overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .reason-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
             padding: 20px;
-        }
-
-        .r-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            border: 1px solid transparent;
-            transition: 0.2s;
+            border-radius: 10px;
             text-align: left;
+            transition: 0.3s;
         }
 
-        .r-card:hover {
-            border-color: var(--accent);
-            background: rgba(125, 95, 255, 0.05);
+        .reason-card:hover {
+            border-color: var(--primary);
+            background: rgba(142, 68, 173, 0.05);
+            transform: translateX(5px);
         }
 
-        .r-card b { color: var(--accent); margin-right: 8px; }
+        .reason-card b { color: var(--accent); margin-right: 10px; font-family: monospace; }
 
-        #no-btn { position: relative; transition: 0.1s; }
+        #no-target { position: relative; }
+
+        .reload-trigger {
+            font-size: 10px;
+            color: #555;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .reload-trigger:hover { color: var(--accent); }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <canvas id="v-canvas"></canvas>
+    <canvas id="bg-fx"></canvas>
 
-    <div class="app-shell">
-        <div class="top-bar">
-            <div id="sys-load">SYSTEM: OPTIMIZED // LATENCY: 0.002ms</div>
-            <div id="clock">00:00:00</div>
-        </div>
-
-        <div class="view-port">
-            <div class="view active" id="v1">
-                <h1 class="h-title">TORI</h1>
-                <p style="color: #888; margin-bottom: 2rem; letter-spacing: 1px;">PRIVATE_CONNECTION_ESTABLISHED</p>
-                <button class="c-button" onclick="go(2)">RUN_INIT</button>
+    <div class="os-container">
+        <header class="os-header">
+            <div class="sys-info" id="sys-status">LOADING_SYSTEM_RESOURCES...</div>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <span class="reload-trigger" onclick="location.reload()">REBOOT_SYSTEM</span>
+                <div id="os-clock" style="font-family: monospace; color: var(--secondary);">00:00:00</div>
             </div>
+        </header>
 
-            <div class="view" id="v2">
-                <h2 style="margin-bottom: 2rem;">AUTH_REQUIRED: Мы лучшие друзья?</h2>
-                <div style="display: flex; gap: 20px;">
-                    <button class="c-button" onclick="go(3)">AFFIRMATIVE</button>
-                    <button class="c-button" id="no-btn" onmouseover="dodge()">NEGATIVE</button>
+        <main class="main-view">
+            <section class="stage active" id="s1">
+                <p style="text-transform: uppercase; letter-spacing: 5px; color: var(--accent); margin-bottom: 10px;">Private Access</p>
+                <h1 class="hero-text">TORI.OS</h1>
+                <button class="btn-ui" onclick="move(2)">Инициализация</button>
+            </section>
+
+            <section class="stage" id="s2">
+                <h2 style="font-size: 2rem; margin-bottom: 40px;">Пройдите верификацию:<br>Костя твой лучший друг?</h2>
+                <div style="display: flex; gap: 25px;">
+                    <button class="btn-ui" onclick="move(3)" style="border-color: #2ecc71;">Безусловно</button>
+                    <button class="btn-ui" id="no-target" onmouseover="runAway()">Никогда</button>
                 </div>
-            </div>
+            </section>
 
-            <div class="view" id="v3">
-                <div class="t-wrap" id="t-out"></div>
-                <button class="c-button" id="t-next" style="display:none; margin-top: 20px;" onclick="go(4)">OPEN_STREAM</button>
-            </div>
+            <section class="stage" id="s3">
+                <div class="term-area" id="term-log"></div>
+                <button class="btn-ui" id="btn-media" style="display:none; margin-top: 30px;" onclick="move(4)">Запустить поток</button>
+            </section>
 
-            <div class="view" id="v4">
-                <div class="k-ui">
-                    <div class="l-flow" id="l-box">
-                        <div class="l-line" id="l-1">READY</div>
-                        <div class="l-line on" id="l-2">SYNCING...</div>
-                        <div class="l-line" id="l-3">...</div>
+            <section class="stage" id="s4">
+                <div class="karaoke-shell">
+                    <div class="lyric-item">
+                        <div class="l-prev" id="prev-l"></div>
+                        <div class="l-active" id="curr-l">Ожидание аудио...</div>
+                        <div class="l-next" id="next-l"></div>
                     </div>
-                    <audio id="player" src="music.mp3"></audio>
-                    <button class="c-button" onclick="playback()" id="p-ctrl">START_AUDIO</button>
+                    <audio id="core-audio" src="music.mp3" preload="auto"></audio>
+                    <div style="margin-top: 40px;">
+                        <button class="btn-ui" id="play-trigger" onclick="handleAudio()">Воспроизвести</button>
+                    </div>
                 </div>
-                <button class="c-button" onclick="go(5)" style="margin-top: 2rem; border-color: var(--secondary); color: var(--secondary);">LAST_PACKET</button>
-            </div>
+                <button class="btn-ui" onclick="move(5)" style="margin-top: 30px; border-color: var(--secondary); opacity: 0.8;">Финальный архив</button>
+            </section>
 
-            <div class="view" id="v5">
-                <div class="r-grid" id="r-out"></div>
-            </div>
-        </div>
+            <section class="stage" id="s5">
+                <div class="reasons-box" id="grid-reasons"></div>
+            </section>
+        </main>
     </div>
 
     <script>
-        const canvas = document.getElementById('v-canvas');
+        const canvas = document.getElementById('bg-fx');
         const ctx = canvas.getContext('2d');
-        let w, h, dots = [];
+        let w, h, points = [];
 
-        function resize() {
+        function setup() {
             w = canvas.width = window.innerWidth;
             h = canvas.height = window.innerHeight;
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-
-        for(let i=0; i<60; i++) {
-            dots.push({
-                x: Math.random() * w,
-                y: Math.random() * h,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5
-            });
+            points = [];
+            for(let i=0; i<80; i++) points.push({x:Math.random()*w, y:Math.random()*h, r:Math.random()*2, d:Math.random()*0.5+0.2});
         }
 
         function draw() {
-            ctx.clearRect(0, 0, w, h);
-            ctx.strokeStyle = 'rgba(125, 95, 255, 0.1)';
-            ctx.beginPath();
-            dots.forEach((d, i) => {
-                d.x += d.vx; d.y += d.vy;
-                if(d.x < 0 || d.x > w) d.vx *= -1;
-                if(d.y < 0 || d.y > h) d.vy *= -1;
-                ctx.moveTo(d.x, d.y);
-                dots.forEach(d2 => {
-                    let dist = Math.hypot(d.x - d2.x, d.y - d2.y);
-                    if(dist < 150) ctx.lineTo(d2.x, d2.y);
-                });
+            ctx.clearRect(0,0,w,h);
+            ctx.fillStyle = 'rgba(142, 68, 173, 0.3)';
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                ctx.fill();
+                p.y -= p.d;
+                if(p.y < 0) p.y = h;
             });
-            ctx.stroke();
             requestAnimationFrame(draw);
         }
-        draw();
+
+        window.addEventListener('resize', setup);
+        setup(); draw();
 
         setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            document.getElementById('os-clock').innerText = new Date().toLocaleTimeString();
+            document.getElementById('sys-status').innerText = `SYSTEM: OK // CPU_LOAD: ${Math.floor(Math.random()*5)+1}% // MEMORY: STABLE`;
         }, 1000);
 
-        function go(s) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const target = document.getElementById(`v${s}`);
-            target.classList.add('active');
-            if(s === 3) type();
-            if(s === 5) loadR();
+        function move(id) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById(`s${id}`).classList.add('active');
+            if(id === 3) startBoot();
+            if(id === 5) renderGrid();
         }
 
-        function dodge() {
-            const b = document.getElementById('no-btn');
-            b.style.left = Math.random() * 200 - 100 + 'px';
-            b.style.top = Math.random() * 200 - 100 + 'px';
+        function runAway() {
+            const b = document.getElementById('no-target');
+            b.style.position = 'fixed';
+            b.style.left = Math.random()*80 + 'vw';
+            b.style.top = Math.random()*80 + 'vh';
         }
 
-        async function type() {
-            const out = document.getElementById('t-out');
-            const data = [
-                "> BOOTING...", "> SCANNING_ID: TORI", "> STATUS: LEGENDARY", "> DECRYPTING_HEART...",
-                " ", "      ****** ******", "    ** ** ** **",
-                "   ** ** **", "   ** **", "    ** **",
-                "      ** **", "        ** **", "          ** **", "            ** **", "              **",
-                " ", "> MESSAGE: Ты лучший человек в моей жизни.", "> COMPLETE."
+        async function startBoot() {
+            const log = document.getElementById('term-log');
+            const lines = [
+                "> Инициализация защищенного канала...",
+                "> Проверка ключей шифрования...",
+                "> Соединение установлено.",
+                "> Загрузка объекта: TORI",
+                "> Анализ данных дружбы...",
+                "> 100% данных обработано.",
+                " ",
+                "   010101      010101",
+                " 0101010101  0101010101",
+                "010101010101010101010101",
+                " 0101010101010101010101",
+                "  0101010101010101010",
+                "    01010101010101",
+                "      0101010101",
+                "        010101",
+                "          01",
+                " ",
+                "> СИСТЕМА: Ты самый важный человек.",
+                "> Костя передает: Ты пахнешь цветами."
             ];
-            for(let l of data) {
-                out.innerText += l + "\n";
-                out.scrollTop = out.scrollHeight;
-                await new Promise(r => setTimeout(r, 80));
+            for(let l of lines) {
+                log.innerText += l + "\n";
+                log.scrollTop = log.scrollHeight;
+                await new Promise(r => setTimeout(r, 100));
             }
-            document.getElementById('t-next').style.display = 'block';
+            document.getElementById('btn-media').style.display = 'inline-block';
         }
 
-        const player = document.getElementById('player');
-        const sync = [
-            {t: 0.0, txt: "ВХОДЯЩИЙ ПОТОК..."},
-            {t: 2.1, txt: "Ну а ты пахнешь цветами..."},
-            {t: 6.3, txt: "Самыми вкусными травами..."},
-            {t: 10.5, txt: "Самыми яркими красками..."},
-            {t: 14.8, txt: "Как глоток пива «Дон»"},
-            {t: 19.2, txt: "Твой толер выше, чем у других..."},
-            {t: 24.8, txt: "На двоих алкоголя хватило бы..."},
-            {t: 31.5, txt: "Я твой личный маньяк..."},
-            {t: 39.0, txt: "Ищу тебя по твоим следам..."},
-            {t: 45.0, txt: "ВЕДЬ ТЫ ПАХНЕШЬ ЦВЕТАМИ! ❤️"}
+        const audio = document.getElementById('core-audio');
+        const syncMap = [
+            {t: 0, s: "ЗАПУСК ПЛЕЕРА..."},
+            {t: 2.1, s: "Ну а ты пахнешь цветами..."},
+            {t: 6.2, s: "Самыми вкусными травами..."},
+            {t: 10.4, s: "Самыми яркими красками..."},
+            {t: 14.6, s: "Как глоток пива «Дон»..."},
+            {t: 19.0, s: "Твой толер выше, чем у других..."},
+            {t: 24.5, s: "На двоих алкоголя хватило бы..."},
+            {t: 31.2, s: "Я твой личный маньяк..."},
+            {t: 38.8, s: "Ищу тебя по твоим следам..."},
+            {t: 45.0, s: "ВЕДЬ ТЫ ПАХНЕШЬ ЦВЕТАМИ! ❤️"}
         ];
 
-        function playback() {
-            const btn = document.getElementById('p-ctrl');
-            if(player.paused) { player.play(); btn.innerText = "STOP_AUDIO"; }
-            else { player.pause(); btn.innerText = "START_AUDIO"; }
+        function handleAudio() {
+            const btn = document.getElementById('play-trigger');
+            if(audio.paused) { audio.play(); btn.innerText = "Пауза"; }
+            else { audio.pause(); btn.innerText = "Играть"; }
         }
 
-        player.ontimeupdate = () => {
-            const time = player.currentTime;
-            const idx = sync.findIndex((s, i) => time >= s.t && (!sync[i+1] || time < sync[i+1].t));
+        audio.ontimeupdate = () => {
+            const time = audio.currentTime;
+            const idx = syncMap.findIndex((item, i) => time >= item.t && (!syncMap[i+1] || time < syncMap[i+1].t));
             if(idx !== -1) {
-                document.getElementById('l-1').innerText = sync[idx-1] ? sync[idx-1].txt : "";
-                document.getElementById('l-2').innerText = sync[idx].txt;
-                document.getElementById('l-3').innerText = sync[idx+1] ? sync[idx+1].txt : "";
+                document.getElementById('prev-l').innerText = syncMap[idx-1] ? syncMap[idx-1].s : "";
+                document.getElementById('curr-l').innerText = syncMap[idx].s;
+                document.getElementById('next-l').innerText = syncMap[idx+1] ? syncMap[idx+1].s : "";
             }
         };
 
-        function loadR() {
-            const box = document.getElementById('r-out');
+        function renderGrid() {
+            const box = document.getElementById('grid-reasons');
             if(box.children.length > 0) return;
-            const reasons = [
-                "Ты понимаешь меня с полуслова", "Твоя энергия заряжает", "Ты никогда не осудишь", 
-                "У тебя редкое чувство юмора", "Ты умеешь делать день лучше", "Ты честная",
-                "Твой вкус в музыке — база", "Ты сильная и это круто", "Ты умеешь слушать", 
-                "Ты настоящая", "С тобой просто", "Ты всегда поддержишь", "Ты красивая",
-                "Ты уникальная", "Ты умеешь прощать", "Ты вдохновляешь", "Ты — это ты",
-                "Ты очень умная", "Ты не боишься быть собой", "Ты ценишь мелочи",
-                "Ты — мой лучший выбор в друзьях", "Ты заслуживаешь счастья", "Ты верная",
-                "Твой смех лечит", "Ты мастер сюрпризов", "Ты — душа", "Ты — космос",
-                "Ты заставляешь меня расти", "Ты видишь мир иначе", "Ты — подарок судьбы",
-                "Ты — мой надежный тыл", "Ты умеешь удивлять", "Ты — чистый позитив",
-                "Ты — сокровище", "Ты не такая как все", "Ты умеешь сопереживать",
-                "Ты — причина этой улыбки", "Ты — моя бро", "Ты просто лучшая",
-                "Я горжусь нашей дружбой", "Ты не сдаешься", "Ты очень добрая",
-                "Ты умеешь убеждать", "С тобой не страшно", "Ты — мой компас",
-                "Ты — редкий человек", "Ты умеешь дарить тепло", "Ты — моя мотивация",
-                "Ты — свет", "Ты умеешь ценить моменты", "Ты — человек-магнит",
-                "Ты всегда находишь слова", "Ты — мой safe place", "Ты — невероятная Тори",
-                "С тобой любая проблема — фигня", "Ты — мастер комплиментов", "Ты — огонь",
-                "Ты — легенда", "Ты умеешь мечтать", "Ты — моя опора",
-                "Ты — лучшая версия друга", "Ты понимаешь мои загоны", "Ты — золото",
-                "Ты — мой антидепрессант", "Ты — просто вау", "Ты — искренняя",
-                "Ты не бросишь", "Ты — часть моей истории", "Ты — мой самый близкий",
-                "Ты умеешь вдохнуть жизнь", "Ты — мой идеал подруги", "Ты — супер",
-                "Ты — невероятная", "Ты умеешь видеть суть", "Ты — мой герой",
-                "Ты — яркая вспышка", "Ты — надежность", "Ты — бесконечность",
+            const items = [
+                "Ты всегда понимаешь мой юмор", "У тебя самая искренняя улыбка", "Ты умеешь поддержать в нужную секунду",
+                "С тобой любая прогулка — приключение", "Твои советы всегда в точку", "Ты очень сильная и мудрая",
+                "Твой вкус — это стиль", "Ты умеешь слушать так, как никто другой", "Ты настоящая и это редкость",
+                "С тобой уютно даже когда мы молчим", "Ты вдохновляешь меня расти", "Ты не боишься быть собой",
+                "Ты — мой самый надежный человек", "Ты всегда честна со мной", "Твоя доброта меняет мир",
+                "Ты ценишь дружбу больше всего", "Ты — человек-праздник", "Ты заслуживаешь всего самого лучшего",
+                "Ты — луч света в серых буднях", "Ты умеешь находить выход из любой ситуации", "Ты очень талантливая",
+                "Твоя энергия заряжает", "Ты — мой safe place", "С тобой я могу быть любым",
+                "Ты никогда не предашь", "Ты умеешь прощать", "Ты видишь красоту в мелочах",
+                "Ты — уникальная личность", "Твой голос успокаивает", "Ты умеешь удивлять",
+                "Ты — мое самое большое открытие", "Ты — лучший друг на свете", "Ты просто космос",
+                "Ты умеешь сопереживать", "Ты не такая как все", "Ты — душа",
+                "Ты всегда найдешь время", "Ты мотивируешь меня не сдаваться", "Ты — моя опора",
+                "Ты заставляешь меня улыбаться", "Ты очень красивая", "Ты — легенда",
+                "Ты — золото", "Ты — редкий бриллиант", "Ты — моя бро",
+                "Ты умеешь зажигать", "Ты — огонь", "Ты — просто вау",
+                "Ты — невероятная Тори", "Ты — лучшая", "Ты — мастер комплиментов",
+                "Ты — мой компас", "Ты — подарок судьбы", "Ты — часть моей жизни",
+                "Ты понимаешь без слов", "Ты — мой антидепрессант", "Ты — яркая вспышка",
+                "Ты — надежность", "Ты — бесконечность", "Ты — мечта",
                 "Ты — мастер на все руки", "Ты — моя гордость", "Ты — радость",
                 "Ты — тот, кому я верю", "Ты — моя сила", "Ты — счастье",
                 "Ты — неповторимая", "Ты — стильная", "Ты — мудрая",
                 "Ты — глубокая", "Ты — мой мир", "Ты — успех",
                 "Ты — гармония", "Ты — характер", "Ты — доброта",
                 "Ты — честность", "Ты — верность", "Ты — луч",
-                "Ты — мечта", "Ты — Космос", "Ты — Моя Тори", "Навсегда."
+                "Ты — мечта", "Ты — Космос", "Ты — Моя Тори", "Навсегда.",
+                "Твоя искренность подкупает", "Ты — мой личный герой", "Ты ценишь моменты",
+                "Ты — человек слова", "Ты — сама нежность", "Ты — взрыв эмоций",
+                "Ты умеешь верить в чудо", "Ты — мастер делать приятно", "Ты — чудо",
+                "Ты — моя причина творить", "Ты — идеал подруги", "Ты — светлячок",
+                "Ты — моя лучшая глава", "Ты — бесконечный позитив", "Ты — мой дзен",
+                "Ты — совершенство", "Просто спасибо, что ты есть.", "Люблю нашу дружбу."
             ];
-            reasons.forEach((r, i) => {
-                const c = document.createElement('div');
-                c.className = 'r-card';
-                c.innerHTML = `<b>${(i+1).toString().padStart(2,'0')}</b> ${r}`;
-                box.appendChild(c);
+            items.forEach((text, i) => {
+                const card = document.createElement('div');
+                card.className = 'reason-card';
+                card.innerHTML = `<b>${(i+1).toString().padStart(2,'0')}</b> ${text}`;
+                box.appendChild(card);
             });
         }
     </script>
