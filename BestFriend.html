@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>для Тори ❤️</title>
+  <title>BestFriend — Tori ❤️</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Russo+One&family=Montserrat:wght@300;400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Russo+One&family=Montserrat:wght@300;400;600;700;800&family=Pacifico&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0a0015;
@@ -15,17 +15,27 @@
       --gold: #fbbf24;
       --cyan: #06b6d4;
       --text: #fce7f3;
-      --glass: rgba(15, 0, 30, 0.75);
+      --glass: rgba(15, 0, 30, 0.85);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
 
     body {
       background: var(--bg);
-      background-image:
-        radial-gradient(ellipse at 30% 10%, #1a0040 0%, transparent 55%),
-        radial-gradient(ellipse at 70% 90%, #0d0025 0%, transparent 55%),
-        radial-gradient(ellipse at 50% 50%, #150030 0%, transparent 60%);
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
       min-height: 100dvh;
@@ -33,272 +43,503 @@
       justify-content: center;
       align-items: center;
       overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      -webkit-user-select: none;
+      position: relative;
     }
 
-    /* Летающие частицы */
-    .particles {
-      position: fixed; top: 0; left: 0;
+    /* Анимированный фон */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
       width: 100%; height: 100%;
-      pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 0%, #1a0040 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, #0d0025 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, #150030 0%, transparent 60%);
+      z-index: -1;
+    }
+
+    /* Линии на фоне */
+    .bg-lines {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    .bg-line {
+      position: absolute;
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+      height: 1px;
+      width: 100%;
+      animation: lineMove 8s infinite linear;
+    }
+    .bg-line:nth-child(1) { top: 20%; animation-delay: 0s; }
+    .bg-line:nth-child(2) { top: 40%; animation-delay: -2s; }
+    .bg-line:nth-child(3) { top: 60%; animation-delay: -4s; }
+    .bg-line:nth-child(4) { top: 80%; animation-delay: -6s; }
+    @keyframes lineMove {
+      0% { transform: translateX(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateX(100%); opacity: 0; }
+    }
+
+    .particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
     }
     .particle {
       position: absolute;
       border-radius: 50%;
-      animation: floatUp 7s infinite ease-in;
+      animation: floatUp 8s infinite ease-in;
       opacity: 0;
+      will-change: transform, opacity;
     }
     @keyframes floatUp {
       0% { transform: translateY(105vh) scale(0); opacity: 0; }
-      15% { opacity: 0.9; }
-      85% { opacity: 0.7; }
-      100% { transform: translateY(-10vh) scale(1.6); opacity: 0; }
+      10% { opacity: 0.8; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) scale(1.8); opacity: 0; }
     }
 
     .scene {
-      width: 100%; max-width: 750px;
-      padding: 20px; position: relative;
+      width: 100%;
+      max-width: 700px;
+      padding: 20px;
+      position: relative;
       z-index: 1;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
-    /* Секции */
     .section {
-      display: none; width: 100%;
-      flex-direction: column; align-items: center;
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
-      animation: fadeSlide 0.7s ease-out;
+      animation: fadeSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
     }
-    .section.active { display: flex; }
+    .section.active {
+      display: flex;
+    }
 
     @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
-    /* Заставка */
-    .intro-title {
-      font-family: 'Pacifico', cursive;
-      font-size: 36px;
+    /* ===== ЗАСТАВКА ===== */
+    .intro-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 8vw, 56px);
+      font-weight: 700;
       color: #fff;
-      text-shadow: 0 0 20px var(--pink), 0 0 50px var(--pink), 0 0 80px var(--purple);
-      margin-bottom: 30px;
-      line-height: 1.4;
+      text-shadow:
+        0 0 20px var(--pink),
+        0 0 40px var(--pink),
+        0 0 80px var(--purple),
+        0 0 120px var(--purple);
+      letter-spacing: 6px;
+      margin-bottom: 8px;
+      animation: glowPulse 3s infinite ease-in-out;
     }
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 20px var(--pink), 0 0 40px var(--pink), 0 0 80px var(--purple); }
+      50% { text-shadow: 0 0 30px var(--pink), 0 0 60px var(--pink), 0 0 120px var(--purple), 0 0 160px var(--purple); }
+    }
+
+    .intro-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(16px, 3.5vw, 22px);
+      font-weight: 300;
+      color: #fce7f3;
+      letter-spacing: 5px;
+      text-shadow: 0 0 20px var(--purple);
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+
     .intro-hearts {
-      font-size: 50px;
-      margin-bottom: 20px;
-      animation: heartFloat 2s infinite ease-in-out;
+      font-size: clamp(30px, 7vw, 45px);
+      margin: 15px 0 20px;
+      animation: heartFloat 2.5s infinite ease-in-out;
     }
     @keyframes heartFloat {
-      0%,100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-12px) scale(1.08); }
+      0%, 100% { transform: translateY(0) scale(1); }
+      25% { transform: translateY(-15px) scale(1.1); }
+      75% { transform: translateY(-5px) scale(0.95); }
     }
 
+    .intro-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--pink), var(--purple), var(--pink));
+      border-radius: 5px;
+      margin: 5px 0 25px;
+      box-shadow: 0 0 25px var(--pink);
+      animation: dividerShine 2s infinite;
+    }
+    @keyframes dividerShine {
+      0%, 100% { box-shadow: 0 0 25px var(--pink); }
+      50% { box-shadow: 0 0 50px var(--pink), 0 0 75px var(--purple); }
+    }
+
+    /* ===== КНОПКИ ===== */
     .btn {
-      padding: 16px 40px;
-      border-radius: 60px;
+      padding: 15px 35px;
+      border-radius: 50px;
       font-weight: 700;
-      font-size: 18px;
+      font-size: clamp(15px, 3vw, 18px);
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
-      letter-spacing: 1.5px;
-      transition: all 0.3s ease;
+      letter-spacing: 2px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       border: none;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
     }
-    .btn:active { transform: scale(0.95); }
+    .btn:active {
+      transform: scale(0.93);
+    }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
+      background: linear-gradient(135deg, #ff4d8d 0%, #a855f7 100%);
       color: #fff;
-      box-shadow: 0 8px 40px rgba(255,77,141,0.5);
+      box-shadow: 0 8px 35px rgba(255, 77, 141, 0.5);
     }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: rotate(45deg);
+      animation: btnShine 3s infinite;
+    }
+    @keyframes btnShine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+
     .btn-ghost {
       background: transparent;
-      border: 2px solid rgba(255,255,255,0.4);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       color: #fce7f3;
+      backdrop-filter: blur(10px);
     }
-    .btn-ghost:hover { border-color: var(--pink); }
+    .btn-ghost:hover {
+      border-color: var(--pink);
+      box-shadow: 0 0 30px rgba(255, 77, 141, 0.3);
+    }
 
     .btn-skip {
-      position: relative;
-      transition: all 0.15s ease-out;
+      transition: all 0.1s ease-out;
+      will-change: transform, left, top;
     }
 
-    /* Вопрос */
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    /* ===== ГОРИЗОНТАЛЬНЫЙ СВАЙП-КОНТЕЙНЕР ===== */
+    .swipe-hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      margin-top: 10px;
+      animation: swipeHint 2s infinite;
+    }
+    @keyframes swipeHint {
+      0%, 100% { opacity: 0.4; transform: translateX(0); }
+      50% { opacity: 1; transform: translateX(10px); }
+    }
+
+    /* ===== ВОПРОС ===== */
     .question-text {
       font-family: 'Russo One', sans-serif;
-      font-size: 28px;
+      font-size: clamp(22px, 5vw, 28px);
       color: #fff;
-      text-shadow: 0 0 25px var(--purple);
+      text-shadow: 0 0 30px var(--purple), 0 0 60px var(--purple);
       margin: 25px 0;
       letter-spacing: 2px;
+      line-height: 1.5;
+      animation: questionPulse 2s infinite;
+    }
+    @keyframes questionPulse {
+      0%, 100% { text-shadow: 0 0 30px var(--purple), 0 0 60px var(--purple); }
+      50% { text-shadow: 0 0 45px var(--purple), 0 0 90px var(--purple), 0 0 120px var(--pink); }
     }
 
-    .btn-group { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 20px 0; }
-
-    /* Котики */
+    /* ===== КОТИКИ ===== */
     .cat-img {
-      font-size: 100px;
+      font-size: clamp(80px, 18vw, 120px);
       margin: 20px 0;
-      animation: bounce 1s infinite;
+      animation: catBounce 0.8s infinite;
     }
-    @keyframes bounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+    @keyframes catBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-20px) scale(1.1); }
+      60% { transform: translateY(-5px) scale(0.95); }
     }
     .cat-msg {
-      font-size: 22px;
+      font-size: clamp(18px, 4vw, 24px);
       font-weight: 700;
       color: #fce7f3;
       margin: 10px 0;
+      text-shadow: 0 0 20px var(--pink);
     }
 
-    /* Терминал */
+    /* ===== ТЕРМИНАЛ ===== */
     .terminal {
       background: #000a00;
       border: 2px solid #33ff33;
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 20px;
       width: 100%;
       min-height: 200px;
-      box-shadow: 0 0 35px rgba(51,255,51,0.3);
+      box-shadow:
+        0 0 40px rgba(51, 255, 51, 0.25),
+        inset 0 0 40px rgba(51, 255, 51, 0.03);
       font-family: 'Press Start 2P', monospace;
       color: #33ff33;
-      font-size: 12px;
-      line-height: 2;
+      font-size: clamp(9px, 2vw, 11px);
+      line-height: 2.2;
       white-space: pre-wrap;
       word-break: break-word;
       text-align: left;
+      position: relative;
+      overflow: hidden;
     }
-    .cursor::after { content: "_"; animation: blink 1s infinite; }
-    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    .terminal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 0, 0.02) 2px,
+        rgba(0, 255, 0, 0.02) 4px
+      );
+      pointer-events: none;
+    }
+    .cursor::after {
+      content: "_";
+      animation: blink 1s infinite;
+      font-weight: bold;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
-    /* Сердце загрузка */
+    /* ===== ЗАГРУЗКА СЕРДЦА ===== */
     .heart-loader {
-      font-size: 80px;
+      font-size: clamp(60px, 15vw, 90px);
       margin: 25px 0;
-      filter: drop-shadow(0 0 30px #ff3366);
+      filter: drop-shadow(0 0 40px #ff3366) drop-shadow(0 0 80px #ff3366);
+      animation: heartBeat 0.7s infinite;
+    }
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.2); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.15); }
+      60% { transform: scale(1); }
     }
     .progress-bar {
       width: 85%;
       max-width: 400px;
-      height: 20px;
-      background: rgba(255,255,255,0.15);
+      height: 24px;
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 20px;
       overflow: hidden;
-      margin: 10px 0;
-      border: 2px solid #ff4d8d;
+      margin: 15px 0;
+      border: 2px solid rgba(255, 77, 141, 0.5);
+      box-shadow: 0 0 30px rgba(255, 77, 141, 0.4);
     }
     .progress-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #ff3366, #ff6b9d, #ff3366);
+      background-size: 200% 100%;
+      animation: progressShine 2s infinite linear;
       border-radius: 20px;
       transition: width 0.3s ease;
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.3);
+    }
+    @keyframes progressShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
     .progress-text {
       color: #fce7f3;
       font-weight: 700;
-      font-size: 18px;
+      font-size: clamp(18px, 4vw, 22px);
     }
 
-    /* Хартс экран */
+    /* ===== ЭКРАН СЕРДЕЧЕК ===== */
     .hearts-grid {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      font-size: 35px;
+      gap: 8px;
+      font-size: clamp(24px, 6vw, 34px);
       margin: 25px 0;
+      max-width: 100%;
+      padding: 10px;
+    }
+    .hearts-grid span {
+      animation: heartPop 2s infinite;
+    }
+    @keyframes heartPop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
     }
     .dedication-text {
       font-family: 'Pacifico', cursive;
-      font-size: 28px;
+      font-size: clamp(22px, 5vw, 28px);
       color: #fff;
       text-shadow: 0 0 25px var(--pink), 0 0 50px var(--pink);
       margin: 15px 0;
     }
 
-    /* Плеер */
+    /* ===== ПЛЕЕР ===== */
     .player-box {
       background: var(--glass);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
-      border-radius: 35px;
-      padding: 30px 18px;
-      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 25px 16px;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
       width: 100%;
+      box-shadow: 0 20px 60px rgba(180, 0, 255, 0.3);
     }
     .now-playing {
       color: var(--gold);
       font-weight: 700;
-      font-size: 15px;
+      font-size: clamp(13px, 2.8vw, 16px);
       margin: 8px 0;
+      text-shadow: 0 0 15px var(--gold);
     }
-    audio { width: 100%; max-width: 400px; border-radius: 30px; margin: 10px 0; }
+    audio {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 30px;
+      margin: 10px 0;
+      outline: none;
+    }
     .lyrics-box {
-      background: rgba(0,0,0,0.55);
-      border-radius: 20px;
-      padding: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 18px;
+      padding: 15px;
       margin: 12px 0;
-      max-height: 130px;
+      max-height: 140px;
       overflow-y: auto;
       color: #f5d0fe;
       font-weight: 600;
-      font-size: 17px;
-      line-height: 1.8;
-      border: 1px solid #a78bfa;
+      font-size: clamp(15px, 3vw, 17px);
+      line-height: 1.9;
+      border: 1px solid rgba(168, 133, 250, 0.4);
     }
     .highlight-lyric {
       color: #fbbf24;
       font-weight: 800;
-      background: rgba(168,85,247,0.3);
+      background: rgba(168, 85, 247, 0.35);
       border-radius: 8px;
-      padding: 3px 10px;
+      padding: 3px 12px;
+      text-shadow: 0 0 12px var(--gold);
     }
 
-    /* Финальные слова */
+    /* ===== ФИНАЛ ===== */
     .final-box {
       background: linear-gradient(160deg, #1a001a, #0d0015);
-      border-radius: 30px;
-      padding: 30px 20px;
+      border-radius: 28px;
+      padding: 28px 18px;
       border: 2px solid #ff4d6d;
-      box-shadow: 0 0 70px rgba(255,51,102,0.5);
+      box-shadow: 0 0 60px rgba(255, 51, 102, 0.4);
       max-height: 380px;
       overflow-y: auto;
       color: #fce4ec;
-      font-size: 15px;
-      line-height: 2;
+      font-size: clamp(14px, 2.8vw, 16px);
+      line-height: 2.1;
       text-align: left;
     }
-    .final-box ol { padding-left: 25px; }
-    .final-box li { margin-bottom: 8px; }
+    .final-box ol {
+      padding-left: 20px;
+    }
+    .final-box li {
+      margin-bottom: 6px;
+      padding: 2px 0;
+    }
 
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 10px; }
+    /* Скроллбар */
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #a855f7;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
 
+<!-- Фоновые линии -->
+<div class="bg-lines">
+  <div class="bg-line"></div>
+  <div class="bg-line"></div>
+  <div class="bg-line"></div>
+  <div class="bg-line"></div>
+</div>
+
+<!-- Частицы -->
 <div class="particles" id="particlesContainer"></div>
 
 <div class="scene">
 
-  <!-- === 1. ЗАСТАВКА === -->
+  <!-- ===== 1. ЗАСТАВКА ===== -->
   <div class="section active" id="secIntro">
+    <div class="intro-logo">BestFriend</div>
+    <div class="intro-subtitle">Tori it's for you</div>
+    <div class="intro-divider"></div>
     <div class="intro-hearts">💗💖💗</div>
-    <div class="intro-title">Тори, я хотел у тебя кое-что спросить...</div>
     <div class="btn-group">
       <button class="btn btn-primary" id="btnAsk">💌 Узнать что?</button>
       <button class="btn btn-ghost btn-skip" id="btnSkip">Пропустить</button>
     </div>
+    <div class="swipe-hint">↔ свайпай дальше →</div>
   </div>
 
-  <!-- === 2. ВОПРОС (Да/Нет) === -->
+  <!-- ===== 2. ВОПРОС ===== -->
   <div class="section" id="secQuestion">
     <div class="question-text">Ты считаешь меня своим лучшим другом?</div>
     <div class="btn-group">
@@ -308,49 +549,49 @@
     <div id="noMsg" style="display:none; margin-top:20px;"></div>
   </div>
 
-  <!-- === 3. КОТИКИ === -->
+  <!-- ===== 3. КОТИКИ ===== -->
   <div class="section" id="secCat">
     <div class="cat-img" id="catEmoji"></div>
     <div class="cat-msg" id="catMsg"></div>
     <button class="btn btn-primary" id="btnContinue" style="margin-top:20px; display:none;">Продолжить ✨</button>
   </div>
 
-  <!-- === 4. ТЕРМИНАЛ === -->
+  <!-- ===== 4. ТЕРМИНАЛ ===== -->
   <div class="section" id="secTerminal">
     <div class="terminal" id="terminalDisplay"></div>
     <div class="btn-group" id="termBtns" style="margin-top:20px; display:none;">
       <button class="btn btn-primary" data-choice="1">1. best+friend</button>
       <button class="btn btn-ghost" data-choice="2">2. no friend</button>
     </div>
-    <div id="termError" style="color:#ff4d6d; margin-top:10px; font-weight:700; display:none;"></div>
+    <div id="termError" style="color:#ff4d6d; margin-top:10px; font-weight:700; display:none; font-size:16px;"></div>
   </div>
 
-  <!-- === 5. ЗАГРУЗКА СЕРДЦА === -->
+  <!-- ===== 5. ЗАГРУЗКА СЕРДЦА ===== -->
   <div class="section" id="secHeartLoad">
-    <div class="heart-loader">🫀</div>
+    <div class="heart-loader">❤️</div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-text" id="progressText">0%</div>
   </div>
 
-  <!-- === 6. ЭКРАН СЕРДЕЧЕК === -->
+  <!-- ===== 6. ЭКРАН СЕРДЕЧЕК ===== -->
   <div class="section" id="secHearts">
     <div class="hearts-grid" id="heartsGrid"></div>
     <div class="dedication-text">Это для Тори от Кости ❤️</div>
     <button class="btn btn-primary" id="btnPlayMusic" style="margin-top:15px;">🎵 Включить музыку</button>
   </div>
 
-  <!-- === 7. ПЛЕЕР (2 песни) === -->
+  <!-- ===== 7. ПЛЕЕР ===== -->
   <div class="section" id="secPlayer">
     <div class="player-box">
-      <div class="intro-hearts" style="font-size:35px;">🎧</div>
+      <div style="font-size:30px;">🎧</div>
       <div class="now-playing" id="nowPlaying">▶ тёмный принц — Ты пахнешь цветами</div>
-      <audio id="audioPlayer" controls></audio>
+      <audio id="audioPlayer" controls preload="auto"></audio>
       <div class="lyrics-box" id="lyricsDisplay">🎤 нажми play</div>
     </div>
     <button class="btn btn-primary" id="btnFinal" style="margin-top:20px;">💭 Посмотреть, что я думаю о тебе</button>
   </div>
 
-  <!-- === 8. 100 СЛОВ === -->
+  <!-- ===== 8. ФИНАЛ ===== -->
   <div class="section" id="secFinal">
     <div class="final-box" id="finalWords"></div>
   </div>
@@ -361,15 +602,20 @@
 (function() {
   // ===== ЧАСТИЦЫ =====
   const pc = document.getElementById('particlesContainer');
-  for (let i=0;i<35;i++) {
-    const d = document.createElement('div'); d.classList.add('particle');
-    d.style.width = d.style.height = (Math.random()*7+3)+'px';
-    d.style.left = Math.random()*100+'%';
-    d.style.background = ['#ff4d8d','#a855f7','#fbbf24','#ff6b9d','#c084fc'][Math.floor(Math.random()*5)];
-    d.style.animationDelay = Math.random()*9+'s';
-    d.style.animationDuration = (Math.random()*9+7)+'s';
-    pc.appendChild(d);
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement('div');
+    d.classList.add('particle');
+    const size = Math.random() * 6 + 2;
+    d.style.width = size + 'px';
+    d.style.height = size + 'px';
+    d.style.left = Math.random() * 100 + '%';
+    d.style.background = ['#ff4d8d','#a855f7','#fbbf24','#ff6b9d','#c084fc'][Math.floor(Math.random() * 5)];
+    d.style.animationDelay = Math.random() * 10 + 's';
+    d.style.animationDuration = (Math.random() * 10 + 7) + 's';
+    frag.appendChild(d);
   }
+  pc.appendChild(frag);
 
   // ===== ЭЛЕМЕНТЫ =====
   const secIntro = document.getElementById('secIntro');
@@ -393,6 +639,7 @@
   const finalWords = document.getElementById('finalWords');
 
   let currentSong = 0;
+  let songSwitchTimeout = null;
 
   // ===== ПЕСНИ =====
   const songs = [
@@ -407,7 +654,7 @@
         { t:17, l:"И я знаю, твой толер выше, чем у других" },
         { t:23, l:"На двоих алкоголя хватило бы, чтобы открыть магазин" },
         { t:30, l:"Я твой личный маньяк, жуткий сталкер с Двача" },
-        { t:36, l:"Я ищу тебя по твоим милым следам" },
+        { t:36, l:"Я ищу тебя по твоим милым следам, по твоим милым духам" },
         { t:42, l:"А ты пахнешь цветами" },
         { t:46, l:"Самыми вкусными травами" },
         { t:50, l:"Самыми яркими красками" },
@@ -428,18 +675,33 @@
       src: 'music2.mp3',
       lyrics: [
         { t:0, l:"Ты как коктейль — сладкая, пьяная" },
-        { t:5, l:"Твои губы — самый крепкий алкоголь" },
-        { t:10, l:"Я тону в тебе, это не контроль" },
-        { t:15, l:"Ты играешь мной, будто это роль" },
-        { t:20, l:"Каждый твой взгляд — shot чистого яда" },
-        { t:25, l:"Но я хочу ещё, мне больше надо" },
-        { t:30, l:"Мы танцуем под луной, город спит" },
-        { t:35, l:"Твой запах — это лучший магнит" },
-        { t:40, l:"Коктейль из чувств, перемешанных в бокале" },
-        { t:45, l:"Ты и я — мы это заслуживали" },
-        { t:50, l:"На губах привкус вишни и любви" },
-        { t:55, l:"Ты меня только позови" },
-        { t:60, l:"Коктейль, коктейль... ты мой коктейль" }
+        { t:3, l:"Твои губы — самый крепкий алкоголь" },
+        { t:7, l:"Я тону в тебе, это не контроль" },
+        { t:11, l:"Ты играешь мной, будто это роль" },
+        { t:15, l:"Каждый твой взгляд — shot чистого яда" },
+        { t:19, l:"Но я хочу ещё, мне больше надо" },
+        { t:23, l:"Мы танцуем под луной, город спит" },
+        { t:27, l:"Твой запах — это лучший магнит" },
+        { t:31, l:"Коктейль из чувств, перемешанных в бокале" },
+        { t:35, l:"Ты и я — мы это заслуживали" },
+        { t:39, l:"На губах привкус вишни и любви" },
+        { t:43, l:"Ты меня только позови" },
+        { t:47, l:"Коктейль, коктейль... ты мой коктейль" },
+        { t:52, l:"Я пью тебя до дна, мне не жаль" },
+        { t:56, l:"Ты — мой самый сладкий кайф, моя печаль" },
+        { t:60, l:"Коктейль из твоих глаз — это fire" },
+        { t:64, l:"Ты зажигаешь меня, будто lighter" },
+        { t:68, l:"Мы с тобой — идеальный mix" },
+        { t:72, l:"Ты — главный ингредиент, мой fix" },
+        { t:76, l:"Твои волосы пахнут летним дождём" },
+        { t:80, l:"Мы вдвоём, и нам всё нипочём" },
+        { t:84, l:"Коктейль, что ты мне налила" },
+        { t:88, l:"Это любовь в чистом виде, без льда" },
+        { t:92, l:"Ты — самый вкусный коктейль на земле" },
+        { t:96, l:"Я зависим, и я в полной мгле" },
+        { t:100, l:"Но мне нравится этот сладкий плен" },
+        { t:104, l:"Ты — мой коктейль, мой everlasting blend" },
+        { t:110, l:"Коктейль... Коктейль... 🍸" }
       ],
       nextSongAt: 999
     }
@@ -551,36 +813,50 @@
 
   // ===== НАВИГАЦИЯ =====
   function showSection(sec) {
-    [secIntro,secQuestion,secCat,secTerminal,secHeartLoad,secHearts,secPlayer,secFinal]
-      .forEach(s => s.classList.remove('active'));
+    const allSections = [secIntro, secQuestion, secCat, secTerminal, secHeartLoad, secHearts, secPlayer, secFinal];
+    allSections.forEach(s => s.classList.remove('active'));
+    // Форсим reflow для плавности
+    void sec.offsetWidth;
     sec.classList.add('active');
-    sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Плавный скролл через requestAnimationFrame
+    requestAnimationFrame(() => {
+      sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }
 
   // ===== 1. ЗАСТАВКА → ВОПРОС =====
-  document.getElementById('btnAsk').addEventListener('click', () => showSection(secQuestion));
+  document.getElementById('btnAsk').addEventListener('click', () => {
+    showSection(secQuestion);
+  });
 
-  // Убегающая кнопка
+  // Убегающая кнопка (оптимизированная)
   const btnSkip = document.getElementById('btnSkip');
+  let skipMoving = false;
+  
+  function moveSkip() {
+    if (skipMoving) return;
+    skipMoving = true;
+    
+    const maxX = window.innerWidth - btnSkip.offsetWidth - 20;
+    const maxY = window.innerHeight - btnSkip.offsetHeight - 20;
+    
+    btnSkip.style.position = 'fixed';
+    btnSkip.style.left = Math.random() * maxX + 'px';
+    btnSkip.style.top = Math.random() * maxY + 'px';
+    btnSkip.style.zIndex = '999';
+    
+    requestAnimationFrame(() => {
+      skipMoving = false;
+    });
+  }
+
   btnSkip.addEventListener('mouseover', moveSkip);
   btnSkip.addEventListener('touchstart', function(e) {
     e.preventDefault();
     moveSkip();
-    // Если тапнули — всё равно перекидываем на вопрос (мисклик)
-    setTimeout(() => showSection(secQuestion), 300);
-  });
+    setTimeout(() => showSection(secQuestion), 200);
+  }, { passive: false });
   btnSkip.addEventListener('click', () => showSection(secQuestion));
-
-  function moveSkip() {
-    const maxX = window.innerWidth - btnSkip.offsetWidth - 30;
-    const maxY = window.innerHeight - btnSkip.offsetHeight - 30;
-    const rx = Math.random() * maxX;
-    const ry = Math.random() * maxY;
-    btnSkip.style.position = 'fixed';
-    btnSkip.style.left = rx + 'px';
-    btnSkip.style.top = ry + 'px';
-    btnSkip.style.zIndex = '999';
-  }
 
   // ===== 2. ВОПРОС → ДА / НЕТ =====
   document.getElementById('btnYes').addEventListener('click', () => {
@@ -588,13 +864,14 @@
     document.getElementById('catEmoji').textContent = '😸';
     document.getElementById('catMsg').textContent = 'Я не сомневался! ❤️';
     document.getElementById('btnContinue').style.display = 'inline-block';
+    document.getElementById('btnNo').style.display = 'inline-block';
+    document.getElementById('btnYes').textContent = 'Да ❤️';
   });
 
   document.getElementById('btnNo').addEventListener('click', () => {
     const msgDiv = document.getElementById('noMsg');
     msgDiv.style.display = 'block';
-    msgDiv.innerHTML = '<div class="cat-img">😿</div><div class="cat-msg">Подумай ещё, пожалуйста...</div>';
-    // Прячем кнопку Нет и оставляем только Да
+    msgDiv.innerHTML = '<div class="cat-img">😿</div><div class="cat-msg">Подумай ещё, пожалуйста... 💔</div>';
     document.getElementById('btnNo').style.display = 'none';
     document.getElementById('btnYes').textContent = 'Да, ты мой лучший друг! ❤️';
   });
@@ -608,45 +885,51 @@
   // ===== 4. ТЕРМИНАЛ =====
   async function startTerminal() {
     terminalDisplay.innerHTML = '<span class="cursor"></span>';
+    termBtns.style.display = 'none';
+    termError.style.display = 'none';
+    
     const lines = [
-      "root@bestfriend:~$ init sequence",
-      "Загрузка модуля Tori...",
-      "Загрузка модуля Kostia...",
+      "root@bestfriend:~$ ./init_friendship",
+      "Загрузка модуля Tori... OK",
+      "Загрузка модуля Kostia... OK",
       "Вычисление: Tori + Kostia = ?",
       "",
       "Выберите вариант:",
-      "1. best+friend",
-      "2. no friend"
+      "  [1] best+friend",
+      "  [2] no friend"
     ];
-    for (let i=0; i<lines.length; i++) {
-      terminalDisplay.innerHTML = lines.slice(0,i+1).join('\n') + '<span class="cursor"></span>';
-      await sleep(250);
+    
+    for (let i = 0; i < lines.length; i++) {
+      terminalDisplay.innerHTML = lines.slice(0, i + 1).join('\n') + '<span class="cursor"></span>';
+      await new Promise(r => setTimeout(r, 200));
     }
     termBtns.style.display = 'flex';
   }
 
   termBtns.addEventListener('click', function(e) {
     if (e.target.tagName !== 'BUTTON') return;
-    const choice = e.target.dataset.choice;
-    if (choice === '1') {
+    if (e.target.dataset.choice === '1') {
       termBtns.style.display = 'none';
       termError.style.display = 'none';
-      terminalDisplay.innerHTML += '\n\n>>> Tori + Kostia = ЛУЧШИЕ ДРУЗЬЯ ❤️\n>>> Загрузка...';
-      setTimeout(() => showSection(secHeartLoad), 1500);
-      startHeartLoading();
+      terminalDisplay.innerHTML += '\n\n>>> Результат: Tori + Kostia = ЛУЧШИЕ ДРУЗЬЯ ❤️\n>>> Инициализация загрузки...';
+      setTimeout(() => {
+        showSection(secHeartLoad);
+        startHeartLoading();
+      }, 1200);
     } else {
       termError.style.display = 'block';
-      termError.textContent = '⚠ Ошибка! Выберите вариант 1';
+      termError.textContent = '⚠ ОШИБКА! Выберите вариант 1!';
     }
   });
-
-  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   // ===== 5. ЗАГРУЗКА СЕРДЦА =====
   function startHeartLoading() {
     let percent = 0;
+    progressFill.style.width = '0%';
+    progressText.textContent = '0%';
+    
     const interval = setInterval(() => {
-      percent += Math.floor(Math.random()*8)+1;
+      percent += Math.floor(Math.random() * 6) + 1;
       if (percent >= 100) {
         percent = 100;
         clearInterval(interval);
@@ -655,20 +938,22 @@
         setTimeout(() => {
           showSection(secHearts);
           fillHearts();
-        }, 800);
+        }, 700);
       } else {
-        progressFill.style.width = percent+'%';
-        progressText.textContent = percent+'%';
+        progressFill.style.width = percent + '%';
+        progressText.textContent = percent + '%';
       }
-    }, 250);
+    }, 180);
   }
 
   // ===== 6. ЭКРАН СЕРДЕЧЕК =====
   function fillHearts() {
+    const emojis = ['❤️','💖','💗','💕','💘','💝','💟','♥️','🩷','💓','💞','🫶'];
     let html = '';
-    for (let i=0; i<50; i++) {
-      const emojis = ['❤️','💖','💗','💕','💘','💝','💟','♥️','🩷','💓'];
-      html += `<span>${emojis[Math.floor(Math.random()*emojis.length)]}</span>`;
+    for (let i = 0; i < 50; i++) {
+      const delay = (Math.random() * 2).toFixed(2);
+      const dur = (0.6 + Math.random() * 1.4).toFixed(2);
+      html += `<span style="animation-delay:${delay}s; animation-duration:${dur}s;">${emojis[Math.floor(Math.random() * emojis.length)]}</span>`;
     }
     heartsGrid.innerHTML = html;
   }
@@ -680,36 +965,51 @@
   });
 
   function loadSong(idx) {
+    if (songSwitchTimeout) clearTimeout(songSwitchTimeout);
     currentSong = idx;
     const s = songs[idx];
     audioPlayer.src = s.src;
+    audioPlayer.load();
     nowPlaying.textContent = '▶ ' + s.name;
     lyricsDisplay.innerHTML = '🎤 нажми play';
   }
 
+  // Оптимизированный timeupdate через debounce
+  let lastLyricUpdate = 0;
   audioPlayer.addEventListener('timeupdate', () => {
+    const now = Date.now();
+    if (now - lastLyricUpdate < 200) return;
+    lastLyricUpdate = now;
+    
     const s = songs[currentSong];
     const ct = audioPlayer.currentTime;
     let line = '';
-    for (let i=s.lyrics.length-1; i>=0; i--) {
-      if (ct >= s.lyrics[i].t) { line = s.lyrics[i].l; break; }
+    
+    for (let i = s.lyrics.length - 1; i >= 0; i--) {
+      if (ct >= s.lyrics[i].t) {
+        line = s.lyrics[i].l;
+        break;
+      }
     }
-    lyricsDisplay.innerHTML = line
-      ? `<span class="highlight-lyric">${line}</span>`
-      : '🎵 ...';
-
+    
+    if (line) {
+      lyricsDisplay.innerHTML = `<span class="highlight-lyric">${line}</span>`;
+    }
+    
     // Автопереключение на вторую песню
-    if (currentSong === 0 && ct >= s.nextSongAt && songs[1].src) {
-      loadSong(1);
-      audioPlayer.play().catch(()=>{});
-      nowPlaying.textContent = '▶ ' + songs[1].name + ' (авто)';
+    if (currentSong === 0 && ct >= s.nextSongAt && !songSwitchTimeout) {
+      songSwitchTimeout = setTimeout(() => {
+        loadSong(1);
+        audioPlayer.play().catch(() => {});
+        nowPlaying.textContent = '▶ ' + songs[1].name + ' (авто)';
+      }, 500);
     }
   });
 
   // ===== 8. ФИНАЛ =====
   document.getElementById('btnFinal').addEventListener('click', () => {
     showSection(secFinal);
-    finalWords.innerHTML = '<ol>' + hundredWords.map(w => '<li>'+w.replace(/^\d+\.\s/,'')+'</li>').join('') + '</ol>';
+    finalWords.innerHTML = '<ol>' + hundredWords.map(w => '<li>' + w.replace(/^\d+\.\s/, '') + '</li>').join('') + '</ol>';
   });
 
   // ===== СБРОС УБЕГАЮЩЕЙ КНОПКИ =====
@@ -720,7 +1020,12 @@
     btnSkip.style.zIndex = '';
   });
 
+  // ==BestFriend.html=== ПРЕДЗАГРУЗКА АУДИО =====
+  window.addEventListener('load', () => {
+    audioPlayer.preload = 'auto';
+  });
+
 })();
 </script>
 </body>
-  </html>
+</html>BestFriend.html
