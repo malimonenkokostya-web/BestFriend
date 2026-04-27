@@ -1,568 +1,537 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>BestFriend — Tori ❤️</title>
-  <style>
-    :root {
-      --bg: #0a0015;
-      --pink: #ff4d8d;
-      --purple: #a855f7;
-      --gold: #fbbf24;
-      --cyan: #06b6d4;
-      --text: #fce7f3;
-      --glass: rgba(15, 0, 30, 0.85);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TORI_CORE_V3 // STABLE_RELEASE</title>
+    <style>
+        /* CSS КИБЕРПАНК-АРХИТЕКТУРА */
+        :root {
+            --neon-pink: #ff007a;
+            --neon-purple: #bc13fe;
+            --neon-cyan: #00f3ff;
+            --neon-green: #39ff14;
+            --deep-bg: #05000a;
+            --glass-bg: rgba(10, 0, 20, 0.85);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    html {
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-    }
+        body {
+            background-color: var(--deep-bg);
+            color: #fff;
+            font-family: var(--font-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
 
-    body {
-      background: var(--bg);
-      /* Замена на системные шрифты для скорости */
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
-      position: relative;
-    }
+        /* ОПТИМИЗИРОВАННЫЙ ФОНОВЫЙ ДВИЖОК */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
 
-    /* Анимированный фон */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background:
-        radial-gradient(ellipse at 20% 0%, #1a0040 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 100%, #0d0025 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, #150030 0%, transparent 60%);
-      z-index: -1;
-    }
+        .main-frame {
+            position: relative;
+            width: 95vw;
+            height: 90vh;
+            background: var(--glass-bg);
+            border: 2px solid var(--neon-purple);
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(188, 19, 254, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
 
-    .bg-lines {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: -1;
-      opacity: 0.3;
-    }
-    .bg-line {
-      position: absolute;
-      background: linear-gradient(90deg, transparent, var(--purple), transparent);
-      height: 1px;
-      width: 100%;
-      animation: lineMove 8s infinite linear;
-    }
-    .bg-line:nth-child(1) { top: 20%; animation-delay: 0s; }
-    .bg-line:nth-child(2) { top: 40%; animation-delay: -2s; }
-    .bg-line:nth-child(3) { top: 60%; animation-delay: -4s; }
-    .bg-line:nth-child(4) { top: 80%; animation-delay: -6s; }
-    @keyframes lineMove {
-      0% { transform: translateX(-100%); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateX(100%); opacity: 0; }
-    }
+        /* HEADER */
+        .system-header {
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--neon-purple);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(188, 19, 254, 0.1);
+        }
 
-    .particles {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      animation: floatUp 8s infinite ease-in;
-      opacity: 0;
-      will-change: transform, opacity;
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(105vh) scale(0); opacity: 0; }
-      10% { opacity: 0.8; }
-      80% { opacity: 0.6; }
-      100% { transform: translateY(-10vh) scale(1.8); opacity: 0; }
-    }
+        .status-light {
+            width: 10px;
+            height: 10px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-green);
+            display: inline-block;
+            margin-right: 10px;
+            animation: blink 1s infinite;
+        }
 
-    .scene {
-      width: 100%;
-      max-width: 700px;
-      padding: 20px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
+        @keyframes blink { 50% { opacity: 0.3; } }
 
-    .section {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      animation: fadeSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform, opacity;
-    }
-    .section.active {
-      display: flex;
-    }
+        /* ГЛАВНЫЙ КОНТЕЙНЕР СЕКЦИЙ */
+        .content-container {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
 
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
 
-    /* ===== ЗАСТАВКА ===== */
-    .intro-logo {
-      font-family: "Playfair Display", Georgia, serif;
-      font-size: clamp(36px, 8vw, 56px);
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 0 20px var(--pink), 0 0 40px var(--pink), 0 0 80px var(--purple);
-      letter-spacing: 6px;
-      margin-bottom: 8px;
-      animation: glowPulse 3s infinite ease-in-out;
-    }
-    @keyframes glowPulse {
-      0%, 100% { text-shadow: 0 0 20px var(--pink), 0 0 40px var(--pink), 0 0 80px var(--purple); }
-      50% { text-shadow: 0 0 30px var(--pink), 0 0 60px var(--pink), 0 0 120px var(--purple); }
-    }
+        .section.active {
+            display: flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-    .intro-subtitle {
-      font-size: clamp(16px, 3.5vw, 22px);
-      font-weight: 300;
-      color: #fce7f3;
-      letter-spacing: 5px;
-      text-shadow: 0 0 20px var(--purple);
-      margin-bottom: 12px;
-      opacity: 0.9;
-    }
+        /* ТИПОГРАФИКА */
+        h1 {
+            font-size: clamp(2rem, 8vw, 5rem);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: #fff;
+            text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-purple);
+            margin-bottom: 20px;
+        }
 
-    .intro-hearts {
-      font-size: clamp(30px, 7vw, 45px);
-      margin: 15px 0 20px;
-      animation: heartFloat 2.5s infinite ease-in-out;
-    }
-    @keyframes heartFloat {
-      0%, 100% { transform: translateY(0) scale(1); }
-      25% { transform: translateY(-15px) scale(1.1); }
-      75% { transform: translateY(-5px) scale(0.95); }
-    }
+        .glitch-text {
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+        }
 
-    .intro-divider {
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--pink), var(--purple), var(--pink));
-      border-radius: 5px;
-      margin: 5px 0 25px;
-      box-shadow: 0 0 25px var(--pink);
-      animation: dividerShine 2s infinite;
-    }
+        /* КНОПКИ */
+        .btn-cyber {
+            padding: 20px 50px;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.4s;
+            overflow: hidden;
+            margin: 15px;
+        }
 
-    .btn {
-      padding: 15px 35px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: clamp(15px, 3vw, 18px);
-      cursor: pointer;
-      letter-spacing: 2px;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      border: none;
-      outline: none;
-      position: relative;
-      overflow: hidden;
-    }
-    .btn:active { transform: scale(0.93); }
+        .btn-cyber:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #ff4d8d 0%, #a855f7 100%);
-      color: #fff;
-      box-shadow: 0 8px 35px rgba(255, 77, 141, 0.5);
-    }
-    .btn-ghost {
-      background: transparent;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      color: #fce7f3;
-      backdrop-filter: blur(10px);
-    }
-    .btn-skip { transition: all 0.1s ease-out; }
+        .btn-cyber::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
 
-    .btn-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin: 20px 0;
-    }
+        .btn-cyber:hover::before { left: 100%; }
 
-    .swipe-hint {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255,255,255,0.5);
-      font-size: 12px;
-      margin-top: 10px;
-      animation: swipeHint 2s infinite;
-    }
-    @keyframes swipeHint {
-      0%, 100% { opacity: 0.4; transform: translateX(0); }
-      50% { opacity: 1; transform: translateX(10px); }
-    }
+        /* ТЕРМИНАЛ */
+        .terminal-box {
+            width: 90%;
+            height: 70%;
+            background: #000;
+            border: 1px solid var(--neon-green);
+            padding: 25px;
+            font-family: var(--font-mono);
+            color: var(--neon-green);
+            text-align: left;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: inset 0 0 30px rgba(57, 255, 20, 0.15);
+        }
 
-    .question-text {
-      font-weight: 800;
-      font-size: clamp(22px, 5vw, 28px);
-      color: #fff;
-      text-shadow: 0 0 30px var(--purple);
-      margin: 25px 0;
-      letter-spacing: 2px;
-      line-height: 1.5;
-    }
+        .terminal-box::-webkit-scrollbar { width: 5px; }
+        .terminal-box::-webkit-scrollbar-thumb { background: var(--neon-green); }
 
-    .cat-img {
-      font-size: clamp(80px, 18vw, 120px);
-      margin: 20px 0;
-      animation: catBounce 0.8s infinite;
-    }
-    @keyframes catBounce {
-      0%, 100% { transform: translateY(0) scale(1); }
-      30% { transform: translateY(-20px) scale(1.1); }
-    }
+        /* КАРАОКЕ ПЛЕЕР */
+        .karaoke-player {
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid var(--neon-pink);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(255, 0, 122, 0.2);
+        }
 
-    .terminal {
-      background: #000a00;
-      border: 2px solid #33ff33;
-      border-radius: 16px;
-      padding: 20px;
-      width: 100%;
-      min-height: 200px;
-      box-shadow: 0 0 40px rgba(51, 255, 51, 0.25);
-      font-family: 'Courier New', Courier, monospace;
-      color: #33ff33;
-      font-size: clamp(10px, 2.5vw, 13px);
-      line-height: 1.8;
-      white-space: pre-wrap;
-      text-align: left;
-      position: relative;
-    }
-    .cursor::after {
-      content: "_";
-      animation: blink 1s infinite;
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .lyrics-container {
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
 
-    .heart-loader {
-      font-size: clamp(60px, 15vw, 90px);
-      margin: 25px 0;
-      animation: heartBeat 0.7s infinite;
-    }
-    @keyframes heartBeat {
-      0%, 100% { transform: scale(1); }
-      15% { transform: scale(1.2); }
-    }
+        .lyric-line {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.2);
+            transition: all 0.4s ease;
+            margin: 5px 0;
+            font-weight: bold;
+        }
 
-    .progress-bar {
-      width: 85%;
-      max-width: 400px;
-      height: 24px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 15px 0;
-      border: 2px solid rgba(255, 77, 141, 0.5);
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ff3366, #ff6b9d);
-      transition: width 0.3s ease;
-    }
+        .lyric-line.active {
+            color: var(--neon-pink);
+            font-size: 2.2rem;
+            text-shadow: 0 0 15px var(--neon-pink);
+            transform: scale(1.1);
+        }
 
-    .hearts-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      font-size: clamp(24px, 6vw, 34px);
-      margin: 25px 0;
-    }
+        /* 100 ПРИЧИН - СЕТКА */
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            height: 80%;
+            overflow-y: auto;
+            padding: 30px;
+            perspective: 1000px;
+        }
 
-    .dedication-text {
-      font-family: "Pacifico", "Brush Script MT", cursive;
-      font-size: clamp(22px, 5vw, 28px);
-      color: #fff;
-      text-shadow: 0 0 25px var(--pink);
-    }
+        .reason-card {
+            background: rgba(255,255,255,0.03);
+            border-left: 4px solid var(--neon-cyan);
+            padding: 20px;
+            font-size: 15px;
+            transition: 0.3s;
+            opacity: 0.8;
+            cursor: crosshair;
+        }
 
-    .player-box {
-      background: var(--glass);
-      backdrop-filter: blur(30px);
-      border-radius: 30px;
-      padding: 25px 16px;
-      border: 1.5px solid rgba(255, 255, 255, 0.15);
-      width: 100%;
-    }
-    .lyrics-box {
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 18px;
-      padding: 15px;
-      margin: 12px 0;
-      max-height: 140px;
-      overflow-y: auto;
-      color: #f5d0fe;
-      font-weight: 600;
-      font-size: clamp(15px, 3vw, 17px);
-      line-height: 1.9;
-    }
-    .highlight-lyric {
-      color: #fbbf24;
-      padding: 3px 12px;
-      text-shadow: 0 0 12px var(--gold);
-    }
+        .reason-card:hover {
+            background: rgba(0, 243, 255, 0.1);
+            transform: scale(1.05) rotateZ(1deg);
+            opacity: 1;
+            border-left-color: var(--neon-pink);
+        }
 
-    .final-box {
-      background: linear-gradient(160deg, #1a001a, #0d0015);
-      border-radius: 28px;
-      padding: 28px 18px;
-      border: 2px solid #ff4d6d;
-      max-height: 400px;
-      overflow-y: auto;
-      color: #fce4ec;
-      font-size: clamp(14px, 3vw, 16px);
-      line-height: 2;
-      text-align: left;
-    }
-  </style>
+        .reason-card span {
+            color: var(--neon-cyan);
+            font-weight: bold;
+            margin-right: 10px;
+            font-family: var(--font-mono);
+        }
+
+        /* СКАНЕР */
+        .scanner-bar {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            z-index: 100;
+            pointer-events: none;
+            animation: scanMove 4s infinite linear;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ (ГОРИЗОНТАЛЬ) */
+        @media (orientation: portrait) {
+            .main-frame { height: 80vh; }
+            h1 { font-size: 3rem; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="bg-lines"><div class="bg-line"></div><div class="bg-line"></div><div class="bg-line"></div><div class="bg-line"></div></div>
-<div class="particles" id="particlesContainer"></div>
+    <canvas id="canvas-bg"></canvas>
 
-<div class="scene">
-  <div class="section active" id="secIntro">
-    <div class="intro-logo">BestFriend</div>
-    <div class="intro-subtitle">Tori it's for you</div>
-    <div class="intro-divider"></div>
-    <div class="intro-hearts">💗💖💗</div>
-    <div class="btn-group">
-      <button class="btn btn-primary" id="btnAsk">💌 Узнать что?</button>
-      <button class="btn btn-ghost btn-skip" id="btnSkip">Пропустить</button>
+    <div class="main-frame">
+        <div class="scanner-bar"></div>
+        
+        <header class="system-header">
+            <div>
+                <span class="status-light"></span>
+                <span style="font-family: var(--font-mono); font-size: 12px; color: var(--neon-cyan);">CORE_STATUS: STABLE // ENCRYPTION: AES-256</span>
+            </div>
+            <div id="clock" style="font-family: var(--font-mono); color: var(--neon-pink);">00:00:00</div>
+        </header>
+
+        <div class="content-container">
+            
+            <section class="section active" id="sec-1">
+                <p class="glitch-text">ACCESSING PERSONAL ARCHIVE...</p>
+                <h1>TORI ❤️</h1>
+                <p style="max-width: 600px; color: #ccc; margin-bottom: 30px;">
+                    Обнаружена зашифрованная область памяти. Владелец: Костя. 
+                    Цель: Лучший друг. Продолжить инициализацию?
+                </p>
+                <button class="btn-cyber" onclick="nav(2)">Инициализировать</button>
+            </section>
+
+            <section class="section" id="sec-2">
+                <h2 style="font-size: 2.5rem; margin-bottom: 40px; text-shadow: 0 0 15px var(--neon-cyan);">ПРОВЕРКА СВЯЗИ</h2>
+                <p class="glitch-text" style="margin-bottom: 30px;">ВОПРОС: Ты считаешь Костю своим лучшим другом?</p>
+                <div style="display: flex; gap: 20px;">
+                    <button class="btn-cyber" onclick="nav(3)" style="border-color: var(--neon-green); color: var(--neon-green);">ПОДТВЕРДИТЬ (ДА)</button>
+                    <button class="btn-cyber" id="btn-no" style="border-color: var(--neon-pink); color: var(--neon-pink);">ОТКЛОНИТЬ (НЕТ)</button>
+                </div>
+            </section>
+
+            <section class="section" id="sec-3">
+                <div class="terminal-box" id="term-out"></div>
+                <button class="btn-cyber" id="btn-term-next" style="display:none;" onclick="nav(4)">ЗАГРУЗИТЬ МЕДИА-ПОТОК</button>
+            </section>
+
+            <section class="section" id="sec-4">
+                <div class="karaoke-player">
+                    <div class="lyrics-container" id="lyrics-box">
+                        <div class="lyric-line" id="l-prev">...</div>
+                        <div class="lyric-line active" id="l-curr">ОЖИДАНИЕ СИГНАЛА</div>
+                        <div class="lyric-line" id="l-next">...</div>
+                    </div>
+                    <audio id="m-player" src="music.mp3"></audio>
+                    <div style="display: flex; justify-content: center; gap: 15px;">
+                        <button class="btn-cyber" onclick="togglePlay()" id="play-btn">PLAY_STREAM</button>
+                    </div>
+                </div>
+                <button class="btn-cyber" onclick="nav(5)" style="margin-top: 30px;">ОТКРЫТЬ ФИНАЛЬНЫЙ ПАКЕТ</button>
+            </section>
+
+            <section class="section" id="sec-5">
+                <h2 style="color: var(--neon-cyan); margin-bottom: 20px; font-family: var(--font-mono);">FILE: 100_REASONS_WHY_YOU_ARE_BEST.DAT</h2>
+                <div class="reasons-grid" id="reasons-box"></div>
+            </section>
+
+        </div>
     </div>
-    <div class="swipe-hint">↔ свайпай дальше →</div>
-  </div>
 
-  <div class="section" id="secQuestion">
-    <div class="question-text">Ты считаешь меня своим лучшим другом?</div>
-    <div class="btn-group">
-      <button class="btn btn-primary" id="btnYes">Да ❤️</button>
-      <button class="btn btn-ghost" id="btnNo">Нет 😢</button>
-    </div>
-    <div id="noMsg" style="display:none; margin-top:20px;"></div>
-  </div>
+    <script>
+        /* JS ENGINE: СТАБИЛЬНОСТЬ И СКОРОСТЬ */
+        
+        // 1. ФОНОВАЯ АНИМАЦИЯ (Canvas)
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
 
-  <div class="section" id="secCat">
-    <div class="cat-img" id="catEmoji"></div>
-    <div class="cat-msg" id="catMsg"></div>
-    <button class="btn btn-primary" id="btnContinue" style="margin-top:20px; display:none;">Продолжить ✨</button>
-  </div>
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<100; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5 + 0.1,
+                    color: i % 2 === 0 ? '#bc13fe' : '#00f3ff'
+                });
+            }
+        }
 
-  <div class="section" id="secTerminal">
-    <div class="terminal" id="terminalDisplay"></div>
-    <div class="btn-group" id="termBtns" style="margin-top:20px; display:none;">
-      <button class="btn btn-primary" data-choice="1">1. best+friend</button>
-      <button class="btn btn-ghost" data-choice="2">2. no friend</button>
-    </div>
-    <div id="termError" style="color:#ff4d6d; margin-top:10px; font-weight:700; display:none;"></div>
-  </div>
+        function animate() {
+            ctx.fillStyle = 'rgba(5, 0, 10, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                p.y -= p.speed;
+                if(p.y < 0) p.y = height;
+            });
+            requestAnimationFrame(animate);
+        }
 
-  <div class="section" id="secHeartLoad">
-    <div class="heart-loader">❤️</div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-text" id="progressText">0%</div>
-  </div>
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animate();
 
-  <div class="section" id="secHearts">
-    <div class="hearts-grid" id="heartsGrid"></div>
-    <div class="dedication-text">Это для Тори от Кости ❤️</div>
-    <button class="btn btn-primary" id="btnPlayMusic" style="margin-top:15px;">🎵 Включить музыку</button>
-  </div>
+        // 2. СИСТЕМНЫЕ ЧАСЫ
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
 
-  <div class="section" id="secPlayer">
-    <div class="player-box">
-      <div style="font-size:30px;">🎧</div>
-      <div class="now-playing" id="nowPlaying">▶ тёмный принц — Ты пахнешь цветами</div>
-      <audio id="audioPlayer" controls preload="auto"></audio>
-      <div class="lyrics-box" id="lyricsDisplay">🎤 нажми play</div>
-    </div>
-    <button class="btn btn-primary" id="btnFinal" style="margin-top:20px;">💭 Посмотреть, что я думаю о тебе</button>
-  </div>
+        // 3. НАВИГАЦИЯ
+        function nav(step) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`sec-${step}`);
+            target.style.display = 'flex';
+            setTimeout(() => target.classList.add('active'), 50);
 
-  <div class="section" id="secFinal">
-    <div class="final-box" id="finalWords"></div>
-  </div>
-</div>
+            if(step === 3) startTerminal();
+            if(step === 5) renderReasons();
+        }
 
-<script>
-(function() {
-  const pc = document.getElementById('particlesContainer');
-  for (let i = 0; i < 30; i++) {
-    const d = document.createElement('div');
-    d.classList.add('particle');
-    const size = Math.random() * 6 + 2;
-    d.style.width = size + 'px'; d.style.height = size + 'px';
-    d.style.left = Math.random() * 100 + '%';
-    d.style.background = ['#ff4d8d','#a855f7','#fbbf24'][Math.floor(Math.random() * 3)];
-    d.style.animationDelay = Math.random() * 10 + 's';
-    d.style.animationDuration = (Math.random() * 10 + 7) + 's';
-    pc.appendChild(d);
-  }
+        // 4. УБЕГАЮЩАЯ КНОПКА
+        const btnNo = document.getElementById('btn-no');
+        btnNo.addEventListener('mouseover', () => {
+            btnNo.style.position = 'absolute';
+            btnNo.style.left = Math.random() * 80 + '%';
+            btnNo.style.top = Math.random() * 80 + '%';
+        });
 
-  const sections = {
-    intro: document.getElementById('secIntro'),
-    question: document.getElementById('secQuestion'),
-    cat: document.getElementById('secCat'),
-    terminal: document.getElementById('secTerminal'),
-    load: document.getElementById('secHeartLoad'),
-    hearts: document.getElementById('secHearts'),
-    player: document.getElementById('secPlayer'),
-    final: document.getElementById('secFinal')
-  };
+        // 5. ТЕРМИНАЛ (Хакерское сердце)
+        async function startTerminal() {
+            const out = document.getElementById('term-out');
+            const lines = [
+                "> INITIALIZING CONNECTION...",
+                "> TARGET: TORI",
+                "> STATUS: BEST_FRIEND",
+                "> EXECUTING HEART_GEN.SH",
+                " ",
+                "   ****** ******",
+                "  ** ** ** **",
+                " ** ** ** **",
+                " ** ** ** **",
+                "  ** ** **",
+                "   ** **",
+                "    ** **",
+                "      ** **",
+                "        ** **",
+                "          ** **",
+                "            **",
+                " ",
+                "> ENCRYPTION BROKEN.",
+                "> MESSAGE FROM KOSTIA: ТЫ ЛУЧШАЯ.",
+                "> COMPILING 100 REASONS..."
+            ];
 
-  function showSection(sec) {
-    Object.values(sections).forEach(s => s.classList.remove('active'));
-    sec.classList.add('active');
-    sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+            for(let line of lines) {
+                out.innerText += line + "\n";
+                out.scrollTop = out.scrollHeight;
+                await new Promise(r => setTimeout(r, 100));
+            }
+            document.getElementById('btn-term-next').style.display = 'block';
+        }
 
-  document.getElementById('btnAsk').onclick = () => showSection(sections.question);
+        // 6. КАРАОКЕ ДВИЖОК
+        const audio = document.getElementById('m-player');
+        const lyrics = [
+            {t: 0, text: "СИСТЕМА ГОТОВА..."},
+            {t: 2, text: "Ну а ты пахнешь цветами..."},
+            {t: 6, text: "Самыми вкусными травами..."},
+            {t: 10, text: "Самыми яркими красками..."},
+            {t: 14, text: "О-о-о, как глоток пива «Дон»"},
+            {t: 19, text: "И я знаю, твой толер выше всех..."},
+            {t: 25, text: "На двоих алкоголя хватило бы..."},
+            {t: 32, text: "Я твой личный маньяк..."},
+            {t: 38, text: "Ищу тебя по твоим следам..."},
+            {t: 44, text: "ВЕДЬ ТЫ ПАХНЕШЬ ЦВЕТАМИ! ❤️"}
+        ];
 
-  const btnSkip = document.getElementById('btnSkip');
-  btnSkip.onmouseover = () => {
-    btnSkip.style.position = 'fixed';
-    btnSkip.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-    btnSkip.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-  };
-  btnSkip.onclick = () => showSection(sections.question);
+        function togglePlay() {
+            const btn = document.getElementById('play-btn');
+            if(audio.paused) {
+                audio.play();
+                btn.innerText = "PAUSE_STREAM";
+            } else {
+                audio.pause();
+                btn.innerText = "PLAY_STREAM";
+            }
+        }
 
-  document.getElementById('btnYes').onclick = () => {
-    showSection(sections.cat);
-    document.getElementById('catEmoji').textContent = '😸';
-    document.getElementById('catMsg').textContent = 'Я не сомневался! ❤️';
-    document.getElementById('btnContinue').style.display = 'inline-block';
-  };
+        audio.ontimeupdate = () => {
+            const cur = audio.currentTime;
+            for(let i=0; i<lyrics.length; i++) {
+                if(cur >= lyrics[i].t) {
+                    document.getElementById('l-prev').innerText = lyrics[i-1] ? lyrics[i-1].text : "";
+                    document.getElementById('l-curr').innerText = lyrics[i].text;
+                    document.getElementById('l-next').innerText = lyrics[i+1] ? lyrics[i+1].text : "";
+                }
+            }
+        };
 
-  document.getElementById('btnNo').onclick = () => {
-    const msg = document.getElementById('noMsg');
-    msg.style.display = 'block';
-    msg.innerHTML = '<div class="cat-img">😿</div><div class="cat-msg">Подумай ещё... 💔</div>';
-    document.getElementById('btnYes').textContent = 'Да, ты мой лучший друг! ❤️';
-  };
+        // 7. 100 ПРИЧИН (ПОЛНЫЙ СПИСОК)
+        const reasonTexts = [
+            "Ты всегда меня понимаешь", "Твоя улыбка бесценна", "Ты самая добрая", "Ты умеешь слушать", 
+            "С тобой уютно молчать", "У тебя крутой вкус в музыке", "Ты очень сильная личность", 
+            "Ты честная", "Ты не такая как все", "Ты вдохновляешь меня", "Ты умеешь прощать", 
+            "Ты всегда рядом в трудную минуту", "Твои советы самые мудрые", "Ты красивая", 
+            "Ты искренняя", "Ты настоящий друг", "Ты умеешь удивлять", "У тебя доброе сердце", 
+            "Ты верная", "Ты мотивируешь меня быть лучше", "С тобой часы пролетают как минуты", 
+            "Ты ценишь мои шутки", "Ты стильная", "Ты не боишься трудностей", "Ты уникальная",
+            "Ты умеешь создавать атмосферу", "Ты веришь в меня", "Ты — светлый человек", 
+            "Ты никогда не предашь", "Ты умеешь радоваться мелочам", "Твой голос успокаивает", 
+            "Ты — человек слова", "С тобой я могу быть собой", "Ты понимаешь мои мемы", 
+            "Ты умеешь сопереживать", "Ты не завистливая", "Ты всегда найдешь правильные слова", 
+            "Ты — моя лучшая поддержка", "Ты просто космос", "Ты заслуживаешь всего лучшего",
+            "Ты умеешь флиртовать взглядом", "Ты загадочная", "Ты очень умная", 
+            "Ты не боишься перемен", "Ты — моя бро", "Ты ценишь дружбу", 
+            "Ты никогда не бросишь в беде", "Ты — причина моей улыбки", "Ты — огонь", 
+            "Ты умеешь зажигать", "Ты — легенда", "С тобой можно быть сумасшедшим", 
+            "Ты не осуждаешь мои странности", "Ты — душа компании", "Ты — мой safe place",
+            "Ты умеешь читать мысли", "Ты очень заботливая", "Ты — золото", 
+            "Ты — мой бриллиант", "Ты невероятно талантливая", "Ты умеешь убеждать", 
+            "Ты — генератор идей", "Ты — мой компас", "Ты — редкий экземпляр", 
+            "Ты — чудо природы", "Ты — воплощение доброты", "Ты — моя гордость",
+            "Ты — пример для подражания", "Ты — та, кому я доверяю всё", "Ты — часть моей жизни",
+            "Ты умеешь делать день лучше", "Ты — мой антидепрессант", "Ты — рок-звезда",
+            "Ты — моя вселенная", "Ты — бесконечный позитив", "Ты — мастер комплиментов",
+            "Ты — просто невероятная Тори", "Ты умеешь делать сюрпризы", "Ты — моя супергероиня",
+            "Ты — луч света в темноте", "Ты — моя мотивация", "Ты — человек-магнит",
+            "Ты — очень глубокая личность", "Ты — мой лучший выбор в друзьях", "Ты — это ты",
+            "Ты — совершенство", "Ты — моя радость", "Ты — круче всех", 
+            "Ты — особенная", "Ты — мой идеал друга", "Ты — невероятная поддержка",
+            "Ты — моя искра", "Ты — праздник", "Ты — вдохновение", 
+            "Ты — настоящий дар судьбы", "Ты — мой самый близкий человек", "Ты — сокровище",
+            "Ты — моя Тори ❤️", "Ты — навсегда мой лучший друг!", "Просто за то, что ты есть."
+        ];
 
-  document.getElementById('btnContinue').onclick = () => {
-    showSection(sections.terminal);
-    startTerminal();
-  };
-
-  async function startTerminal() {
-    const lines = ["./init_friendship...", "Tori module: OK", "Kostia module: OK", "Calc: Tori + Kostia = ?", "Select choice:"];
-    const display = document.getElementById('terminalDisplay');
-    for (let l of lines) {
-      display.innerHTML += l + '\n';
-      await new Promise(r => setTimeout(r, 400));
-    }
-    document.getElementById('termBtns').style.display = 'flex';
-  }
-
-  document.getElementById('termBtns').onclick = (e) => {
-    if (e.target.dataset.choice === '1') {
-      showSection(sections.load);
-      startLoading();
-    } else {
-      const err = document.getElementById('termError');
-      err.style.display = 'block';
-      err.textContent = '⚠ ОШИБКА! Выбери вариант 1!';
-    }
-  };
-
-  function startLoading() {
-    let p = 0;
-    const fill = document.getElementById('progressFill');
-    const txt = document.getElementById('progressText');
-    const int = setInterval(() => {
-      p += 2;
-      fill.style.width = p + '%';
-      txt.textContent = p + '%';
-      if (p >= 100) {
-        clearInterval(int);
-        setTimeout(() => { showSection(sections.hearts); fillHearts(); }, 500);
-      }
-    }, 50);
-  }
-
-  function fillHearts() {
-    const grid = document.getElementById('heartsGrid');
-    for (let i = 0; i < 40; i++) {
-      const s = document.createElement('span');
-      s.textContent = '❤️';
-      s.style.animationDelay = Math.random() * 2 + 's';
-      grid.appendChild(s);
-    }
-  }
-
-  const audio = document.getElementById('audioPlayer');
-  document.getElementById('btnPlayMusic').onclick = () => {
-    showSection(sections.player);
-    audio.src = 'music.mp3';
-    audio.play().catch(() => { alert("Нажми Play в плеере!"); });
-  };
-
-  const hundredWords = [
-    "Ты самый добрый человек.", "Твоя улыбка освещает дни.", "Ты красивая снаружи и внутри.", 
-    "Ты умная.", "Ты сильная духом.", "Ты умеешь слушать.", "Твой смех — лекарство.",
-    "Ты верный друг.", "Ты вдохновляешь.", "Ты честная.", "Ты умеешь прощать.",
-    "Ты делаешь мир теплее.", "Ты ценишь мелочи.", "Ты амбициозная.", "Ты настоящая.",
-    "Ты умеешь удивлять.", "Ты даришь тепло.", "С тобой можно говорить вечно.",
-    "Я тебе доверяю.", "Ты не осуждаешь.", "Ты мотивируешь.", "С тобой весело.",
-    "Ты ценишь дружбу.", "Ты невероятно талантливая.", "Ты видишь красоту.",
-    "Ты заслуживаешь лучшего.", "Твоя искренность — сокровище.", "Ты — мой лучший друг.",
-    "Рад, что мы знакомы, Тори! ❤️"
-  ];
-
-  document.getElementById('btnFinal').onclick = () => {
-    showSection(sections.final);
-    document.getElementById('finalWords').innerHTML = '<ol>' + hundredWords.map(w => '<li>'+w+'</li>').join('') + '</ol>';
-  };
-})();
-</script>
+        function renderReasons() {
+            const box = document.getElementById('reasons-box');
+            if(box.innerHTML !== "") return;
+            
+            reasonTexts.forEach((text, i) => {
+                const card = document.createElement('div');
+                card.className = 'reason-card';
+                card.innerHTML = `<span>#${(i+1).toString().padStart(3, '0')}</span> ${text}`;
+                box.appendChild(card);
+            });
+        }
+    </script>
 </body>
 </html>
 
