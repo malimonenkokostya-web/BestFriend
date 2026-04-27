@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TORI_CORE_OS_V4</title>
+    <title>ТОРИ ❤️ КОСТЯ</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --primary: #8e44ad;
-            --secondary: #ff2d55;
-            --accent: #00e5ff;
-            --bg: #030305;
-            --card: rgba(15, 15, 25, 0.95);
-            --border: rgba(142, 68, 173, 0.3);
+            --pink: #ff2d55;
+            --purple: #8e44ad;
+            --cyan: #00e5ff;
+            --gold: #ffd700;
+            --bg: #0a0a12;
+            --card: rgba(18, 18, 30, 0.96);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-        
         body {
             background: var(--bg);
-            color: #ececec;
+            color: #f0eef5;
+            font-family: 'Inter', -apple-system, sans-serif;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -27,377 +30,705 @@
             justify-content: center;
         }
 
-        #bg-fx { position: fixed; top: 0; left: 0; z-index: 0; filter: blur(2px); }
-
-        .os-container {
-            width: 96vw;
-            height: 94vh;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-            backdrop-filter: blur(40px);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        canvas#stars {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
         }
 
-        .os-header {
-            padding: 14px 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .container {
+            width: 96vw;
+            height: 94vh;
+            max-width: 1200px;
+            max-height: 800px;
+            background: var(--card);
+            border: 1px solid rgba(142,68,173,0.25);
+            border-radius: 20px;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(30px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 60px rgba(142,68,173,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 12px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255,255,255,0.02);
-            border-radius: 16px 16px 0 0;
+            font-size: 11px;
+            letter-spacing: 1px;
+            background: rgba(255,255,255,0.01);
+            flex-shrink: 0;
         }
-
-        .sys-info { font-family: monospace; font-size: 10px; color: var(--accent); letter-spacing: 2px; }
-
-        .main-view { flex: 1; position: relative; }
+        .header-left { color: var(--cyan); font-family: monospace; }
+        .header-right { color: var(--pink); font-family: monospace; }
+        .header-right span { cursor: pointer; color: #555; margin-right: 16px; text-decoration: underline; font-size: 10px; }
+        .header-right span:hover { color: var(--cyan); }
 
         .stage {
-            position: absolute;
-            inset: 0;
+            flex: 1;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 30px 40px;
             text-align: center;
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+        }
+        .stage.active { display: flex; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .stage.active { display: flex; animation: slideIn 0.6s forwards; }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: scale(0.98) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .hero-text {
-            font-size: clamp(3rem, 10vw, 6rem);
+        .stage h1 {
+            font-size: clamp(2.4rem, 7vw, 4.5rem);
             font-weight: 900;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #fff 30%, var(--primary));
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 20%, var(--purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+            line-height: 1.1;
         }
 
-        .btn-ui {
-            padding: 16px 40px;
-            background: rgba(142, 68, 173, 0.1);
-            border: 1px solid var(--primary);
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
+        .stage p.sub {
+            color: var(--cyan);
             text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 5px;
+            font-size: 12px;
+            margin-bottom: 12px;
         }
 
-        .btn-ui:hover {
-            background: var(--primary);
-            box-shadow: 0 0 30px rgba(142, 68, 173, 0.5);
-            transform: translateY(-2px);
+        .btn {
+            padding: 14px 44px;
+            border: 1.5px solid var(--purple);
+            background: rgba(142,68,173,0.08);
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: var(--purple);
+            box-shadow: 0 0 30px rgba(142,68,173,0.4);
+            transform: translateY(-3px);
+        }
+        .btn-green { border-color: #2ecc71; }
+        .btn-green:hover { background: #2ecc71; box-shadow: 0 0 30px rgba(46,204,113,0.4); }
+        .btn-pink { border-color: var(--pink); }
+        .btn-pink:hover { background: var(--pink); box-shadow: 0 0 30px rgba(255,45,85,0.4); }
+
+        .btn-run {
+            padding: 14px 44px;
+            border: 1.5px solid var(--pink);
+            background: rgba(255,45,85,0.08);
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            text-transform: uppercase;
+            position: fixed;
+            z-index: 100;
+        }
+        .btn-run:hover {
+            background: var(--pink);
+            box-shadow: 0 0 30px rgba(255,45,85,0.4);
         }
 
-        .term-area {
+        /* Stage 2 – кнопка НЕТ убегает */
+        .btn-group {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* Stage 3 – кот */
+        .cat-box {
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            padding: 30px 50px;
+            border: 1px solid rgba(255,255,255,0.05);
+            max-width: 440px;
+        }
+        .cat-art {
+            font-size: 1.7rem;
+            line-height: 1.5;
+            color: var(--gold);
+            white-space: pre;
+            font-family: monospace;
+            margin-bottom: 10px;
+        }
+        .cat-box p { font-size: 18px; margin-top: 10px; }
+        .cat-box .small { font-size: 14px; color: #aaa; margin-top: 6px; }
+
+        /* Stage 4 – консоль */
+        .console-box {
             width: 100%;
             max-width: 800px;
             height: 70%;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #050508;
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
-            padding: 30px;
+            padding: 28px 30px;
             font-family: 'Courier New', monospace;
-            color: var(--accent);
+            color: var(--cyan);
             text-align: left;
             overflow-y: auto;
-            line-height: 1.4;
+            line-height: 1.6;
+            font-size: 14px;
         }
+        .console-box .pink { color: var(--pink); }
+        .console-box .gold { color: var(--gold); }
+        .console-box .dim { color: #555; }
 
-        .karaoke-shell {
+        /* Прогресс сердца */
+        .heart-progress-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .heart-fill {
+            font-size: 6rem;
+            transition: 0.3s;
+            filter: grayscale(0.8);
+        }
+        .heart-fill.full { filter: grayscale(0); text-shadow: 0 0 40px rgba(255,45,85,0.7); }
+        .progress-bar-heart {
+            width: 300px;
+            height: 14px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .progress-bar-heart .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .progress-label { font-family: monospace; font-size: 14px; color: var(--pink); letter-spacing: 2px; }
+
+        /* Stage 5 – финал с сердечками */
+        .hearts-final {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .hearts-final .big { font-size: 4rem; }
+        .hearts-final h2 { font-size: 2rem; background: linear-gradient(135deg, var(--gold), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hearts-final p { color: #bbb; max-width: 500px; }
+
+        /* Караоке */
+        .karaoke-wrap {
             width: 100%;
-            max-width: 750px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 24px;
-            padding: 50px 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .lyric-item {
-            height: 140px;
+            max-width: 800px;
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
+            gap: 8px;
         }
-
-        .l-prev, .l-next { font-size: 1.1rem; opacity: 0.2; filter: blur(1px); transition: 0.4s; }
-        .l-active {
-            font-size: 2.2rem;
+        .lyric-prev { font-size: 1rem; opacity: 0.2; filter: blur(1px); transition: 0.4s; min-height: 28px; }
+        .lyric-curr {
+            font-size: 2.4rem;
             font-weight: 800;
-            color: var(--secondary);
-            text-shadow: 0 0 25px rgba(255, 45, 85, 0.4);
-            transition: 0.4s;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255,45,85,0.4);
+            transition: 0.3s;
+            min-height: 56px;
+            padding: 8px 0;
         }
+        .lyric-next { font-size: 1rem; opacity: 0.2; filter: blur(1px); transition: 0.4s; min-height: 28px; }
 
-        .reasons-box {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            width: 100%;
-            height: 85%;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .reason-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: left;
+        .btn-audio {
+            margin-top: 16px;
+            padding: 12px 36px;
+            border: 1px solid var(--pink);
+            background: rgba(255,45,85,0.1);
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 1px;
             transition: 0.3s;
         }
+        .btn-audio:hover { background: var(--pink); box-shadow: 0 0 30px rgba(255,45,85,0.3); }
 
-        .reason-card:hover {
-            border-color: var(--primary);
-            background: rgba(142, 68, 173, 0.05);
-            transform: translateX(5px);
-        }
-
-        .reason-card b { color: var(--accent); margin-right: 10px; font-family: monospace; }
-
-        #no-target { position: relative; }
-
-        .reload-trigger {
-            font-size: 10px;
+        .skip-btn {
+            margin-top: 20px;
+            background: none;
+            border: none;
             color: #555;
+            font-size: 12px;
             cursor: pointer;
             text-decoration: underline;
+            font-family: monospace;
         }
-        
-        .reload-trigger:hover { color: var(--accent); }
+        .skip-btn:hover { color: var(--cyan); }
+
+        /* Stage 8 – сетка 100 слов */
+        .grid-100 {
+            width: 100%;
+            height: 85%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .grid-100 .card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 16px 18px;
+            text-align: left;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .grid-100 .card:hover {
+            border-color: var(--purple);
+            background: rgba(142,68,173,0.06);
+            transform: translateX(4px);
+        }
+        .grid-100 .card .num {
+            color: var(--cyan);
+            font-family: monospace;
+            font-weight: 700;
+            margin-right: 10px;
+        }
 
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-fx"></canvas>
+<canvas id="stars"></canvas>
 
-    <div class="os-container">
-        <header class="os-header">
-            <div class="sys-info" id="sys-status">LOADING_SYSTEM_RESOURCES...</div>
-            <div style="display: flex; gap: 20px; align-items: center;">
-                <span class="reload-trigger" onclick="location.reload()">REBOOT_SYSTEM</span>
-                <div id="os-clock" style="font-family: monospace; color: var(--secondary);">00:00:00</div>
-            </div>
-        </header>
-
-        <main class="main-view">
-            <section class="stage active" id="s1">
-                <p style="text-transform: uppercase; letter-spacing: 5px; color: var(--accent); margin-bottom: 10px;">Private Access</p>
-                <h1 class="hero-text">TORI.OS</h1>
-                <button class="btn-ui" onclick="move(2)">Инициализация</button>
-            </section>
-
-            <section class="stage" id="s2">
-                <h2 style="font-size: 2rem; margin-bottom: 40px;">Пройдите верификацию:<br>Костя твой лучший друг?</h2>
-                <div style="display: flex; gap: 25px;">
-                    <button class="btn-ui" onclick="move(3)" style="border-color: #2ecc71;">Безусловно</button>
-                    <button class="btn-ui" id="no-target" onmouseover="runAway()">Никогда</button>
-                </div>
-            </section>
-
-            <section class="stage" id="s3">
-                <div class="term-area" id="term-log"></div>
-                <button class="btn-ui" id="btn-media" style="display:none; margin-top: 30px;" onclick="move(4)">Запустить поток</button>
-            </section>
-
-            <section class="stage" id="s4">
-                <div class="karaoke-shell">
-                    <div class="lyric-item">
-                        <div class="l-prev" id="prev-l"></div>
-                        <div class="l-active" id="curr-l">Ожидание аудио...</div>
-                        <div class="l-next" id="next-l"></div>
-                    </div>
-                    <audio id="core-audio" src="music.mp3" preload="auto"></audio>
-                    <div style="margin-top: 40px;">
-                        <button class="btn-ui" id="play-trigger" onclick="handleAudio()">Воспроизвести</button>
-                    </div>
-                </div>
-                <button class="btn-ui" onclick="move(5)" style="margin-top: 30px; border-color: var(--secondary); opacity: 0.8;">Финальный архив</button>
-            </section>
-
-            <section class="stage" id="s5">
-                <div class="reasons-box" id="grid-reasons"></div>
-            </section>
-        </main>
+<div class="container">
+    <div class="header">
+        <span class="header-left" id="status-line">✦ SYSTEM BOOT...</span>
+        <span class="header-right"><span onclick="location.reload()">⟳ REBOOT</span><span id="clock">00:00:00</span></span>
     </div>
 
-    <script>
-        const canvas = document.getElementById('bg-fx');
-        const ctx = canvas.getContext('2d');
-        let w, h, points = [];
+    <!-- ========== STAGE 1 – Заставка ========== -->
+    <section class="stage active" id="s1">
+        <p class="sub">Приватный доступ</p>
+        <h1>Тори ❤️ Костя</h1>
+        <p style="color:#aaa; margin: 10px 0 30px; font-size: 15px;">У нас есть разговор...</p>
+        <button class="btn" onclick="go(2)">Начать</button>
+    </section>
 
-        function setup() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-            points = [];
-            for(let i=0; i<80; i++) points.push({x:Math.random()*w, y:Math.random()*h, r:Math.random()*2, d:Math.random()*0.5+0.2});
+    <!-- ========== STAGE 2 – Вопрос "Узнать что?" ========== -->
+    <section class="stage" id="s2">
+        <p class="sub">Тори, я хотел у тебя кое-что спросить</p>
+        <div class="btn-group">
+            <button class="btn btn-green" onclick="go(3)">Узнать что?</button>
+            <button class="btn-run" id="runBtn" onmouseover="runAway()" style="position:static;">Пропустить</button>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 3 – Главный вопрос ========== -->
+    <section class="stage" id="s3">
+        <p class="sub">Вопрос</p>
+        <h1 style="font-size: clamp(1.6rem, 4vw, 2.4rem); -webkit-text-fill-color: #fff; background: none; margin-bottom: 30px;">
+            Ты считаешь меня своим <span style="color: var(--pink);">лучшим другом</span>?
+        </h1>
+        <div class="btn-group">
+            <button class="btn btn-green" onclick="go(4)">Да ❤️</button>
+            <button class="btn btn-pink" onclick="go(3b)">Нет</button>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 3b – Грустный кот ========== -->
+    <section class="stage" id="s3b">
+        <div class="cat-box">
+            <div class="cat-art">
+                /ᐠ｡‸｡ᐟ\<br>  |  |<br>  /  \
+            </div>
+            <p style="color: #ffb347;">Мяу... Подумай ещё раз 💔</p>
+            <p class="small">Я знаю, что на самом деле ты так не думаешь</p>
+            <button class="btn" style="margin-top: 20px; border-color: var(--gold);" onclick="go(4)">Сказать «Да» ❤️</button>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 4 – Весёлый кот ========== -->
+    <section class="stage" id="s4">
+        <div class="cat-box">
+            <div class="cat-art">
+                /ᐠ｡ꞈ｡ᐟ\<br>   |  |<br>  /  \
+            </div>
+            <p style="color: #2ecc71; font-size: 22px; font-weight: 700;">Я не сомневался! 🎉</p>
+            <p class="small">Тори + Костя = ❤️</p>
+            <button class="btn" style="margin-top: 20px;" onclick="go(5)">Дальше →</button>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 5 – Консоль ========== -->
+    <section class="stage" id="s5">
+        <div class="console-box" id="consoleOut">
+            <span class="dim">>_ Загрузка...</span>
+        </div>
+        <button class="btn" id="consoleNextBtn" style="display:none; margin-top: 24px;" onclick="go(6)">Продолжить →</button>
+    </section>
+
+    <!-- ========== STAGE 6 – Прогресс сердца ========== -->
+    <section class="stage" id="s6">
+        <div class="heart-progress-wrap">
+            <div class="heart-fill" id="heartIcon">🖤</div>
+            <div class="progress-bar-heart">
+                <div class="fill" id="heartFill"></div>
+            </div>
+            <div class="progress-label" id="heartPercent">0%</div>
+        </div>
+        <button class="btn" id="heartNextBtn" style="display:none; margin-top: 30px;" onclick="go(7)">❤️ Открыть</button>
+    </section>
+
+    <!-- ========== STAGE 7 – Финальный экран с сердечками ========== -->
+    <section class="stage" id="s7">
+        <div class="hearts-final">
+            <div class="big">❤️❤️❤️</div>
+            <h2>Тори ❤️ Костя</h2>
+            <p>Это от Кости для Тори. Самой лучшей, самой родной, самой важной.</p>
+            <p style="color: var(--pink); font-size: 18px; margin-top: 8px;">Ты — моя бро навсегда 💞</p>
+            <button class="btn" style="margin-top: 20px;" onclick="go(8)">🎵 Включить песню</button>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 8 – Караоке 1: music.mp3 ========== -->
+    <section class="stage" id="s8">
+        <div class="karaoke-wrap">
+            <div class="lyric-prev" id="l1prev"></div>
+            <div class="lyric-curr" id="l1curr">🎤 Нажми «Воспроизвести»</div>
+            <div class="lyric-next" id="l1next"></div>
+            <audio id="audio1" preload="auto"></audio>
+            <button class="btn-audio" id="playBtn1">▶ Воспроизвести</button>
+            <span class="skip-btn" onclick="go(9)">Пропустить →</span>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 9 – Караоке 2: music2.mp3 ========== -->
+    <section class="stage" id="s9">
+        <div class="karaoke-wrap">
+            <div class="lyric-prev" id="l2prev"></div>
+            <div class="lyric-curr" id="l2curr">🎤 Следующий трек...</div>
+            <div class="lyric-next" id="l2next"></div>
+            <audio id="audio2" preload="auto"></audio>
+            <button class="btn-audio" id="playBtn2">▶ Воспроизвести</button>
+            <span class="skip-btn" onclick="go(10)">Пропустить →</span>
+        </div>
+    </section>
+
+    <!-- ========== STAGE 10 – 100 слов ========== -->
+    <section class="stage" id="s10">
+        <p class="sub">Что Костя думает о Тори</p>
+        <div class="grid-100" id="grid100"></div>
+    </section>
+</div>
+
+<script>
+    // ============ ЗВЁЗДНЫЙ ФОН ============
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resizeStars() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        stars = Array.from({length: 100}, () => ({
+            x: Math.random() * W, y: Math.random() * H,
+            r: Math.random() * 1.5 + 0.3, s: Math.random() * 0.3 + 0.1
+        }));
+    }
+
+    function drawStars() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = 'rgba(142, 68, 173, 0.4)';
+        stars.forEach(st => {
+            ctx.beginPath();
+            ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+            ctx.fill();
+            st.y -= st.s;
+            if (st.y < -5) st.y = H + 5;
+        });
+        requestAnimationFrame(drawStars);
+    }
+    window.addEventListener('resize', resizeStars);
+    resizeStars();
+    drawStars();
+
+    // ============ ЧАСЫ / СТАТУС ============
+    setInterval(() => {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+        document.getElementById('status-line').textContent = `✦ SYSTEM OK · ${Math.floor(Math.random()*5+1)}% LOAD`;
+    }, 1000);
+
+    // ============ ПЕРЕКЛЮЧЕНИЕ СТЕЙДЖЕЙ ============
+    function go(id) {
+        document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+        const el = document.getElementById('s' + id);
+        if (el) el.classList.add('active');
+        if (id === 5) startConsole();
+        if (id === 6) startHeartProgress();
+        if (id === 8) setupKaraoke1();
+        if (id === 9) setupKaraoke2();
+        if (id === 10) render100Words();
+    }
+
+    // ============ RUN AWAY BUTTON ============
+    function runAway() {
+        const btn = document.getElementById('runBtn');
+        const rect = btn.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width - 20;
+        const maxY = window.innerHeight - rect.height - 20;
+        btn.style.position = 'fixed';
+        btn.style.left = Math.random() * maxX + 'px';
+        btn.style.top = Math.random() * maxY + 'px';
+        btn.style.zIndex = 999;
+        // Если слишком далеко — через 3 сек возвращаем
+        setTimeout(() => {
+            btn.style.position = 'static';
+        }, 4000);
+    }
+
+    // ============ STAGE 5 – КОНСОЛЬ ============
+    async function startConsole() {
+        const out = document.getElementById('consoleOut');
+        out.innerHTML = '';
+        const lines = [
+            { t: '<span class="dim">> Загрузка модуля дружбы...</span>', d: 200 },
+            { t: '<span class="dim">> Проверка связи Тори ↔ Костя...</span>', d: 180 },
+            { t: '<span class="pink">> Связь установлена. Сигнал: 100% ❤️</span>', d: 200 },
+            { t: '<span class="dim">> Квантовый анализ данных...</span>', d: 250 },
+            { t: '', d: 100 },
+            { t: '<span class="gold">Tori + Kostia = ?</span>', d: 300 },
+            { t: '<span class="dim">  1. best + friend</span>', d: 200 },
+            { t: '<span class="dim">  2. no friend</span>', d: 200 },
+            { t: '', d: 100 },
+            { t: '<span class="pink">> Введите номер: </span>', d: 400 },
+        ];
+        for (const l of lines) {
+            out.innerHTML += l.t + '<br>';
+            out.scrollTop = out.scrollHeight;
+            await sleep(l.d);
         }
+        // Имитация ввода
+        await sleep(600);
+        out.innerHTML += '<span class="gold">> 1</span><br>';
+        await sleep(300);
+        out.innerHTML += '<span class="pink">> 2? Серьёзно? Выберите номер 1.</span><br>';
+        await sleep(600);
+        out.innerHTML += '<span class="gold">> 1</span><br>';
+        await sleep(400);
+        out.innerHTML += '<span class="cyan" style="font-size: 18px;">> ТОРИ + КОСТЯ = ЛУЧШИЕ ДРУЗЬЯ ❤️</span><br>';
+        await sleep(500);
+        out.innerHTML += '<span class="dim">> Инициализация сердца...</span><br>';
+        out.scrollTop = out.scrollHeight;
+        document.getElementById('consoleNextBtn').style.display = 'inline-block';
+    }
 
-        function draw() {
-            ctx.clearRect(0,0,w,h);
-            ctx.fillStyle = 'rgba(142, 68, 173, 0.3)';
-            points.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-                ctx.fill();
-                p.y -= p.d;
-                if(p.y < 0) p.y = h;
-            });
-            requestAnimationFrame(draw);
+    // ============ STAGE 6 – ПРОГРЕСС СЕРДЦА ============
+    async function startHeartProgress() {
+        const heart = document.getElementById('heartIcon');
+        const fill = document.getElementById('heartFill');
+        const label = document.getElementById('heartPercent');
+        const nextBtn = document.getElementById('heartNextBtn');
+        heart.textContent = '🖤';
+        heart.classList.remove('full');
+        fill.style.width = '0%';
+        label.textContent = '0%';
+        nextBtn.style.display = 'none';
+
+        for (let pct = 0; pct <= 100; pct += 2) {
+            await sleep(40);
+            fill.style.width = pct + '%';
+            label.textContent = pct + '%';
+            if (pct >= 50) heart.textContent = '❤️';
+            if (pct >= 80) heart.style.filter = 'grayscale(0)';
         }
+        heart.classList.add('full');
+        heart.textContent = '❤️';
+        label.textContent = '100% ❤️';
+        await sleep(400);
+        nextBtn.style.display = 'inline-block';
+    }
 
-        window.addEventListener('resize', setup);
-        setup(); draw();
+    // ============ STAGE 8 – КАРАОКЕ 1 (music.mp3) ============
+    let k1Active = false;
 
-        setInterval(() => {
-            document.getElementById('os-clock').innerText = new Date().toLocaleTimeString();
-            document.getElementById('sys-status').innerText = `SYSTEM: OK // CPU_LOAD: ${Math.floor(Math.random()*5)+1}% // MEMORY: STABLE`;
-        }, 1000);
+    function setupKaraoke1() {
+        if (k1Active) return;
+        k1Active = true;
+        const audio = document.getElementById('audio1');
+        audio.src = 'music.mp3';
+        audio.load();
 
-        function move(id) {
-            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-            document.getElementById(`s${id}`).classList.add('active');
-            if(id === 3) startBoot();
-            if(id === 5) renderGrid();
-        }
-
-        function runAway() {
-            const b = document.getElementById('no-target');
-            b.style.position = 'fixed';
-            b.style.left = Math.random()*80 + 'vw';
-            b.style.top = Math.random()*80 + 'vh';
-        }
-
-        async function startBoot() {
-            const log = document.getElementById('term-log');
-            const lines = [
-                "> Инициализация защищенного канала...",
-                "> Проверка ключей шифрования...",
-                "> Соединение установлено.",
-                "> Загрузка объекта: TORI",
-                "> Анализ данных дружбы...",
-                "> 100% данных обработано.",
-                " ",
-                "   010101      010101",
-                " 0101010101  0101010101",
-                "010101010101010101010101",
-                " 0101010101010101010101",
-                "  0101010101010101010",
-                "    01010101010101",
-                "      0101010101",
-                "        010101",
-                "          01",
-                " ",
-                "> СИСТЕМА: Ты самый важный человек.",
-                "> Костя передает: Ты пахнешь цветами."
-            ];
-            for(let l of lines) {
-                log.innerText += l + "\n";
-                log.scrollTop = log.scrollHeight;
-                await new Promise(r => setTimeout(r, 100));
-            }
-            document.getElementById('btn-media').style.display = 'inline-block';
-        }
-
-        const audio = document.getElementById('core-audio');
-        const syncMap = [
-            {t: 0, s: "ЗАПУСК ПЛЕЕРА..."},
-            {t: 2.1, s: "Ну а ты пахнешь цветами..."},
-            {t: 6.2, s: "Самыми вкусными травами..."},
-            {t: 10.4, s: "Самыми яркими красками..."},
-            {t: 14.6, s: "Как глоток пива «Дон»..."},
-            {t: 19.0, s: "Твой толер выше, чем у других..."},
-            {t: 24.5, s: "На двоих алкоголя хватило бы..."},
-            {t: 31.2, s: "Я твой личный маньяк..."},
-            {t: 38.8, s: "Ищу тебя по твоим следам..."},
-            {t: 45.0, s: "ВЕДЬ ТЫ ПАХНЕШЬ ЦВЕТАМИ! ❤️"}
+        const sync = [
+            { t: 0, s: '🎵 Запуск...' },
+            { t: 1.5, s: 'Ну а ты пахнешь цветами...' },
+            { t: 5.5, s: 'Самыми вкусными травами...' },
+            { t: 9.5, s: 'Самыми яркими красками...' },
+            { t: 14.0, s: 'Как глоток пива «Дон»...' },
+            { t: 18.5, s: 'Твой толер выше, чем у других...' },
+            { t: 24.0, s: 'На двоих алкоголя хватило бы...' },
+            { t: 30.5, s: 'Я твой личный маньяк...' },
+            { t: 38.0, s: 'Ищу тебя по твоим следам...' },
+            { t: 44.5, s: 'ВЕДЬ ТЫ ПАХНЕШЬ ЦВЕТАМИ! ❤️' },
         ];
 
-        function handleAudio() {
-            const btn = document.getElementById('play-trigger');
-            if(audio.paused) { audio.play(); btn.innerText = "Пауза"; }
-            else { audio.pause(); btn.innerText = "Играть"; }
-        }
+        const prev = document.getElementById('l1prev');
+        const curr = document.getElementById('l1curr');
+        const next = document.getElementById('l1next');
+        const playBtn = document.getElementById('playBtn1');
 
         audio.ontimeupdate = () => {
-            const time = audio.currentTime;
-            const idx = syncMap.findIndex((item, i) => time >= item.t && (!syncMap[i+1] || time < syncMap[i+1].t));
-            if(idx !== -1) {
-                document.getElementById('prev-l').innerText = syncMap[idx-1] ? syncMap[idx-1].s : "";
-                document.getElementById('curr-l').innerText = syncMap[idx].s;
-                document.getElementById('next-l').innerText = syncMap[idx+1] ? syncMap[idx+1].s : "";
+            const t = audio.currentTime;
+            let idx = -1;
+            for (let i = sync.length - 1; i >= 0; i--) {
+                if (t >= sync[i].t) { idx = i; break; }
+            }
+            if (idx >= 0) {
+                prev.textContent = sync[idx - 1] ? sync[idx - 1].s : '';
+                curr.textContent = sync[idx].s;
+                next.textContent = sync[idx + 1] ? sync[idx + 1].s : '';
             }
         };
 
-        function renderGrid() {
-            const box = document.getElementById('grid-reasons');
-            if(box.children.length > 0) return;
-            const items = [
-                "Ты всегда понимаешь мой юмор", "У тебя самая искренняя улыбка", "Ты умеешь поддержать в нужную секунду",
-                "С тобой любая прогулка — приключение", "Твои советы всегда в точку", "Ты очень сильная и мудрая",
-                "Твой вкус — это стиль", "Ты умеешь слушать так, как никто другой", "Ты настоящая и это редкость",
-                "С тобой уютно даже когда мы молчим", "Ты вдохновляешь меня расти", "Ты не боишься быть собой",
-                "Ты — мой самый надежный человек", "Ты всегда честна со мной", "Твоя доброта меняет мир",
-                "Ты ценишь дружбу больше всего", "Ты — человек-праздник", "Ты заслуживаешь всего самого лучшего",
-                "Ты — луч света в серых буднях", "Ты умеешь находить выход из любой ситуации", "Ты очень талантливая",
-                "Твоя энергия заряжает", "Ты — мой safe place", "С тобой я могу быть любым",
-                "Ты никогда не предашь", "Ты умеешь прощать", "Ты видишь красоту в мелочах",
-                "Ты — уникальная личность", "Твой голос успокаивает", "Ты умеешь удивлять",
-                "Ты — мое самое большое открытие", "Ты — лучший друг на свете", "Ты просто космос",
-                "Ты умеешь сопереживать", "Ты не такая как все", "Ты — душа",
-                "Ты всегда найдешь время", "Ты мотивируешь меня не сдаваться", "Ты — моя опора",
-                "Ты заставляешь меня улыбаться", "Ты очень красивая", "Ты — легенда",
-                "Ты — золото", "Ты — редкий бриллиант", "Ты — моя бро",
-                "Ты умеешь зажигать", "Ты — огонь", "Ты — просто вау",
-                "Ты — невероятная Тори", "Ты — лучшая", "Ты — мастер комплиментов",
-                "Ты — мой компас", "Ты — подарок судьбы", "Ты — часть моей жизни",
-                "Ты понимаешь без слов", "Ты — мой антидепрессант", "Ты — яркая вспышка",
-                "Ты — надежность", "Ты — бесконечность", "Ты — мечта",
-                "Ты — мастер на все руки", "Ты — моя гордость", "Ты — радость",
-                "Ты — тот, кому я верю", "Ты — моя сила", "Ты — счастье",
-                "Ты — неповторимая", "Ты — стильная", "Ты — мудрая",
-                "Ты — глубокая", "Ты — мой мир", "Ты — успех",
-                "Ты — гармония", "Ты — характер", "Ты — доброта",
-                "Ты — честность", "Ты — верность", "Ты — луч",
-                "Ты — мечта", "Ты — Космос", "Ты — Моя Тори", "Навсегда.",
-                "Твоя искренность подкупает", "Ты — мой личный герой", "Ты ценишь моменты",
-                "Ты — человек слова", "Ты — сама нежность", "Ты — взрыв эмоций",
-                "Ты умеешь верить в чудо", "Ты — мастер делать приятно", "Ты — чудо",
-                "Ты — моя причина творить", "Ты — идеал подруги", "Ты — светлячок",
-                "Ты — моя лучшая глава", "Ты — бесконечный позитив", "Ты — мой дзен",
-                "Ты — совершенство", "Просто спасибо, что ты есть.", "Люблю нашу дружбу."
-            ];
-            items.forEach((text, i) => {
-                const card = document.createElement('div');
-                card.className = 'reason-card';
-                card.innerHTML = `<b>${(i+1).toString().padStart(2,'0')}</b> ${text}`;
-                box.appendChild(card);
-            });
-        }
-    </script>
+        audio.onended = () => {
+            playBtn.textContent = '✅ Завершено';
+            // Авто-переход
+            setTimeout(() => go(9), 1200);
+        };
+
+        playBtn.onclick = () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸ Пауза';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶ Продолжить';
+            }
+        };
+    }
+
+    // ============ STAGE 9 – КАРАОКЕ 2 (music2.mp3) ============
+    let k2Active = false;
+
+    function setupKaraoke2() {
+        if (k2Active) return;
+        k2Active = true;
+        const audio = document.getElementById('audio2');
+        audio.src = 'music2.mp3';
+        audio.load();
+
+        const sync = [
+            { t: 0, s: '🎵 Загрузка коктейля...' },
+            { t: 2.0, s: 'ЛСП — Коктейль' },
+            { t: 5.0, s: 'Ты мой коктейль...' },
+            { t: 9.0, s: 'Смесь из слёз и мармелада...' },
+            { t: 14.0, s: 'Я выпью тебя до дна...' },
+            { t: 19.0, s: 'Ты моя сладкая отрава...' },
+            { t: 24.5, s: 'Ты пахнешь цветами и дождём...' },
+            { t: 30.0, s: 'Мы разобьём этот стакан вдвоём...' },
+            { t: 36.0, s: 'ЛСП — это наш напиток...' },
+            { t: 42.0, s: 'Коктейль любви, коктейль ошибок...' },
+            { t: 48.0, s: 'Тори ❤️ Костя — навсегда!' },
+        ];
+
+        const prev = document.getElementById('l2prev');
+        const curr = document.getElementById('l2curr');
+        const next = document.getElementById('l2next');
+        const playBtn = document.getElementById('playBtn2');
+
+        audio.ontimeupdate = () => {
+            const t = audio.currentTime;
+            let idx = -1;
+            for (let i = sync.length - 1; i >= 0; i--) {
+                if (t >= sync[i].t) { idx = i; break; }
+            }
+            if (idx >= 0) {
+                prev.textContent = sync[idx - 1] ? sync[idx - 1].s : '';
+                curr.textContent = sync[idx].s;
+                next.textContent = sync[idx + 1] ? sync[idx + 1].s : '';
+            }
+        };
+
+        audio.onended = () => {
+            playBtn.textContent = '✅ Завершено';
+            setTimeout(() => go(10), 1200);
+        };
+
+        playBtn.onclick = () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸ Пауза';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶ Продолжить';
+            }
+        };
+    }
+
+    // ============ STAGE 10 – 100 СЛОВ ============
+    function render100Words() {
+        const grid = document.getElementById('grid100');
+        if (grid.children.length > 0) return;
+
+        const words = [
+            "Ты невероятная", "Ты самая добрая", "Твоя улыбка ослепляет", "Ты умная", "Ты смешная",
+            "Ты меня понимаешь", "Ты всегда поддержишь", "Ты честная", "Ты искренняя", "Ты настоящая",
+            "Ты красивая", "Ты стильная", "Ты талантливая", "Ты мудрая", "Ты сильная",
+            "Ты независимая", "Ты вдохновляющая", "Ты уникальная", "Ты заботливая", "Ты чуткая",
+            "Ты верная", "Ты преданная", "Ты надёжная", "Ты ответственная", "Ты целеустремлённая",
+            "Ты энергичная", "Ты жизнерадостная", "Ты позитивная", "Ты солнечная", "Ты тёплая",
+            "Ты уютная", "Ты нежная", "Ты ласковая", "Ты загадочная", "Ты интересная",
+            "Ты разносторонняя", "Ты креативная", "Ты творческая", "Ты артистичная", "Ты яркая",
+            "Ты особенная", "Ты редкая", "Ты бесценная", "Ты важная", "Ты нужная",
+            "Ты любимая", "Ты родная", "Ты близкая", "Ты моя бро", "Ты моя семья",
+            "Ты мой человек", "Ты моя опора", "Ты мой тыл", "Ты мой праздник", "Ты моя радость",
+            "Ты мой смех", "Ты моя улыбка", "Ты моё тепло", "Ты мой свет", "Ты моя звезда",
+            "Ты моя вселенная", "Ты мой космос", "Ты моя галактика", "Ты моя планета", "Ты мой мир",
+            "Ты мой океан", "Ты моя стихия", "Ты моя музыка", "Ты моя песня", "Ты мой танец",
+            "Ты мой поток", "Ты моя волна", "Ты мой ветер", "Ты моя весна", "Ты мой рассвет",
+            "Ты мой закат", "Ты моё небо", "Ты моя земля", "Ты моя жизнь", "Ты моё сердце",
+            "Ты моя душа", "Ты моя мечта", "Ты моё вдохновение", "Ты моя муза", "Ты моя сила",
+            "Ты моя слабость", "Ты моё счастье", "Ты моя гордость", "Ты моё сокровище", "Ты моё золото",
+            "Ты бриллиант", "Ты драгоценность", "Ты бесконечность", "Ты совершенство", "Ты — моя Тори",
+            "Я ценю тебя", "Я дорожу тобой", "Я верю в тебя", "Я горжусь тобой", "Я люблю нашу дружбу",
+            "Спасибо, что ты есть", "Ты — лучший человек", "Ты — моё всё ❤️", "Навсегда. Костя."
+        ];
+
+        words.forEach((w, i) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<span class="num">${String(i+1).padStart(2, '0')}</span>${w}`;
+            grid.appendChild(card);
+        });
+    }
+
+    // ============ SLEEP ============
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
 </body>
 </html>
-
