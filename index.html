@@ -1,434 +1,335 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Посылка для Тори | Самолётик и письмо</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-    }
-    body {
-      min-height: 100vh;
-      background: linear-gradient(145deg, #c1e4ff 0%, #f5deff 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
-      overflow: hidden;
-      position: relative;
-    }
-    .choice-screen {
-      position: absolute;
-      z-index: 20;
-      background: rgba(255,240,245,0.96);
-      backdrop-filter: blur(20px);
-      border-radius: 64px;
-      padding: 45px 35px;
-      text-align: center;
-      max-width: 450px;
-      width: 85%;
-      box-shadow: 0 30px 50px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
-      border: 1px solid #ffbbdd;
-    }
-    .choice-screen.hide {
-      transform: scale(0.8);
-      opacity: 0;
-      pointer-events: none;
-    }
-    .choice-screen h2 {
-      font-size: 2rem;
-      color: #a1537a;
-      margin-bottom: 20px;
-    }
-    .choice-screen p {
-      font-size: 1.2rem;
-      margin-bottom: 35px;
-      color: #5d3a5c;
-    }
-    .btn-group {
-      display: flex;
-      gap: 25px;
-      justify-content: center;
-    }
-    .btn {
-      border: none;
-      padding: 12px 32px;
-      border-radius: 60px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-      background: #eeddff;
-      color: #6a3e62;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .btn-yes {
-      background: #ffa5cf;
-      color: white;
-    }
-    .btn-yes:hover {
-      transform: scale(1.05);
-      background: #ff7bb5;
-    }
-    .btn-no:hover {
-      background: #d5bddf;
-      transform: translateY(-2px);
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    .message-card {
-      position: absolute;
-      z-index: 15;
-      background: #fffaf7;
-      border-radius: 56px;
-      max-width: 500px;
-      width: 85%;
-      padding: 35px 30px;
-      text-align: center;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-      opacity: 0;
-      transform: scale(0.9);
-      transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1);
-      pointer-events: none;
-      backdrop-filter: blur(4px);
-      border: 1px solid #ffcce6;
-    }
-    .message-card.show {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
-    }
-    .message-card h3 {
-      font-size: 2rem;
-      color: #bc6f9c;
-      margin-bottom: 20px;
-    }
-    .message-card p {
-      font-size: 1.18rem;
-      line-height: 1.5;
-      color: #392c3c;
-    }
-    .signature {
-      margin-top: 25px;
-      font-style: italic;
-      color: #b66a95;
-      border-top: 1px solid #ffe0ed;
-      padding-top: 18px;
-    }
-    .reset-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 30;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(10px);
-      border: none;
-      border-radius: 60px;
-      padding: 10px 20px;
-      color: white;
-      cursor: pointer;
-      font-family: monospace;
-      pointer-events: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Открытка для Тори | Конверт и письмо</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fdeef9 0%, #e0d0ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Inter', 'Georgia', serif;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Звёздная анимация фона */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            background-color: #fff9e6;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle 2.5s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1);}
+            100% { opacity: 1; transform: scale(1.3);}
+        }
+
+        /* Основной контейнер */
+        .card-container {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Конверт */
+        .envelope {
+            width: 100%;
+            max-width: 400px;
+            background: #fdebd0;
+            border-radius: 26px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 1px 0 #fff9;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .envelope:hover {
+            transform: scale(1.01);
+        }
+        .envelope.hidden {
+            display: none;
+        }
+        .envelope-inner {
+            padding: 45px 35px 55px;
+            text-align: center;
+            background: linear-gradient(145deg, #fff2e8, #ffe2d4);
+            border-radius: 26px;
+            border: 1px solid #ffccbb;
+        }
+        .envelope-icon {
+            font-size: 80px;
+            display: inline-block;
+            animation: slightBounce 1.2s infinite alternate;
+        }
+        @keyframes slightBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+        .envelope h3 {
+            font-size: 1.8rem;
+            color: #aa6f8c;
+            margin: 20px 0 12px;
+        }
+        .envelope p {
+            color: #9f7e92;
+            font-size: 1rem;
+        }
+        .click-hint {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #cc99b5;
+            letter-spacing: 2px;
+        }
+
+        /* Письмо (изначально скрыто) */
+        .letter {
+            background: #fffef7;
+            background-image: radial-gradient(circle at 10% 30%, #fff1e6 1.5%, transparent 1.8%);
+            background-size: 24px 24px;
+            border-radius: 42px;
+            padding: 40px 32px;
+            box-shadow: 0 30px 55px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,200,0.8);
+            width: 100%;
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            border: 1px solid #ffe2d0;
+        }
+        .letter.show {
+            display: block;
+            animation: letterAppear 0.6s ease forwards;
+        }
+        @keyframes letterAppear {
+            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .letter h2 {
+            font-size: 2rem;
+            color: #bf7f9e;
+            text-align: center;
+            margin-bottom: 25px;
+            font-family: 'Georgia', serif;
+        }
+        .letter p {
+            font-size: 1.2rem;
+            line-height: 1.55;
+            color: #41303c;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            margin-bottom: 18px;
+        }
+        .letter p.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: right;
+            font-style: italic;
+            color: #bc85a4;
+            font-size: 1.1rem;
+            border-top: 1px dashed #ffcfdf;
+            padding-top: 20px;
+        }
+        .reset-btn {
+            margin-top: 35px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 60px;
+            padding: 10px 24px;
+            color: #5a3e56;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .reset-btn:hover {
+            background: #ecc9de;
+            color: #472f3f;
+            transform: scale(1.02);
+        }
+        footer {
+            position: fixed;
+            bottom: 12px;
+            font-size: 11px;
+            color: #b1809b;
+            z-index: 20;
+            background: rgba(255,245,245,0.5);
+            padding: 5px 12px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+        }
+        @media (max-width: 550px) {
+            .envelope-inner { padding: 30px 20px 40px; }
+            .letter { padding: 30px 20px; }
+            .letter p { font-size: 1rem; }
+            .letter h2 { font-size: 1.7rem; }
+        }
+    </style>
 </head>
 <body>
-<div class="choice-screen" id="choiceScreen">
-  <h2>📦 Посылка для Тори</h2>
-  <p>Тебе пришло необычное письмо... Хочешь посмотреть?</p>
-  <div class="btn-group">
-    <button class="btn btn-yes" id="watchBtn">Да, посмотреть ✨</button>
-    <button class="btn btn-no" id="cancelBtn">Нет, не сейчас</button>
-  </div>
+<div class="stars" id="starsContainer"></div>
+<div class="card-container">
+    <!-- Конверт -->
+    <div class="envelope" id="envelope">
+        <div class="envelope-inner">
+            <div class="envelope-icon">✉️💌</div>
+            <h3>Тебе письмо, Тори!</h3>
+            <p>Нажми, чтобы открыть ➤</p>
+            <div class="click-hint">🌸 от Кости</div>
+        </div>
+    </div>
+
+    <!-- Письмо + поздравление -->
+    <div class="letter" id="letter">
+        <h2>💌 Тори, с любовью!</h2>
+        <p id="line1">✨ Желаю тебе незабываемого отдыха в Италии! ✨</p>
+        <p id="line2">🍝 Пусть каждый день радует солнцем, вкусной пастой и ароматным эспрессо.</p>
+        <p id="line3">🌊 Наслаждайся морем, атмосферой и каждым моментом — ты это заслуживаешь.</p>
+        <p id="line4">❤️ Пусть время пролетит счастливо, а воспоминания согревают долго-долго.</p>
+        <p id="line5">😊 И помни: здесь тебя ждут и скучают. Отдыхай от души!</p>
+        <div class="signature">Твой друг Костя 💕</div>
+    </div>
+    <button class="reset-btn" id="resetBtn">✉️ Открыть снова</button>
 </div>
-<canvas id="sceneCanvas"></canvas>
-<div class="message-card" id="letterCard">
-  <h3>💌 Тори, тебе письмо!</h3>
-  <p>Мы знакомы недавно, но с тобой так легко и уютно. Твой стиль, улыбка, искренность — это что-то особенное. Спасибо за каждый разговор, за смех и твою душу. Ты важна для меня ❤️</p>
-  <div class="signature">Твой друг Костя ✨</div>
-</div>
-<button class="reset-btn" id="resetAllBtn">✈️ Прожить заново</button>
+<footer>✧ просто маленькое волшебство для тебя ✧</footer>
 
 <script>
-  (function(){
-    const canvas = document.getElementById('sceneCanvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let animationId = null;
-    let animationActive = false;
-    let step = 0; // 0: ожидание, 1: полёт самолёта, 2: дом + руки открывают письмо
-    let planeX = -100, planeY = 150;
-    let letterRevealed = false;
-    let handsProgress = 0; // 0..1 открытие письма
-    let showLetterCard = false;
-
-    const choiceScreen = document.getElementById('choiceScreen');
-    const letterCard = document.getElementById('letterCard');
-    const watchBtn = document.getElementById('watchBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const resetBtn = document.getElementById('resetAllBtn');
-
-    function resizeCanvas() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      drawStatic(); // если анимация не идёт, рисуем статику
+    // создаём фон со звёздами
+    const starsContainer = document.getElementById('starsContainer');
+    for (let i = 0; i < 180; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        const size = Math.random() * 3 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 5 + 's';
+        star.style.animationDuration = Math.random() * 3 + 2 + 's';
+        starsContainer.appendChild(star);
     }
 
-    function drawStatic() {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, width, height);
-      // небо градиент
-      const grad = ctx.createLinearGradient(0, 0, 0, height);
-      grad.addColorStop(0, '#c4e6ff');
-      grad.addColorStop(1, '#f0d7ff');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-      // облака
-      drawCloud(100, 80, 60);
-      drawCloud(width-150, 120, 70);
-      drawCloud(width-300, 200, 50);
-      // дом (всегда виден, но слегка)
-      drawHouse(width*0.7, height*0.6);
+    // Получаем элементы
+    const envelope = document.getElementById('envelope');
+    const letterDiv = document.getElementById('letter');
+    const resetBtn = document.getElementById('resetBtn');
+    
+    // Текстовые строки
+    const lines = [
+        document.getElementById('line1'),
+        document.getElementById('line2'),
+        document.getElementById('line3'),
+        document.getElementById('line4'),
+        document.getElementById('line5')
+    ];
+
+    let animationInProgress = false;
+
+    // Функция очистки и сброса
+    function resetCard() {
+        if (animationInProgress) return;
+        // Скрываем письмо, показываем конверт
+        letterDiv.classList.remove('show');
+        envelope.classList.remove('hidden');
+        // Сбрасываем классы у строк
+        lines.forEach(line => {
+            line.classList.remove('revealed');
+        });
+        // Убираем возможные лишние стили
+        letterDiv.style.display = 'none';
+        setTimeout(() => {
+            letterDiv.style.display = '';
+        }, 10);
+        animationInProgress = false;
     }
 
-    function drawCloud(x, y, size) {
-      ctx.fillStyle = 'rgba(255,255,245,0.8)';
-      ctx.beginPath();
-      ctx.arc(x, y, size*0.5, 0, Math.PI*2);
-      ctx.arc(x+size*0.4, y-size*0.2, size*0.45, 0, Math.PI*2);
-      ctx.arc(x-size*0.3, y-size*0.1, size*0.4, 0, Math.PI*2);
-      ctx.fill();
+    // Функция анимации появления строк
+    function revealLinesSequentially() {
+        let delay = 0;
+        lines.forEach((line, index) => {
+            setTimeout(() => {
+                if (line) line.classList.add('revealed');
+            }, delay);
+            delay += 380; // плавно, строка за строкой
+        });
     }
 
-    function drawHouse(x, y) {
-      // основание дома
-      ctx.fillStyle = '#e8c690';
-      ctx.fillRect(x-55, y-50, 110, 100);
-      ctx.fillStyle = '#c2814a';
-      ctx.fillRect(x-50, y-40, 100, 90);
-      // крыша
-      ctx.beginPath();
-      ctx.moveTo(x-65, y-50);
-      ctx.lineTo(x, y-110);
-      ctx.lineTo(x+65, y-50);
-      ctx.fillStyle = '#b5533f';
-      ctx.fill();
-      // окно
-      ctx.fillStyle = '#ffe9b0';
-      ctx.fillRect(x-20, y-35, 40, 40);
-      ctx.fillStyle = '#7d5d42';
-      ctx.fillRect(x-5, y-15, 10, 20);
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.rect(x-15, y-30, 10, 10);
-      ctx.rect(x+5, y-30, 10, 10);
-      ctx.fill();
-      ctx.fillStyle = '#a55233';
-      ctx.fillRect(x-25, y-20, 5, 30);
-      ctx.fillRect(x+20, y-20, 5, 30);
+    // Открытие конверта и показ письма
+    function openEnvelope() {
+        if (animationInProgress) return;
+        animationInProgress = true;
+        
+        // прячем конверт с небольшой задержкой (эффект исчезновения)
+        envelope.style.transition = 'opacity 0.3s ease, transform 0.3s';
+        envelope.style.opacity = '0';
+        envelope.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+            envelope.classList.add('hidden');
+            envelope.style.opacity = '';
+            envelope.style.transform = '';
+            // Показываем письмо
+            letterDiv.style.display = 'block';
+            setTimeout(() => {
+                letterDiv.classList.add('show');
+                // после появления письма запускаем построчное появление текста
+                revealLinesSequentially();
+            }, 80);
+        }, 280);
     }
 
-    function drawPlane(x, y) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(Math.sin(Date.now()*0.008)*0.1);
-      ctx.fillStyle = '#f7e4e0';
-      ctx.beginPath();
-      ctx.moveTo(0, -10);
-      ctx.lineTo(25, 0);
-      ctx.lineTo(0, 10);
-      ctx.lineTo(-10, 5);
-      ctx.lineTo(-20, 0);
-      ctx.lineTo(-10, -5);
-      ctx.fill();
-      ctx.fillStyle = '#eebbcb';
-      ctx.beginPath();
-      ctx.moveTo(5, -3);
-      ctx.lineTo(20, 0);
-      ctx.lineTo(5, 3);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawHands(progress) {
-      // progress 0..1, руки подлетают и раскрывают конверт
-      let leftX = width*0.5 - 90;
-      let rightX = width*0.5 + 40;
-      let baseY = height*0.65;
-      let offsetY = -20 * (1-progress);
-      // левая рука
-      ctx.fillStyle = '#f9cfb0';
-      ctx.beginPath();
-      ctx.ellipse(leftX + 10, baseY + offsetY + 10, 25, 30, -0.3, 0, Math.PI*2);
-      ctx.fill();
-      for(let i=0;i<5;i++) {
-        ctx.beginPath();
-        ctx.moveTo(leftX + 5 + i*5, baseY + offsetY -5);
-        ctx.lineTo(leftX + i*4, baseY + offsetY -20);
-        ctx.lineTo(leftX + 10 + i*5, baseY + offsetY -8);
-        ctx.fillStyle = '#f5c8a5';
-        ctx.fill();
-      }
-      // правая рука
-      ctx.beginPath();
-      ctx.ellipse(rightX + 5, baseY + offsetY + 5, 28, 32, 0.2, 0, Math.PI*2);
-      ctx.fill();
-      for(let i=0;i<5;i++) {
-        ctx.beginPath();
-        ctx.moveTo(rightX + 2 + i*5, baseY + offsetY -2);
-        ctx.lineTo(rightX + i*5 -5, baseY + offsetY -20);
-        ctx.lineTo(rightX + 8 + i*5, baseY + offsetY -5);
-        ctx.fill();
-      }
-      // конверт между рук
-      let envProgress = Math.min(1, progress*1.2);
-      let envScale = 0.5 + envProgress*0.5;
-      ctx.save();
-      ctx.translate(width*0.5, baseY + offsetY -5);
-      ctx.scale(envScale, envScale);
-      ctx.fillStyle = '#fff2e0';
-      ctx.fillRect(-40, -30, 80, 60);
-      ctx.fillStyle = '#e0aa7c';
-      ctx.fillRect(-30, -20, 60, 40);
-      ctx.beginPath();
-      ctx.moveTo(-30, -20);
-      ctx.lineTo(0, -5);
-      ctx.lineTo(30, -20);
-      ctx.strokeStyle = '#cc8b5e';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fillStyle = '#f3cca3';
-      ctx.fillRect(-15, -5, 30, 15);
-      ctx.restore();
-    }
-
-    function drawScene() {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, width, height);
-      // небо
-      const grad = ctx.createLinearGradient(0, 0, 0, height);
-      grad.addColorStop(0, '#bddbff');
-      grad.addColorStop(1, '#f7e4ff');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-      drawCloud(100, 70, 65);
-      drawCloud(width-180, 110, 75);
-      drawCloud(width-400, 180, 55);
-      // дом
-      let houseX = width*0.7;
-      let houseY = height*0.6;
-      drawHouse(houseX, houseY);
-      
-      if (animationActive) {
-        // полёт самолёта
-        if (step === 1 && planeX < width+150) {
-          planeX += 3.2;
-          planeY = 150 + Math.sin(planeX*0.02)*20;
-          drawPlane(planeX, planeY);
-        } else if (step === 1 && planeX >= width+50) {
-          step = 2;
-          handsProgress = 0;
-        }
-        if (step === 2) {
-          // самолёт уже улетел, рисуем руки и открытие письма
-          if (handsProgress < 1) {
-            handsProgress += 0.02;
-            if (handsProgress >= 1) {
-              // показать карточку письма
-              setTimeout(() => {
-                letterCard.classList.add('show');
-              }, 400);
-            }
-          }
-          drawHands(handsProgress);
-          // дорисуем дымок от самолёта
-        }
-        if (step === 2 && handsProgress >= 1) {
-          // продолжаем показывать руки с письмом
-          drawHands(1);
-        }
-      } else {
-        // статика без анимации
-        drawPlane(width*0.2, 120);
-      }
-      // солнце
-      ctx.beginPath();
-      ctx.arc(70, 70, 40, 0, Math.PI*2);
-      ctx.fillStyle = '#fffac2';
-      ctx.fill();
-    }
-
-    function startAnimation() {
-      if (animationId) cancelAnimationFrame(animationId);
-      animationActive = true;
-      step = 1;
-      planeX = -80;
-      planeY = 150;
-      handsProgress = 0;
-      letterCard.classList.remove('show');
-      showLetterCard = false;
-      function animate() {
-        drawScene();
-        if (step === 2 && handsProgress >= 1) {
-          // анимация завершена, но продолжаем рисовать
-          if (animationId) cancelAnimationFrame(animationId);
-          animationActive = false;
-          drawScene();
-          return;
-        }
-        animationId = requestAnimationFrame(animate);
-      }
-      animate();
-    }
-
-    function resetEverything() {
-      if (animationId) cancelAnimationFrame(animationId);
-      animationActive = false;
-      step = 0;
-      planeX = -100;
-      handsProgress = 0;
-      letterCard.classList.remove('show');
-      choiceScreen.classList.remove('hide');
-      drawScene();
-    }
-
-    watchBtn.addEventListener('click', () => {
-      choiceScreen.classList.add('hide');
-      setTimeout(() => {
-        startAnimation();
-      }, 400);
-    });
-    cancelBtn.addEventListener('click', () => {
-      choiceScreen.classList.add('hide');
-      setTimeout(() => {
-        letterCard.classList.add('show');
-        letterCard.querySelector('p').innerHTML = 'Ничего страшного, письмо подождёт. Ты всё равно важна 💕';
-      }, 300);
-    });
+    // Обработчик клика по конверту
+    envelope.addEventListener('click', openEnvelope);
+    
+    // Сброс: возвращаем конверт, скрываем письмо, очищаем строки
     resetBtn.addEventListener('click', () => {
-      resetEverything();
+        if (animationInProgress) return;
+        // Останавливаем возможные таймеры строк
+        lines.forEach(line => {
+            line.classList.remove('revealed');
+        });
+        // Сброс внешнего вида
+        letterDiv.classList.remove('show');
+        setTimeout(() => {
+            letterDiv.style.display = 'none';
+            envelope.classList.remove('hidden');
+            envelope.style.opacity = '1';
+            envelope.style.transform = '';
+            animationInProgress = false;
+        }, 200);
     });
-
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      drawScene();
-    });
-    resizeCanvas();
-    drawScene();
-  })();
 </script>
 </body>
 </html>
