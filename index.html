@@ -1,803 +1,640 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>БРО? ЗАВИСИМОСТЬ ВОПРОСУ | ULTRA FULLSCREEN</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ты для меня — целый мир</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* для плавности, но текст можно копировать если нужно — уберу позже */
+        }
 
-    body {
-      background: radial-gradient(circle at 20% 30%, #000000, #0a0515);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
-      overflow: hidden;
-      position: relative;
-    }
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at 30% 40%, #0f0c1f, #02010a);
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Playfair Display', serif;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: #f5f0ff;
+        }
 
-    canvas#galaxy {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
+        /* Эффект звёзд */
+        canvas#starryCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    .fullscreen-btn {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      z-index: 999;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid #ff44cc;
-      color: #ffaaff;
-      padding: 12px 20px;
-      border-radius: 60px;
-      font-weight: bold;
-      cursor: pointer;
-      font-family: monospace;
-      transition: 0.2s;
-    }
-    .fullscreen-btn:hover {
-      background: #ff44cc;
-      color: white;
-      transform: scale(1.05);
-    }
+        /* Мягкий шум для атмосферы */
+        .soft-noise {
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
 
-    .container {
-      position: relative;
-      z-index: 10;
-      width: 96vw;
-      height: 92vh;
-      max-width: 1500px;
-      background: rgba(8, 6, 18, 0.88);
-      backdrop-filter: blur(48px) saturate(200%);
-      border-radius: 56px;
-      border: 2px solid rgba(255, 80, 160, 0.9);
-      box-shadow: 0 0 60px rgba(255, 0, 150, 0.4), inset 0 1px 1px rgba(255,255,255,0.1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+        /* Основной контейнер — стеклянный, воздушный */
+        .glass-container {
+            position: relative;
+            z-index: 10;
+            width: 94vw;
+            max-width: 1300px;
+            height: 90vh;
+            max-height: 880px;
+            background: rgba(20, 15, 35, 0.6);
+            backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 56px;
+            border: 1px solid rgba(255, 180, 220, 0.5);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255,255,255,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
 
-    .top {
-      padding: 18px 28px;
-      display: flex;
-      justify-content: space-between;
-      font-family: 'Courier New', monospace;
-      font-weight: bold;
-      background: rgba(0,0,0,0.5);
-      border-bottom: 1px solid rgba(255,100,180,0.7);
-      color: #ffecb3;
-      font-size: 14px;
-      letter-spacing: 1.5px;
-    }
-    .top span:first-child {
-      color: #ff88dd;
-      text-shadow: 0 0 6px #ff44aa;
-    }
-    .top span:last-child span {
-      margin-left: 25px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .top span:last-child span:hover {
-      color: #ff66cc;
-      text-shadow: 0 0 8px #ff55bb;
-    }
+        /* Шапка */
+        .gentle-header {
+            padding: 18px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            letter-spacing: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 200, 230, 0.3);
+            color: #e0c0ff;
+        }
+        .gentle-header span:first-child {
+            font-weight: 500;
+            text-shadow: 0 0 6px #d9a7ff;
+        }
+        .gentle-header span:last-child {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .gentle-header span:last-child:hover {
+            color: #ffb7e8;
+            text-shadow: 0 0 10px #ff88cc;
+        }
 
-    .stage {
-      flex: 1;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
-      overflow-y: auto;
-      animation: glowEnter 0.5s ease;
-    }
-    .stage.active {
-      display: flex;
-    }
-    @keyframes glowEnter {
-      0% { opacity: 0; transform: scale(0.97); filter: blur(6px);}
-      100% { opacity: 1; transform: scale(1); filter: blur(0);}
-    }
+        /* Секции (экраны) */
+        .screen {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 24px;
+            text-align: center;
+            overflow-y: auto;
+            animation: softAppear 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .screen.active {
+            display: flex;
+        }
 
-    h1 {
-      font-size: clamp(2.8rem, 9vw, 6rem);
-      font-weight: 900;
-      background: linear-gradient(135deg, #ffffff, #ff88dd, #ffcc88, #ff66aa);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 20px rgba(255,100,150,0.5);
-      letter-spacing: -2px;
-      margin-bottom: 25px;
-    }
+        @keyframes softAppear {
+            0% { opacity: 0; transform: scale(0.96) translateY(12px); filter: blur(6px);}
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0);}
+        }
 
-    .badge {
-      background: #000000aa;
-      backdrop-filter: blur(12px);
-      padding: 8px 28px;
-      border-radius: 60px;
-      display: inline-block;
-      color: #aaffff;
-      font-family: monospace;
-      font-weight: bold;
-      font-size: 14px;
-      letter-spacing: 4px;
-      margin-bottom: 20px;
-      border: 1px solid #88ffff;
-    }
+        /* Заголовки */
+        .title-large {
+            font-size: clamp(2.4rem, 8vw, 5.6rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #ffcd94, #ffb3e6, #c0a5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
 
-    .question-panel {
-      background: rgba(0,0,0,0.75);
-      padding: 40px 55px;
-      border-radius: 80px;
-      border: 1px solid #ff99cc;
-      margin: 20px 0;
-      backdrop-filter: blur(20px);
-    }
+        .sub-elegant {
+            font-size: 14px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #ffcdb0;
+            background: rgba(0,0,0,0.4);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 60px;
+            backdrop-filter: blur(8px);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
 
-    .btn-group {
-      display: flex;
-      gap: 45px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 40px;
-    }
+        .question-card {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 80px;
+            padding: 40px 50px;
+            border: 1px solid rgba(255, 170, 200, 0.7);
+            margin: 20px 0;
+            width: 100%;
+            max-width: 700px;
+        }
 
-    .btn {
-      padding: 18px 48px;
-      font-size: 24px;
-      font-weight: 800;
-      border: none;
-      border-radius: 80px;
-      background: #1a1a2e;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 12px 28px black;
-      font-family: inherit;
-    }
-    .btn-yes {
-      background: linear-gradient(130deg, #ff2d8a, #b01060);
-      box-shadow: 0 0 35px #ff2d8a;
-      color: white;
-      text-shadow: 0 1px 2px black;
-    }
-    .btn-yes:hover {
-      transform: scale(1.07);
-      box-shadow: 0 0 60px #ff66bb;
-    }
-    .btn-no {
-      background: #2f2f44;
-      border: 1px solid #ffaaee;
-    }
-    .btn-no:hover {
-      background: #4a4a6a;
-      transform: translateY(-5px);
-    }
+        .question-text {
+            font-size: 28px;
+            font-weight: 600;
+            color: #fff2e0;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+            margin-bottom: 35px;
+        }
 
-    .runaway-wrapper {
-      position: relative;
-      min-height: 220px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 30px;
-    }
-    #escapeBtn {
-      position: relative;
-      transition: left 0.03s linear, top 0.03s linear;
-    }
+        .btn-duo {
+            display: flex;
+            gap: 45px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-    .quiz-text {
-      font-size: 32px;
-      font-weight: 800;
-      color: #ffecb3;
-      text-shadow: 0 0 12px #ffaa66;
-      margin-bottom: 35px;
-    }
+        .btn {
+            border: none;
+            padding: 16px 48px;
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 80px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            background: rgba(30, 25, 50, 0.8);
+            backdrop-filter: blur(8px);
+            color: white;
+            border: 1px solid rgba(255,255,210,0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #da6a9c, #b9457a);
+            box-shadow: 0 8px 25px rgba(180, 60, 120, 0.5);
+            border: none;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #ff87b9;
+        }
+        .btn-secondary:hover {
+            background: #4a3a6a;
+            transform: translateY(-3px);
+        }
 
-    .console-wrapper {
-      width: 90%;
-      max-width: 1000px;
-      background: #03030c;
-      border-radius: 48px;
-      padding: 30px;
-      border: 1px solid #66e0ff;
-      box-shadow: inset 0 0 60px black;
-    }
-    .console-screen {
-      height: 330px;
-      overflow-y: auto;
-      font-family: 'Courier New', monospace;
-      font-size: 17px;
-      line-height: 1.8;
-      color: #d0f0ff;
-      text-align: left;
-    }
-    .console-input-area {
-      display: flex;
-      gap: 18px;
-      margin-top: 25px;
-      align-items: center;
-    }
-    .prompt-sign {
-      color: #ff88cc;
-      font-weight: bold;
-    }
-    .console-field {
-      background: transparent;
-      border: none;
-      color: #ffeeaa;
-      font-family: monospace;
-      font-size: 18px;
-      flex: 1;
-      outline: none;
-    }
+        /* Квиз */
+        .quiz-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        .quiz-btn {
+            background: rgba(45, 35, 70, 0.8);
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            transition: 0.2s;
+            cursor: pointer;
+            border: 1px solid #cfaaff;
+            color: #f3e6ff;
+        }
+        .quiz-btn:hover {
+            background: #c577b0;
+            transform: scale(1.02);
+            border-color: #ffbfdf;
+        }
 
-    .heart-stage {
-      text-align: center;
-    }
-    .huge-heart {
-      font-size: 140px;
-      filter: grayscale(0.5);
-      transition: 0.3s;
-      margin-bottom: 25px;
-    }
-    .huge-heart.filled {
-      filter: drop-shadow(0 0 55px #ff2d8a) grayscale(0);
-      animation: heartBeat 0.9s infinite alternate;
-    }
-    @keyframes heartBeat {
-      from { transform: scale(1); }
-      to { transform: scale(1.12); }
-    }
-    .progress-bar-bg {
-      width: 70%;
-      max-width: 550px;
-      background: #1f1f2f;
-      border-radius: 60px;
-      height: 26px;
-      margin: 25px auto;
-      overflow: hidden;
-    }
-    .progress-fill-bar {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #b44cff, #ff2d8a, #ffcc44);
-      background-size: 200%;
-      border-radius: 60px;
-    }
+        /* Сердце — символ чистоты */
+        .heart-symbol {
+            font-size: 120px;
+            transition: 0.4s;
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+            margin: 20px 0;
+        }
+        .heart-symbol.active-heart {
+            animation: softPulse 1.2s infinite alternate;
+            filter: drop-shadow(0 0 30px #ff88bb);
+        }
+        @keyframes softPulse {
+            from { transform: scale(1); text-shadow: 0 0 8px #ff99cc;}
+            to { transform: scale(1.08); text-shadow: 0 0 25px #ff5599;}
+        }
 
-    .karaoke-container {
-      width: 100%;
-      max-width: 1200px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .song-tabs {
-      display: flex;
-      gap: 20px;
-      background: #00000077;
-      padding: 12px 20px;
-      border-radius: 80px;
-    }
-    .song-tab {
-      background: none;
-      border: none;
-      color: #ddddff;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 12px 28px;
-      border-radius: 60px;
-      cursor: pointer;
-    }
-    .song-tab.active-tab {
-      background: #ff2d8a;
-      color: white;
-      box-shadow: 0 0 20px #ff2d8a;
-    }
-    .vizual {
-      display: flex;
-      gap: 12px;
-      height: 70px;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    .viz-bar {
-      width: 14px;
-      background: #66ffff;
-      border-radius: 20px;
-      transition: 0.04s;
-    }
-    .lyric-zone {
-      position: relative;
-      width: 100%;
-      min-height: 250px;
-    }
-    .lyric-row {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #fff9e0;
-      text-shadow: 0 0 25px #ff44aa;
-      transition: 0.4s;
-      opacity: 0;
-    }
-    .lyric-row.active-lyric {
-      opacity: 1;
-      transform: translateY(0) scale(1.2);
-      font-size: 2.6rem;
-      z-index: 15;
-    }
-    .audio-controls {
-      background: #0f0f1fcc;
-      border-radius: 80px;
-      padding: 16px 28px;
-      width: 90%;
-      max-width: 600px;
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
-    .play-pause-circle {
-      background: #ff2d8a;
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      cursor: pointer;
-    }
-    .timeline {
-      flex: 1;
-    }
-    .seek-progress {
-      background: #3a3a55;
-      height: 8px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-    .seek-fill-progress {
-      width: 0%;
-      height: 8px;
-      background: #ff88cc;
-      border-radius: 20px;
-    }
+        .progress-line {
+            width: 70%;
+            max-width: 450px;
+            height: 12px;
+            background: #2a253f;
+            border-radius: 30px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        .progress-fill-bro {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #da86b0, #ffbb88);
+            border-radius: 30px;
+            transition: width 0.2s linear;
+        }
 
-    .reasons-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 18px;
-      width: 100%;
-      padding: 15px;
-      max-height: 65vh;
-      overflow-y: auto;
-    }
-    .reason-item {
-      background: rgba(20,15,35,0.9);
-      border: 1px solid rgba(255,100,150,0.5);
-      border-radius: 32px;
-      padding: 22px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-weight: 700;
-      color: #fafaff;
-    }
-    .reason-item:hover {
-      background: #ff2d8a33;
-      transform: translateY(-6px);
-      border-color: #ff66bb;
-    }
-    .reason-number {
-      font-size: 34px;
-      font-weight: 900;
-      color: #88eeff;
-      font-family: monospace;
-    }
+        /* Причины (100 фактов) — красивая сетка */
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 18px;
+            width: 100%;
+            padding: 20px;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        .reason-card {
+            background: rgba(25, 20, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 42px;
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid rgba(255, 200, 220, 0.3);
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .reason-card:hover {
+            background: rgba(180, 100, 150, 0.3);
+            transform: translateY(-5px);
+            border-color: #ffabdd;
+        }
+        .reason-index {
+            font-size: 40px;
+            font-weight: 800;
+            font-family: monospace;
+            color: #ffb07c;
+            min-width: 70px;
+            text-align: center;
+        }
+        .reason-text {
+            font-size: 17px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #f9eef5;
+        }
 
-    .toast-notify {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #000000bb;
-      backdrop-filter: blur(20px);
-      color: #ffccff;
-      padding: 12px 32px;
-      border-radius: 60px;
-      border-left: 6px solid #ff44cc;
-      font-weight: bold;
-      z-index: 300;
-      pointer-events: none;
-    }
-    footer {
-      padding: 12px;
-      text-align: center;
-      font-size: 11px;
-      color: #99aaff;
-      border-top: 1px solid rgba(255,255,255,0.15);
-      background: #00000033;
-    }
-  </style>
+        /* Консоль (диалог) заменяем на атмосферный блок */
+        .dialogue-block {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(0,0,0,0.55);
+            border-radius: 48px;
+            padding: 35px;
+            border: 1px solid #ffb3da;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+        }
+        .dialogue-lines {
+            height: 260px;
+            overflow-y: auto;
+            color: #eeddff;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        .input-area {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            align-items: center;
+        }
+        .input-label {
+            color: #ffbc9a;
+            font-weight: bold;
+        }
+        .secret-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #dd99cc;
+            color: #ffe6b3;
+            font-size: 18px;
+            font-family: monospace;
+            outline: none;
+            flex: 1;
+        }
+        /* кнопка продолжения */
+        .next-button {
+            margin-top: 30px;
+        }
+
+        /* полоска внизу */
+        .footer-note {
+            padding: 14px;
+            text-align: center;
+            font-size: 11px;
+            color: #b9b0cc;
+            border-top: 1px solid rgba(255,255,180,0.2);
+            background: rgba(0,0,0,0.2);
+            font-family: monospace;
+        }
+
+        /* для скролла */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #201d2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dd99bb;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-<canvas id="galaxy"></canvas>
-<div class="fullscreen-btn" id="fsButton">⛶ FULLSCREEN</div>
-<div class="container">
-  <div class="top">
-    <span>⚡ BRO:DEPENDENCY v3.0 ULTRA ⚡</span>
-    <span><span id="reloadIcon" onclick="location.reload()">⟳ RESTART</span> <span id="liveClock">--:--</span></span>
-  </div>
-
-  <div class="stage active" id="s1">
-    <div class="badge">✦ ЭКСКЛЮЗИВНЫЙ ПОРТАЛ ✦</div>
-    <h1>БРО?<br>ЗАВИСИМОСТЬ ВОПРОСУ</h1>
-    <div class="question-panel">
-      <p style="font-size: 32px; font-weight: 800; color: #ffddbb; margin-bottom: 30px;">Тори, я твой лучший друг?</p>
-      <div class="btn-group">
-        <button class="btn btn-yes" id="yesBtnMain">КОНЕЧНО ДА!</button>
-        <button class="btn btn-no" id="noBtnMain">НЕТ</button>
-      </div>
+<canvas id="starryCanvas"></canvas>
+<div class="soft-noise"></div>
+<div class="glass-container">
+    <div class="gentle-header">
+        <span>✦ ТЫ — МОЙ СВЕТ ✦</span>
+        <span onclick="location.reload()">⟳ НАЧАТЬ ЗАНОВО</span>
     </div>
-    <p style="color: #ccddff; margin-top: 25px;">💖 нажми ДА — откроется бездна дружбы 💖</p>
-  </div>
 
-  <div class="stage" id="s2">
-    <div class="badge">❤️‍🔥 КВИЗ НА БЛИЗОСТЬ</div>
-    <div id="quizQ" class="quiz-text"></div>
-    <div id="quizOpts" class="btn-group" style="gap: 20px;"></div>
-  </div>
-
-  <div class="stage" id="s3">
-    <h1 style="font-size: 3.4rem;">ПОДТВЕРДИ СТАТУС</h1>
-    <div class="runaway-wrapper">
-      <button id="escapeBtn" class="btn btn-no" style="position: relative;">НАЖМИ МЕНЯ</button>
-    </div>
-    <div class="badge" style="margin-top: 45px;">(ПОПРОБУЙ ПОЙМАТЬ)</div>
-  </div>
-
-  <div class="stage" id="s4">
-    <div class="console-wrapper">
-      <div class="console-screen" id="consoleOut"></div>
-      <div class="console-input-area" id="consoleInputDiv" style="display: none;">
-        <span class="prompt-sign">bro@tori:~$</span>
-        <input type="text" id="consoleTxt" class="console-field" maxlength="1">
-      </div>
-    </div>
-    <button id="consoleProceed" style="margin-top: 32px; display: none;" class="btn btn-yes">ПРОДОЛЖИТЬ</button>
-  </div>
-
-  <div class="stage" id="s5">
-    <div class="heart-stage">
-      <div class="huge-heart" id="heartIcon">🖤</div>
-      <div class="progress-bar-bg"><div class="progress-fill-bar" id="heartFillProg"></div></div>
-      <div id="heartPercentLabel" style="font-size: 28px; font-weight: 800; color: #ffcc88; margin: 20px;">0%</div>
-      <button id="heartUnlockBtn" style="display: none;" class="btn btn-yes">РАЗБЛОКИРОВАТЬ ❤️</button>
-    </div>
-  </div>
-
-  <div class="stage" id="s6">
-    <div class="karaoke-container">
-      <div class="song-tabs">
-        <button class="song-tab" data-track="1">🌸 ЦВЕТЫ (Т.Принц)</button>
-        <button class="song-tab" data-track="2">🍸 КОКТЕЙЛЬ (ЛСП)</button>
-        <button class="song-tab" data-track="3">🍀 ФОРТУНА (ЛСП)</button>
-      </div>
-      <div class="vizual" id="visualBars"></div>
-      <div class="lyric-zone" id="lyricsZone"></div>
-      <div class="audio-controls">
-        <div class="play-pause-circle" id="playPauseBtn">▶</div>
-        <div class="timeline">
-          <div id="timeDisplay">00:00 / 00:00</div>
-          <div class="seek-progress" id="seekProgress"><div class="seek-fill-progress" id="seekFillProg"></div></div>
+    <!-- ЭКРАН 1: ВСТУПЛЕНИЕ -->
+    <div class="screen active" id="scr1">
+        <div class="sub-elegant">НЕ ПРОСТО ДРУГ</div>
+        <div class="title-large">Ты — та,<br>кто делает мир тёплым</div>
+        <div class="question-card">
+            <div class="question-text">Позволь задать один важный вопрос…</div>
+            <div class="btn-duo">
+                <button class="btn btn-primary" id="startYesBtn">Спросить ➤</button>
+            </div>
         </div>
-      </div>
-      <button class="btn" id="toReasonsBtn" style="background:#2a2a55;">✨ 100 ПРИЧИН ЛЮБИТЬ ✨</button>
-      <p style="font-size: 12px; color: #bbccff;">🎵 Перетащи MP3 в окно, если нет звука</p>
+        <div style="margin-top: 15px; opacity:0.7; font-size:14px;">✨ человек, который стал родным ✨</div>
     </div>
-    <audio id="globalAudio" crossorigin="anonymous"></audio>
-  </div>
 
-  <div class="stage" id="s7">
-    <div class="badge">💎 ТЫ — ЛУЧШАЯ НАВСЕГДА</div>
-    <div class="reasons-grid" id="reasonsGridFinal"></div>
-  </div>
-  <footer>❤️ BRO FOREVER · НАВСЕГДА В СЕРДЦЕ ❤️</footer>
+    <!-- ЭКРАН 2: ГЛАВНЫЙ ВОПРОС (искренний) -->
+    <div class="screen" id="scr2">
+        <div class="sub-elegant">ГЛАВНОЕ</div>
+        <div class="title-large" style="font-size: clamp(2rem,6vw,4rem);">Знаешь, для меня ты<br>не просто друг</div>
+        <div class="question-card">
+            <div class="question-text">Ты — частичка меня, близкий человек. <br>Я для тебя тоже стал родным?</div>
+            <div class="btn-duo">
+                <button class="btn btn-primary" id="finalYesBtn">ДА, ТЫ РОДНОЙ</button>
+                <button class="btn btn-secondary" id="finalNoBtn">НЕТ</button>
+            </div>
+        </div>
+        <p style="color:#d8c0ff; max-width: 400px; font-size: 14px;">❤️ искренность — это главное, что у нас есть</p>
+    </div>
+
+    <!-- ЭКРАН 3: НЕБОЛЬШОЙ ТЁПЛЫЙ КВИЗ (лёгкий, без давления) -->
+    <div class="screen" id="scr3">
+        <div class="sub-elegant">НЕМНОГО О НАС</div>
+        <div id="quizQuestionText" style="font-size: 28px; font-weight: 600; margin-bottom: 25px;"></div>
+        <div id="quizOptionsContainer" class="quiz-options"></div>
+        <div style="height: 10px;"></div>
+    </div>
+
+    <!-- ЭКРАН 4: СИМВОЛИЧЕСКАЯ "ЗАГРУЗКА СЕРДЦА" (ОЧИЩЕНИЕ) -->
+    <div class="screen" id="scr4">
+        <div class="heart-symbol" id="heartIcon">❤️‍🩹</div>
+        <div class="progress-line"><div class="progress-fill-bro" id="heartProgressFill"></div></div>
+        <div id="heartPercentText" style="font-size: 28px; font-weight: 600; margin: 20px; color:#ffdfb3;">0%</div>
+        <button id="heartNextBtn" style="display: none;" class="btn btn-primary">Почувствовать тепло ✨</button>
+    </div>
+
+    <!-- ЭКРАН 5: ДИАЛОГ / ПРИЗНАНИЕ (консольный стиль, но душевно) -->
+    <div class="screen" id="scr5">
+        <div class="dialogue-block">
+            <div class="dialogue-lines" id="dialogLines"></div>
+            <div class="input-area" id="inputDialogArea" style="display: none;">
+                <span class="input-label">честный ответ ►</span>
+                <input type="text" id="dialogInput" class="secret-input" maxlength="1" autocomplete="off" placeholder="1 или 2">
+            </div>
+        </div>
+        <button id="dialogNextBtn" style="display: none;" class="btn btn-primary next-button">Продолжить ➤</button>
+    </div>
+
+    <!-- ЭКРАН 6: 100 ПРИЧИН, ПОЧЕМУ ТЫ — ЦЕЛЫЙ МИР -->
+    <div class="screen" id="scr6">
+        <div class="sub-elegant">100 ПРИЧИН</div>
+        <div class="title-large" style="font-size: 2.5rem;">Почему ты так важна</div>
+        <div class="reasons-grid" id="reasonsContainer"></div>
+        <div style="margin: 20px 0 10px; font-style: italic; color:#f0bbc8;">Ты — не просто друг. Ты — человек, который стал домом.</div>
+    </div>
+
+    <div class="footer-note">✦ навсегда в сердце ✦</div>
 </div>
 
 <script>
-  (function(){
-    // stars + galaxy
-    const starCanvas = document.getElementById('galaxy');
-    const starCtx = starCanvas.getContext('2d');
-    let width, height, starArray = [];
-    function resizeStars() {
-      width = starCanvas.width = window.innerWidth;
-      height = starCanvas.height = window.innerHeight;
-      starArray = Array.from({length: 280}, () => ({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 2.5 + 0.8, dy: Math.random() * 0.3 + 0.1, flicker: Math.random() * Math.PI * 2 }));
-    }
-    function drawStarfield() {
-      if(!starCtx) return;
-      starCtx.clearRect(0, 0, width, height);
-      for(let s of starArray) {
-        let alpha = 0.5 + Math.sin(Date.now() * 0.002 + s.flicker) * 0.5;
-        starCtx.fillStyle = `rgba(255, 220, 200, ${alpha * 0.8})`;
-        starCtx.beginPath();
-        starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        starCtx.fill();
-        s.y += s.dy;
-        if(s.y > height + 20) s.y = -20;
-      }
-      requestAnimationFrame(drawStarfield);
-    }
-    window.addEventListener('resize', resizeStars);
-    resizeStars();
-    drawStarfield();
-
-    setInterval(() => {
-      document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
-    }, 1000);
-
-    // звуки
-    let audioFx = null;
-    function playBeep(freq=880, type='sine') {
-      try {
-        if(!audioFx) audioFx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioFx.createOscillator();
-        const gain = audioFx.createGain();
-        osc.connect(gain);
-        gain.connect(audioFx.destination);
-        osc.frequency.value = freq;
-        osc.type = type;
-        gain.gain.value = 0.12;
-        osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioFx.currentTime + 0.5);
-        osc.stop(audioFx.currentTime + 0.5);
-        audioFx.resume();
-      } catch(e) {}
-    }
-
-    function showMessage(msg) {
-      let toast = document.createElement('div');
-      toast.className = 'toast-notify';
-      toast.innerText = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2300);
-    }
-
-    function goToStage(stageId) {
-      document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-      document.getElementById(stageId).classList.add('active');
-    }
-
-    // main buttons
-    document.getElementById('yesBtnMain').onclick = () => { playBeep(880); goToStage('s2'); startQuiz(); };
-    document.getElementById('noBtnMain').onclick = () => { playBeep(320,'triangle'); showMessage('❌ Ошибка дружбы! Система перенаправит на ДА ❌'); setTimeout(()=> { goToStage('s2'); startQuiz(); }, 700); };
-
-    let quizStep = 0;
-    const quizData = [
-      {q:"Твой любимый цвет?", opts:["Розовый 💖","Фиолетовый 💜","Чёрный 🖤","Синий 💙"]},
-      {q:"Что главное в друге?", opts:["Честность","Преданность","Юмор","Поддержка"]},
-      {q:"Мы с тобой — ?", opts:["Неразлучники","Бро навек","Семья","Команда"]},
-      {q:"Ты веришь в судьбу?", opts:["ДА!","На 100%","Верю","Конечно"]}
-    ];
-    function startQuiz() {
-      quizStep = 0;
-      loadQuizQuestion();
-    }
-    function loadQuizQuestion() {
-      if(quizStep >= quizData.length) { goToStage('s3'); return; }
-      let qItem = quizData[quizStep];
-      document.getElementById('quizQ').innerHTML = `${quizStep+1}/4: ${qItem.q}`;
-      let container = document.getElementById('quizOpts');
-      container.innerHTML = '';
-      qItem.opts.forEach(opt => {
-        let b = document.createElement('button');
-        b.className = 'btn';
-        b.innerText = opt;
-        b.style.background = "#30304a";
-        b.onclick = () => { quizStep++; loadQuizQuestion(); playBeep(660,'triangle'); };
-        container.appendChild(b);
-      });
-    }
-
-    // runaway button
-    let escapeBtn = document.getElementById('escapeBtn');
-    function moveEscape(e) {
-      if(!escapeBtn) return;
-      let parentZone = document.querySelector('.runaway-wrapper');
-      let rect = parentZone.getBoundingClientRect();
-      let bw = escapeBtn.offsetWidth, bh = escapeBtn.offsetHeight;
-      let maxX = rect.width - bw - 25;
-      let maxY = rect.height - bh - 25;
-      let newX = Math.random() * maxX + 15;
-      let newY = Math.random() * maxY + 15;
-      escapeBtn.style.position = 'absolute';
-      escapeBtn.style.left = `${newX}px`;
-      escapeBtn.style.top = `${newY}px`;
-      playBeep(450, 'square');
-    }
-    if(escapeBtn) escapeBtn.addEventListener('mouseover', moveEscape);
-    escapeBtn.addEventListener('click', () => { goToStage('s4'); startConsoleSequence(); });
-
-    // console
-    let consoleReady = false;
-    async function startConsoleSequence() {
-      let outDiv = document.getElementById('consoleOut'), inputDiv = document.getElementById('consoleInputDiv'), inputField = document.getElementById('consoleTxt'), nextBtn = document.getElementById('consoleProceed');
-      outDiv.innerHTML = ''; inputDiv.style.display = 'none'; nextBtn.style.display = 'none';
-      let logs = ['<span style="color:#88aaff;">[BRO-LINK] Активация портала...</span>','<span style="color:#ff88dd;">[SCAN] Тори · доступ MAXIMUM</span>','<span style="color:#ffffaa;">Совместимость: 100% BRO</span><br><span style="color:#88ffcc">Введи код: 1 - Лучшие друзья, 2 - Просто знакомые</span>'];
-      for(let l of logs) { outDiv.innerHTML += l + '<br>'; outDiv.scrollTop = outDiv.scrollHeight; await delay(400); }
-      inputDiv.style.display = 'flex'; inputField.focus();
-      inputField.onkeydown = async (ev) => {
-        if(ev.key === 'Enter') {
-          let val = inputField.value.trim();
-          if(val === '1' || val === '2') {
-            inputDiv.style.display = 'none';
-            outDiv.innerHTML += `<span style="color:#88ddff;">> ${val}</span><br>`;
-            if(val === '2') { outDiv.innerHTML += `<span style="color:#ff88aa;">❗Ошибка! Автокоррекция на 1 (БРО)</span><br>`; await delay(500); }
-            outDiv.innerHTML += `<br><span style="background:#ff2d8a; padding:6px 28px; border-radius: 80px;">★ РЕЗУЛЬТАТ: НАВСЕГДА БРО ★</span><br>`;
-            await delay(1000);
-            nextBtn.style.display = 'block';
-          }
+    (function(){
+        // ---------- ЗВЁЗДНОЕ ПОЛЕ (мягкое) ----------
+        const canvas = document.getElementById('starryCanvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, stars = [];
+        function resizeStars() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<300; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: Math.random() * 2 + 0.7,
+                    alpha: Math.random() * 0.6 + 0.2,
+                    drift: Math.random() * 0.3 + 0.05
+                });
+            }
         }
-      };
-    }
-    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-    document.getElementById('consoleProceed').onclick = () => { goToStage('s5'); startHeartLoader(); };
-
-    async function startHeartLoader() {
-      let fill = document.getElementById('heartFillProg'), percentSpan = document.getElementById('heartPercentLabel'), heartIconDiv = document.getElementById('heartIcon'), nextHeart = document.getElementById('heartUnlockBtn');
-      for(let p=0; p<=100; p++) {
-        fill.style.width = p + '%';
-        percentSpan.innerText = p + '%';
-        if(p === 25) heartIconDiv.innerText = '💜';
-        if(p === 55) heartIconDiv.innerText = '💖';
-        if(p === 85) heartIconDiv.innerText = '❤️';
-        heartIconDiv.classList.add('filled');
-        await delay(p < 45 ? 20 : 38);
-      }
-      heartIconDiv.innerText = '❤️‍🔥';
-      percentSpan.innerText = 'СЕРДЦЕ РАЗБЛОКИРОВАНО!';
-      nextHeart.style.display = 'inline-block';
-    }
-    document.getElementById('heartUnlockBtn').onclick = () => { goToStage('s6'); initUltraKaraoke(); };
-
-    // karaoke with fake lyrics + viz
-    let audioElem = document.getElementById('globalAudio');
-    let currentTrack = 1;
-    let lyricsMap = [];
-    let isPlaying = false;
-    const tracksData = {
-      1: { lyrics: [{t:0,text:'🎵 Цветы'},{t:8,text:'А ты пахнешь цветами самыми яркими'},{t:14,text:'Я тону в аромате, мне не выбраться'},{t:20,text:'Твои волосы — розы, кожа — пион'},{t:26,text:'Влюбился в тебя, как в сладкий сон'},{t:32,text:'Ты — моё всё, моё чудо'},{t:38,text:'Это небо над нами, солнце над нами'},{t:44,text:'А ты пахнешь цветами...'},{t:52,text:'Навсегда в моём сердце'}] },
-      2: { lyrics: [{t:0,text:'🍸 Коктейль'},{t:10,text:'Ты — всё, что нужно сейчас'},{t:15,text:'Твой вкус на губах не погас'},{t:20,text:'Мы перемешаны, как лёд и сок'},{t:26,text:'Мой коктейль, самый сладкий'},{t:32,text:'Мы летим в постель'},{t:38,text:'Слишком много сахара, мало льда'},{t:44,text:'Ты говоришь «нет», когда хочешь «да»'},{t:50,text:'Мой коктейль...'}] },
-      3: { lyrics: [{t:0,text:'🍀 Фортуна'},{t:9,text:'Фортуна, ты где? Я жду тебя здесь'},{t:15,text:'В этом городе снов, в мире чудес'},{t:21,text:'Мы не знакомы, но верю в успех'},{t:27,text:'Фортуна улыбнётся, я знаю'},{t:33,text:'Она меня не забывает'},{t:39,text:'Даже когда тяжело, иду вперёд'},{t:45,text:'Дай мне зелёный свет, Фортуна'},{t:51,text:'Твой шёпот в шуме монет'}] }
-    };
-    function buildVisuals() {
-      let vizDiv = document.getElementById('visualBars');
-      vizDiv.innerHTML = '';
-      for(let i=0;i<45;i++) { let bar = document.createElement('div'); bar.className = 'viz-bar'; vizDiv.appendChild(bar); }
-      setInterval(() => {
-        if(!audioElem.paused) {
-          document.querySelectorAll('.viz-bar').forEach(b => {
-            let h = 6 + Math.random() * 62;
-            b.style.height = h + 'px';
-            b.style.background = Math.random() > 0.6 ? '#ff88cc' : '#88ffff';
-          });
+        function drawStars() {
+            if(!ctx) return;
+            ctx.clearRect(0, 0, w, h);
+            for(let s of stars) {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255, 210, 240, ${s.alpha + Math.sin(Date.now() * 0.001) * 0.15})`;
+                ctx.fill();
+                s.y -= s.drift;
+                if(s.y < -10) { s.y = h + 10; s.x = Math.random() * w; }
+            }
+            requestAnimationFrame(drawStars);
         }
-      }, 90);
-    }
-    function renderLyrics(lyrics) {
-      let zone = document.getElementById('lyricsZone');
-      zone.innerHTML = '';
-      lyrics.forEach((line, idx) => {
-        let div = document.createElement('div');
-        div.className = 'lyric-row';
-        div.id = `lyric_${idx}`;
-        div.innerText = line.text;
-        zone.appendChild(div);
-      });
-    }
-    function syncLyricsNow() {
-      let ct = audioElem.currentTime + 0.25;
-      let activeIndex = -1;
-      for(let i=0;i<lyricsMap.length;i++) if(ct >= lyricsMap[i].t) activeIndex = i;
-      for(let i=0;i<lyricsMap.length;i++) {
-        let el = document.getElementById(`lyric_${i}`);
-        if(el) {
-          el.classList.remove('active-lyric');
-          if(i === activeIndex) el.classList.add('active-lyric');
+        window.addEventListener('resize', resizeStars);
+        resizeStars();
+        drawStars();
+
+        // ---------- ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ ----------
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
-      }
-    }
-    function loadTrack(id, autoPlay=true) {
-      currentTrack = id;
-      lyricsMap = tracksData[id].lyrics;
-      renderLyrics(lyricsMap);
-      if(autoPlay) { audioElem.play().catch(e=>showMessage('🔇 Кликни по странице для звука')); isPlaying=true; document.getElementById('playPauseBtn').innerText = '⏸'; }
-      else { audioElem.pause(); isPlaying=false; document.getElementById('playPauseBtn').innerText = '▶'; }
-    }
-    function initUltraKaraoke() {
-      buildVisuals();
-      loadTrack(1, false);
-      audioElem.ontimeupdate = () => { syncLyricsNow(); updateSeekUI(); };
-      document.querySelectorAll('.song-tab').forEach(btn => {
-        btn.onclick = () => {
-          let id = parseInt(btn.dataset.track);
-          document.querySelectorAll('.song-tab').forEach(b => b.classList.remove('active-tab'));
-          btn.classList.add('active-tab');
-          loadTrack(id, true);
+
+        // ---------- КВИЗ (короткий, тёплый) ----------
+        let quizStep = 0;
+        const quizData = [
+            { question: "Что для тебя самое важное в близких отношениях?", options: ["Доверие", "Понимание", "Забота", "Искренность"] },
+            { question: "Какое слово лучше всего описывает нашу связь?", options: ["Тепло", "Спокойствие", "Родство", "Надёжность"] },
+            { question: "Мы с тобой — это...", options: ["Единое целое", "Друзья навсегда", "Семья", "Близкие люди"] }
+        ];
+
+        function startQuiz() {
+            quizStep = 0;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            if(quizStep >= quizData.length) {
+                // после квиза идём к сердцу
+                showScreen('scr4');
+                startHeartLoading();
+                return;
+            }
+            const q = quizData[quizStep];
+            document.getElementById('quizQuestionText').innerText = q.question;
+            const container = document.getElementById('quizOptionsContainer');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'quiz-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    quizStep++;
+                    renderQuizQuestion();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // ---------- ЗАГРУЗКА СЕРДЦА (символ близости) ----------
+        async function startHeartLoading() {
+            const heart = document.getElementById('heartIcon');
+            const fill = document.getElementById('heartProgressFill');
+            const percentSpan = document.getElementById('heartPercentText');
+            const nextBtn = document.getElementById('heartNextBtn');
+            heart.classList.add('active-heart');
+            for(let p=0; p<=100; p++) {
+                fill.style.width = p + '%';
+                percentSpan.innerText = p + '%';
+                if(p === 30) heart.innerHTML = '💛';
+                if(p === 60) heart.innerHTML = '💖';
+                if(p === 85) heart.innerHTML = '❤️';
+                await delay(p < 40 ? 25 : 45);
+            }
+            heart.innerHTML = '❤️‍🔥';
+            percentSpan.innerText = '100% · ты в моём сердце';
+            nextBtn.style.display = 'inline-block';
+        }
+
+        function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+        // ---------- ДИАЛОГ (консоль доверия) ----------
+        let dialogCompleted = false;
+        async function startDialog() {
+            const output = document.getElementById('dialogLines');
+            const inputArea = document.getElementById('inputDialogArea');
+            const nextBtn = document.getElementById('dialogNextBtn');
+            output.innerHTML = '';
+            inputArea.style.display = 'none';
+            nextBtn.style.display = 'none';
+
+            const lines = [
+                '<span style="color:#ffccaa;">[ тихий голос внутри ]</span><br>',
+                '<span style="color:#e5cbff;">Ты для меня больше, чем друг.</span><br>',
+                '<span style="color:#f0bcff;">Я ценю каждый момент, каждую улыбку, каждое «как дела».</span><br>',
+                '<span style="color:#ffddbb;">Ты стал человеком, которому можно доверять без оглядки.</span><br>',
+                '<br><span style="color:#ffb3da;">Ответь честно (выбери цифру):</span><br>',
+                '<span style="color:#bdeeff;"> 1 — Я тоже чувствую ту же близость</span><br>',
+                '<span style="color:#bdeeff;"> 2 — Мне нужно время</span><br>'
+            ];
+            for(let line of lines) {
+                output.innerHTML += line;
+                output.scrollTop = output.scrollHeight;
+                await delay(400);
+            }
+            inputArea.style.display = 'flex';
+            const inputField = document.getElementById('dialogInput');
+            inputField.value = '';
+            inputField.focus();
+
+            inputField.onkeydown = async (e) => {
+                if(e.key === 'Enter') {
+                    let val = inputField.value.trim();
+                    if(val === '1' || val === '2') {
+                        inputArea.style.display = 'none';
+                        if(val === '1') {
+                            output.innerHTML += `<br><span style="color:#ffbb99;">✨ Спасибо... Это много значит для меня. ✨</span><br>`;
+                        } else {
+                            output.innerHTML += `<br><span style="color:#ffeecc;">Я подожду. Но знай: ты всегда важна для меня таким, какая ты есть.</span><br>`;
+                        }
+                        await delay(1000);
+                        nextBtn.style.display = 'block';
+                    }
+                }
+            };
+        }
+
+        // ---------- 100 ПРИЧИН (искренних, без перебора) ----------
+        function generateReasons() {
+            const container = document.getElementById('reasonsContainer');
+            if(container.children.length > 0) return;
+            const reasonsBase = [
+                "Ты делаешь мир добрее", "С тобой легко дышать", "Ты понимаешь без слов",
+                "Ты всегда поддержишь", "Твоя улыбка согревает", "Ты честная и настоящая",
+                "Рядом с тобой я становлюсь лучше", "Ты — опора", "Ты помнишь мелочи",
+                "Ты не судишь", "Ты даришь ощущение дома", "С тобой можно быть собой",
+                "Ты умеешь слушать", "Твои глаза светятся теплом", "Ты — редкий человек",
+                "Ты никогда не предашь", "Ты придаёшь сил", "С тобой даже молчание — ценно",
+                "Ты вдохновляешь на добрые дела", "Ты — часть моей жизни", "Ты делаешь меня счастливее",
+                "Ты — не просто друг, ты — родная душа"
+            ];
+            for(let i = 1; i <= 100; i++) {
+                let text = reasonsBase[(i-1) % reasonsBase.length];
+                if(i > reasonsBase.length) text = text + " ✨";
+                const card = document.createElement('div');
+                card.className = 'reason-card';
+                card.innerHTML = `<div class="reason-index">${i.toString().padStart(2,'0')}</div><div class="reason-text">${text}</div>`;
+                container.appendChild(card);
+            }
+        }
+
+        // ---------- ОБРАБОТЧИКИ КНОПОК (ПЕРЕХОДЫ) ----------
+        document.getElementById('startYesBtn').onclick = () => {
+            showScreen('scr2');
         };
-      });
-      document.getElementById('playPauseBtn').onclick = () => {
-        if(isPlaying) { audioElem.pause(); isPlaying=false; document.getElementById('playPauseBtn').innerText='▶'; }
-        else { audioElem.play().catch(e=>null); isPlaying=true; document.getElementById('playPauseBtn').innerText='⏸'; }
-      };
-      document.getElementById('seekProgress').addEventListener('click', (e) => {
-        let rect = e.target.closest('.seek-progress').getBoundingClientRect();
-        let percent = (e.clientX - rect.left) / rect.width;
-        audioElem.currentTime = percent * audioElem.duration;
-      });
-      document.getElementById('toReasonsBtn').onclick = () => { goToStage('s7'); render100Reasons(); if(audioElem) audioElem.pause(); };
-      window.addEventListener('dragover', e=>e.preventDefault());
-      window.addEventListener('drop', e=>{ e.preventDefault(); let file = e.dataTransfer.files[0]; if(file && file.type.includes('audio')){ let url = URL.createObjectURL(file); audioElem.src = url; audioElem.play().catch(e=>null); showMessage('🎶 MP3 загружен!'); } });
-    }
-    function updateSeekUI() {
-      if(audioElem.duration) {
-        let pct = (audioElem.currentTime / audioElem.duration) * 100;
-        document.getElementById('seekFillProg').style.width = pct + '%';
-        let cur = formatTime(audioElem.currentTime), dur = formatTime(audioElem.duration);
-        document.getElementById('timeDisplay').innerText = `${cur} / ${dur}`;
-      }
-    }
-    function formatTime(sec) { if(isNaN(sec)) return '00:00'; let m = Math.floor(sec/60), s = Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+        document.getElementById('finalYesBtn').onclick = () => {
+            showScreen('scr3');
+            startQuiz();
+        };
+        document.getElementById('finalNoBtn').onclick = () => {
+            // мягкое повторение вопроса
+            const dialog = confirm("Ты уверена? Может, просто захочешь подумать?");
+            if(dialog === true) {
+                showScreen('scr2');
+            } else {
+                // остаёмся
+            }
+        };
+        document.getElementById('heartNextBtn').onclick = () => {
+            showScreen('scr5');
+            startDialog();
+        };
+        document.getElementById('dialogNextBtn').onclick = () => {
+            showScreen('scr6');
+            generateReasons();
+        };
+        // дополнительно: если пользователь захочет перезапустить всё с нуля кнопкой в шапке — релоад уже есть
 
-    function render100Reasons() {
-      let grid = document.getElementById('reasonsGridFinal');
-      if(grid.children.length > 0) return;
-      let base = ["Ты мой бро","Верность","Честность","Ты всегда поддержишь","Понимаешь без слов","С тобой не страшно","Ты моя сила","Твоя улыбка","Ты уникальная","Надёжность","Доброта","Свет души","Ты вдохновляешь","С тобой легко","Моя семья","Ты — лучшая","Люблю твой смех","Ты изменила жизнь","С тобой в огонь","Бро навсегда"];
-      for(let i=0;i<100;i++) {
-        let text = base[i % base.length] + ` #${i+1}`;
-        let card = document.createElement('div');
-        card.className = 'reason-item';
-        card.innerHTML = `<div class="reason-number">${(i+1).toString().padStart(2,'0')}</div><div>${text}</div>`;
-        grid.appendChild(card);
-      }
-    }
-
-    // fullscreen handler
-    const fsBtn = document.getElementById('fsButton');
-    fsBtn.onclick = () => {
-      let docEl = document.documentElement;
-      if(docEl.requestFullscreen) docEl.requestFullscreen();
-      else if(docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
-      showMessage('✨ Полноэкранный режим активирован ✨');
-    };
-  })();
+        // небольшая атмосфера: меняем текст в зависимости от прогресса
+        // done!
+    })();
 </script>
 </body>
 </html>
