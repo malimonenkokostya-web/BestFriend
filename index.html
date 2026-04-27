@@ -1,640 +1,203 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ты для меня — целый мир</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none; /* для плавности, но текст можно копировать если нужно — уберу позже */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Тори — открытка от Кости</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            min-height: 100vh;
-            background: radial-gradient(ellipse at 30% 40%, #0f0c1f, #02010a);
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Playfair Display', serif;
-            overflow-x: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            color: #f5f0ff;
-        }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #f7eef9 0%, #e5d5f0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', 'Inter', 'Georgia', serif;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-        /* Эффект звёзд */
-        canvas#starryCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
+    /* Лёгкие летающие сердечки */
+    .floating-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .heart-float {
+      position: absolute;
+      color: rgba(255, 120, 160, 0.3);
+      font-size: 20px;
+      user-select: none;
+      animation: floatHeart 10s linear infinite;
+      bottom: -50px;
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.5; bottom: -50px; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; bottom: 110vh; }
+    }
 
-        /* Мягкий шум для атмосферы */
-        .soft-noise {
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 1;
-        }
+    /* Конверт / открытка */
+    .postcard {
+      position: relative;
+      z-index: 10;
+      max-width: 650px;
+      width: 100%;
+      background: rgba(255, 248, 245, 0.96);
+      border-radius: 48px;
+      box-shadow: 0 35px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,200,0.8);
+      overflow: hidden;
+      backdrop-filter: blur(3px);
+      transition: transform 0.3s ease;
+    }
+    .postcard:hover {
+      transform: scale(1.01);
+    }
 
-        /* Основной контейнер — стеклянный, воздушный */
-        .glass-container {
-            position: relative;
-            z-index: 10;
-            width: 94vw;
-            max-width: 1300px;
-            height: 90vh;
-            max-height: 880px;
-            background: rgba(20, 15, 35, 0.6);
-            backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 56px;
-            border: 1px solid rgba(255, 180, 220, 0.5);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255,255,255,0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: all 0.4s ease;
-        }
+    /* Внутреннее содержимое */
+    .content {
+      padding: 45px 38px 55px;
+      text-align: center;
+    }
 
-        /* Шапка */
-        .gentle-header {
-            padding: 18px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            letter-spacing: 2px;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 200, 230, 0.3);
-            color: #e0c0ff;
-        }
-        .gentle-header span:first-child {
-            font-weight: 500;
-            text-shadow: 0 0 6px #d9a7ff;
-        }
-        .gentle-header span:last-child {
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .gentle-header span:last-child:hover {
-            color: #ffb7e8;
-            text-shadow: 0 0 10px #ff88cc;
-        }
+    /* Цветочный уголок / декор */
+    .ornament {
+      font-size: 32px;
+      letter-spacing: 12px;
+      color: #dea5c4;
+      margin-bottom: 20px;
+    }
 
-        /* Секции (экраны) */
-        .screen {
-            flex: 1;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px 24px;
-            text-align: center;
-            overflow-y: auto;
-            animation: softAppear 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        .screen.active {
-            display: flex;
-        }
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 600;
+      color: #4a2c5e;
+      margin-bottom: 12px;
+      font-family: 'Georgia', serif;
+      letter-spacing: -0.5px;
+    }
 
-        @keyframes softAppear {
-            0% { opacity: 0; transform: scale(0.96) translateY(12px); filter: blur(6px);}
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0);}
-        }
+    .subhead {
+      font-size: 1rem;
+      color: #b483a3;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-top: 1px solid #f0cae0;
+      border-bottom: 1px solid #f0cae0;
+      display: inline-block;
+      padding: 6px 20px;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
 
-        /* Заголовки */
-        .title-large {
-            font-size: clamp(2.4rem, 8vw, 5.6rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #ffcd94, #ffb3e6, #c0a5ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
+    .message-text {
+      font-size: 1.18rem;
+      line-height: 1.65;
+      color: #382a44;
+      text-align: left;
+      margin: 30px 0 35px;
+      font-family: 'Inter', system-ui;
+    }
 
-        .sub-elegant {
-            font-size: 14px;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            color: #ffcdb0;
-            background: rgba(0,0,0,0.4);
-            display: inline-block;
-            padding: 6px 20px;
-            border-radius: 60px;
-            backdrop-filter: blur(8px);
-            margin-bottom: 30px;
-            font-weight: 500;
-        }
+    .message-text p {
+      margin-bottom: 20px;
+    }
 
-        .question-card {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            border-radius: 80px;
-            padding: 40px 50px;
-            border: 1px solid rgba(255, 170, 200, 0.7);
-            margin: 20px 0;
-            width: 100%;
-            max-width: 700px;
-        }
+    .message-text .highlight {
+      background: linear-gradient(120deg, #ffe1f0 0%, #ffe1f0 40%, transparent 60%);
+      padding: 0 4px;
+      border-radius: 12px;
+      font-weight: 500;
+      color: #bc5c8c;
+    }
 
-        .question-text {
-            font-size: 28px;
-            font-weight: 600;
-            color: #fff2e0;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-            margin-bottom: 35px;
-        }
+    .signature {
+      font-size: 1.2rem;
+      font-weight: 500;
+      font-family: 'Georgia', serif;
+      color: #9b5e7e;
+      border-top: 2px dotted #ebc0da;
+      padding-top: 28px;
+      margin-top: 20px;
+      text-align: right;
+    }
 
-        .btn-duo {
-            display: flex;
-            gap: 45px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    .signature span {
+      font-size: 2rem;
+      vertical-align: middle;
+    }
 
-        .btn {
-            border: none;
-            padding: 16px 48px;
-            font-size: 22px;
-            font-weight: 700;
-            border-radius: 80px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            background: rgba(30, 25, 50, 0.8);
-            backdrop-filter: blur(8px);
-            color: white;
-            border: 1px solid rgba(255,255,210,0.3);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #da6a9c, #b9457a);
-            box-shadow: 0 8px 25px rgba(180, 60, 120, 0.5);
-            border: none;
-        }
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px #ff87b9;
-        }
-        .btn-secondary:hover {
-            background: #4a3a6a;
-            transform: translateY(-3px);
-        }
+    /* маленькие цветочки в углах */
+    .corner-flower {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .corner1 { top: 15px; left: 20px; transform: rotate(-15deg); }
+    .corner2 { bottom: 15px; right: 20px; transform: rotate(10deg); }
 
-        /* Квиз */
-        .quiz-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 25px;
-        }
-        .quiz-btn {
-            background: rgba(45, 35, 70, 0.8);
-            padding: 14px 32px;
-            border-radius: 60px;
-            font-size: 18px;
-            font-weight: 500;
-            backdrop-filter: blur(5px);
-            transition: 0.2s;
-            cursor: pointer;
-            border: 1px solid #cfaaff;
-            color: #f3e6ff;
-        }
-        .quiz-btn:hover {
-            background: #c577b0;
-            transform: scale(1.02);
-            border-color: #ffbfdf;
-        }
-
-        /* Сердце — символ чистоты */
-        .heart-symbol {
-            font-size: 120px;
-            transition: 0.4s;
-            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
-            margin: 20px 0;
-        }
-        .heart-symbol.active-heart {
-            animation: softPulse 1.2s infinite alternate;
-            filter: drop-shadow(0 0 30px #ff88bb);
-        }
-        @keyframes softPulse {
-            from { transform: scale(1); text-shadow: 0 0 8px #ff99cc;}
-            to { transform: scale(1.08); text-shadow: 0 0 25px #ff5599;}
-        }
-
-        .progress-line {
-            width: 70%;
-            max-width: 450px;
-            height: 12px;
-            background: #2a253f;
-            border-radius: 30px;
-            margin: 20px auto;
-            overflow: hidden;
-        }
-        .progress-fill-bro {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #da86b0, #ffbb88);
-            border-radius: 30px;
-            transition: width 0.2s linear;
-        }
-
-        /* Причины (100 фактов) — красивая сетка */
-        .reasons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 18px;
-            width: 100%;
-            padding: 20px;
-            max-height: 65vh;
-            overflow-y: auto;
-        }
-        .reason-card {
-            background: rgba(25, 20, 45, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 42px;
-            padding: 22px 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border: 1px solid rgba(255, 200, 220, 0.3);
-            transition: all 0.2s;
-            text-align: left;
-        }
-        .reason-card:hover {
-            background: rgba(180, 100, 150, 0.3);
-            transform: translateY(-5px);
-            border-color: #ffabdd;
-        }
-        .reason-index {
-            font-size: 40px;
-            font-weight: 800;
-            font-family: monospace;
-            color: #ffb07c;
-            min-width: 70px;
-            text-align: center;
-        }
-        .reason-text {
-            font-size: 17px;
-            font-weight: 500;
-            line-height: 1.4;
-            color: #f9eef5;
-        }
-
-        /* Консоль (диалог) заменяем на атмосферный блок */
-        .dialogue-block {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(0,0,0,0.55);
-            border-radius: 48px;
-            padding: 35px;
-            border: 1px solid #ffb3da;
-            text-align: left;
-            font-family: 'Courier New', monospace;
-        }
-        .dialogue-lines {
-            height: 260px;
-            overflow-y: auto;
-            color: #eeddff;
-            font-size: 18px;
-            line-height: 1.7;
-        }
-        .input-area {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            align-items: center;
-        }
-        .input-label {
-            color: #ffbc9a;
-            font-weight: bold;
-        }
-        .secret-input {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid #dd99cc;
-            color: #ffe6b3;
-            font-size: 18px;
-            font-family: monospace;
-            outline: none;
-            flex: 1;
-        }
-        /* кнопка продолжения */
-        .next-button {
-            margin-top: 30px;
-        }
-
-        /* полоска внизу */
-        .footer-note {
-            padding: 14px;
-            text-align: center;
-            font-size: 11px;
-            color: #b9b0cc;
-            border-top: 1px solid rgba(255,255,180,0.2);
-            background: rgba(0,0,0,0.2);
-            font-family: monospace;
-        }
-
-        /* для скролла */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #201d2e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #dd99bb;
-            border-radius: 10px;
-        }
-    </style>
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #b592b0;
+      margin-top: 15px;
+      padding-bottom: 15px;
+    }
+    @media (max-width: 550px) {
+      .content { padding: 30px 22px 40px; }
+      .message-text { font-size: 1rem; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
 </head>
 <body>
-<canvas id="starryCanvas"></canvas>
-<div class="soft-noise"></div>
-<div class="glass-container">
-    <div class="gentle-header">
-        <span>✦ ТЫ — МОЙ СВЕТ ✦</span>
-        <span onclick="location.reload()">⟳ НАЧАТЬ ЗАНОВО</span>
+<div class="floating-hearts" id="heartsContainer"></div>
+<div class="postcard">
+  <div class="corner-flower corner1">🌸🌼</div>
+  <div class="corner-flower corner2">🌷✨</div>
+  <div class="content">
+    <div class="ornament">✧ ˚₊‧⁺˖♡˖⁺‧₊˚ ✧</div>
+    <h1>Тори, для меня ты — особенная</h1>
+    <div class="subhead">просто от сердца</div>
+
+    <div class="message-text">
+      <p>Мы знакомы совсем недолго, но почему-то с тобой <span class="highlight">легко и тепло</span>. Каждый раз, когда мы общаемся — будь то смешные переписки или просто разговоры ни о чём, — время летит незаметно. Ты умеешь создавать вокруг себя уют и радость.</p>
+      <p>Мне нравится твой <span class="highlight">стиль</span> — в одежде, в мыслях, в том, как ты смотришь на мир. В тебе есть искренность и лёгкость, которые подкупают. Даже когда мы просто обсуждаем ерунду или делимся мемами, я чувствую, что рядом со мной — настоящий, живой человек.</p>
+      <p>Ты важна для меня. Не потому что мы знакомы сто лет, а потому что ты умеешь быть <span class="highlight">настоящей</span>. И я ценю каждую минуту, проведённую с тобой.</p>
     </div>
 
-    <!-- ЭКРАН 1: ВСТУПЛЕНИЕ -->
-    <div class="screen active" id="scr1">
-        <div class="sub-elegant">НЕ ПРОСТО ДРУГ</div>
-        <div class="title-large">Ты — та,<br>кто делает мир тёплым</div>
-        <div class="question-card">
-            <div class="question-text">Позволь задать один важный вопрос…</div>
-            <div class="btn-duo">
-                <button class="btn btn-primary" id="startYesBtn">Спросить ➤</button>
-            </div>
-        </div>
-        <div style="margin-top: 15px; opacity:0.7; font-size:14px;">✨ человек, который стал родным ✨</div>
+    <div class="signature">
+      <span>💕</span> Твой друг Костя <span>💕</span>
     </div>
-
-    <!-- ЭКРАН 2: ГЛАВНЫЙ ВОПРОС (искренний) -->
-    <div class="screen" id="scr2">
-        <div class="sub-elegant">ГЛАВНОЕ</div>
-        <div class="title-large" style="font-size: clamp(2rem,6vw,4rem);">Знаешь, для меня ты<br>не просто друг</div>
-        <div class="question-card">
-            <div class="question-text">Ты — частичка меня, близкий человек. <br>Я для тебя тоже стал родным?</div>
-            <div class="btn-duo">
-                <button class="btn btn-primary" id="finalYesBtn">ДА, ТЫ РОДНОЙ</button>
-                <button class="btn btn-secondary" id="finalNoBtn">НЕТ</button>
-            </div>
-        </div>
-        <p style="color:#d8c0ff; max-width: 400px; font-size: 14px;">❤️ искренность — это главное, что у нас есть</p>
-    </div>
-
-    <!-- ЭКРАН 3: НЕБОЛЬШОЙ ТЁПЛЫЙ КВИЗ (лёгкий, без давления) -->
-    <div class="screen" id="scr3">
-        <div class="sub-elegant">НЕМНОГО О НАС</div>
-        <div id="quizQuestionText" style="font-size: 28px; font-weight: 600; margin-bottom: 25px;"></div>
-        <div id="quizOptionsContainer" class="quiz-options"></div>
-        <div style="height: 10px;"></div>
-    </div>
-
-    <!-- ЭКРАН 4: СИМВОЛИЧЕСКАЯ "ЗАГРУЗКА СЕРДЦА" (ОЧИЩЕНИЕ) -->
-    <div class="screen" id="scr4">
-        <div class="heart-symbol" id="heartIcon">❤️‍🩹</div>
-        <div class="progress-line"><div class="progress-fill-bro" id="heartProgressFill"></div></div>
-        <div id="heartPercentText" style="font-size: 28px; font-weight: 600; margin: 20px; color:#ffdfb3;">0%</div>
-        <button id="heartNextBtn" style="display: none;" class="btn btn-primary">Почувствовать тепло ✨</button>
-    </div>
-
-    <!-- ЭКРАН 5: ДИАЛОГ / ПРИЗНАНИЕ (консольный стиль, но душевно) -->
-    <div class="screen" id="scr5">
-        <div class="dialogue-block">
-            <div class="dialogue-lines" id="dialogLines"></div>
-            <div class="input-area" id="inputDialogArea" style="display: none;">
-                <span class="input-label">честный ответ ►</span>
-                <input type="text" id="dialogInput" class="secret-input" maxlength="1" autocomplete="off" placeholder="1 или 2">
-            </div>
-        </div>
-        <button id="dialogNextBtn" style="display: none;" class="btn btn-primary next-button">Продолжить ➤</button>
-    </div>
-
-    <!-- ЭКРАН 6: 100 ПРИЧИН, ПОЧЕМУ ТЫ — ЦЕЛЫЙ МИР -->
-    <div class="screen" id="scr6">
-        <div class="sub-elegant">100 ПРИЧИН</div>
-        <div class="title-large" style="font-size: 2.5rem;">Почему ты так важна</div>
-        <div class="reasons-grid" id="reasonsContainer"></div>
-        <div style="margin: 20px 0 10px; font-style: italic; color:#f0bbc8;">Ты — не просто друг. Ты — человек, который стал домом.</div>
-    </div>
-
-    <div class="footer-note">✦ навсегда в сердце ✦</div>
+  </div>
+  <footer>✧ просто хотел сказать, как ты классная ✧</footer>
 </div>
 
 <script>
-    (function(){
-        // ---------- ЗВЁЗДНОЕ ПОЛЕ (мягкое) ----------
-        const canvas = document.getElementById('starryCanvas');
-        const ctx = canvas.getContext('2d');
-        let w, h, stars = [];
-        function resizeStars() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-            stars = [];
-            for(let i=0; i<300; i++) {
-                stars.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    r: Math.random() * 2 + 0.7,
-                    alpha: Math.random() * 0.6 + 0.2,
-                    drift: Math.random() * 0.3 + 0.05
-                });
-            }
-        }
-        function drawStars() {
-            if(!ctx) return;
-            ctx.clearRect(0, 0, w, h);
-            for(let s of stars) {
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-                ctx.fillStyle = `rgba(255, 210, 240, ${s.alpha + Math.sin(Date.now() * 0.001) * 0.15})`;
-                ctx.fill();
-                s.y -= s.drift;
-                if(s.y < -10) { s.y = h + 10; s.x = Math.random() * w; }
-            }
-            requestAnimationFrame(drawStars);
-        }
-        window.addEventListener('resize', resizeStars);
-        resizeStars();
-        drawStars();
-
-        // ---------- ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ ----------
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        // ---------- КВИЗ (короткий, тёплый) ----------
-        let quizStep = 0;
-        const quizData = [
-            { question: "Что для тебя самое важное в близких отношениях?", options: ["Доверие", "Понимание", "Забота", "Искренность"] },
-            { question: "Какое слово лучше всего описывает нашу связь?", options: ["Тепло", "Спокойствие", "Родство", "Надёжность"] },
-            { question: "Мы с тобой — это...", options: ["Единое целое", "Друзья навсегда", "Семья", "Близкие люди"] }
-        ];
-
-        function startQuiz() {
-            quizStep = 0;
-            renderQuizQuestion();
-        }
-
-        function renderQuizQuestion() {
-            if(quizStep >= quizData.length) {
-                // после квиза идём к сердцу
-                showScreen('scr4');
-                startHeartLoading();
-                return;
-            }
-            const q = quizData[quizStep];
-            document.getElementById('quizQuestionText').innerText = q.question;
-            const container = document.getElementById('quizOptionsContainer');
-            container.innerHTML = '';
-            q.options.forEach(opt => {
-                const btn = document.createElement('div');
-                btn.className = 'quiz-btn';
-                btn.innerText = opt;
-                btn.onclick = () => {
-                    quizStep++;
-                    renderQuizQuestion();
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        // ---------- ЗАГРУЗКА СЕРДЦА (символ близости) ----------
-        async function startHeartLoading() {
-            const heart = document.getElementById('heartIcon');
-            const fill = document.getElementById('heartProgressFill');
-            const percentSpan = document.getElementById('heartPercentText');
-            const nextBtn = document.getElementById('heartNextBtn');
-            heart.classList.add('active-heart');
-            for(let p=0; p<=100; p++) {
-                fill.style.width = p + '%';
-                percentSpan.innerText = p + '%';
-                if(p === 30) heart.innerHTML = '💛';
-                if(p === 60) heart.innerHTML = '💖';
-                if(p === 85) heart.innerHTML = '❤️';
-                await delay(p < 40 ? 25 : 45);
-            }
-            heart.innerHTML = '❤️‍🔥';
-            percentSpan.innerText = '100% · ты в моём сердце';
-            nextBtn.style.display = 'inline-block';
-        }
-
-        function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
-
-        // ---------- ДИАЛОГ (консоль доверия) ----------
-        let dialogCompleted = false;
-        async function startDialog() {
-            const output = document.getElementById('dialogLines');
-            const inputArea = document.getElementById('inputDialogArea');
-            const nextBtn = document.getElementById('dialogNextBtn');
-            output.innerHTML = '';
-            inputArea.style.display = 'none';
-            nextBtn.style.display = 'none';
-
-            const lines = [
-                '<span style="color:#ffccaa;">[ тихий голос внутри ]</span><br>',
-                '<span style="color:#e5cbff;">Ты для меня больше, чем друг.</span><br>',
-                '<span style="color:#f0bcff;">Я ценю каждый момент, каждую улыбку, каждое «как дела».</span><br>',
-                '<span style="color:#ffddbb;">Ты стал человеком, которому можно доверять без оглядки.</span><br>',
-                '<br><span style="color:#ffb3da;">Ответь честно (выбери цифру):</span><br>',
-                '<span style="color:#bdeeff;"> 1 — Я тоже чувствую ту же близость</span><br>',
-                '<span style="color:#bdeeff;"> 2 — Мне нужно время</span><br>'
-            ];
-            for(let line of lines) {
-                output.innerHTML += line;
-                output.scrollTop = output.scrollHeight;
-                await delay(400);
-            }
-            inputArea.style.display = 'flex';
-            const inputField = document.getElementById('dialogInput');
-            inputField.value = '';
-            inputField.focus();
-
-            inputField.onkeydown = async (e) => {
-                if(e.key === 'Enter') {
-                    let val = inputField.value.trim();
-                    if(val === '1' || val === '2') {
-                        inputArea.style.display = 'none';
-                        if(val === '1') {
-                            output.innerHTML += `<br><span style="color:#ffbb99;">✨ Спасибо... Это много значит для меня. ✨</span><br>`;
-                        } else {
-                            output.innerHTML += `<br><span style="color:#ffeecc;">Я подожду. Но знай: ты всегда важна для меня таким, какая ты есть.</span><br>`;
-                        }
-                        await delay(1000);
-                        nextBtn.style.display = 'block';
-                    }
-                }
-            };
-        }
-
-        // ---------- 100 ПРИЧИН (искренних, без перебора) ----------
-        function generateReasons() {
-            const container = document.getElementById('reasonsContainer');
-            if(container.children.length > 0) return;
-            const reasonsBase = [
-                "Ты делаешь мир добрее", "С тобой легко дышать", "Ты понимаешь без слов",
-                "Ты всегда поддержишь", "Твоя улыбка согревает", "Ты честная и настоящая",
-                "Рядом с тобой я становлюсь лучше", "Ты — опора", "Ты помнишь мелочи",
-                "Ты не судишь", "Ты даришь ощущение дома", "С тобой можно быть собой",
-                "Ты умеешь слушать", "Твои глаза светятся теплом", "Ты — редкий человек",
-                "Ты никогда не предашь", "Ты придаёшь сил", "С тобой даже молчание — ценно",
-                "Ты вдохновляешь на добрые дела", "Ты — часть моей жизни", "Ты делаешь меня счастливее",
-                "Ты — не просто друг, ты — родная душа"
-            ];
-            for(let i = 1; i <= 100; i++) {
-                let text = reasonsBase[(i-1) % reasonsBase.length];
-                if(i > reasonsBase.length) text = text + " ✨";
-                const card = document.createElement('div');
-                card.className = 'reason-card';
-                card.innerHTML = `<div class="reason-index">${i.toString().padStart(2,'0')}</div><div class="reason-text">${text}</div>`;
-                container.appendChild(card);
-            }
-        }
-
-        // ---------- ОБРАБОТЧИКИ КНОПОК (ПЕРЕХОДЫ) ----------
-        document.getElementById('startYesBtn').onclick = () => {
-            showScreen('scr2');
-        };
-        document.getElementById('finalYesBtn').onclick = () => {
-            showScreen('scr3');
-            startQuiz();
-        };
-        document.getElementById('finalNoBtn').onclick = () => {
-            // мягкое повторение вопроса
-            const dialog = confirm("Ты уверена? Может, просто захочешь подумать?");
-            if(dialog === true) {
-                showScreen('scr2');
-            } else {
-                // остаёмся
-            }
-        };
-        document.getElementById('heartNextBtn').onclick = () => {
-            showScreen('scr5');
-            startDialog();
-        };
-        document.getElementById('dialogNextBtn').onclick = () => {
-            showScreen('scr6');
-            generateReasons();
-        };
-        // дополнительно: если пользователь захочет перезапустить всё с нуля кнопкой в шапке — релоад уже есть
-
-        // небольшая атмосфера: меняем текст в зависимости от прогресса
-        // done!
-    })();
+  // Генерируем летающие сердечки для красоты
+  const heartsContainer = document.getElementById('heartsContainer');
+  const heartSymbols = ['❤️', '💖', '💗', '💓', '🌸', '✨', '💕', '💞'];
+  for (let i = 0; i < 35; i++) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart-float');
+    heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.animationDelay = Math.random() * 15 + 's';
+    heart.style.animationDuration = 8 + Math.random() * 7 + 's';
+    heart.style.fontSize = 16 + Math.random() * 28 + 'px';
+    heart.style.opacity = 0.2 + Math.random() * 0.4;
+    heartsContainer.appendChild(heart);
+  }
 </script>
 </body>
 </html>
