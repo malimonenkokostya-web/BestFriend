@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>для Тори ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Russo+One&family=Montserrat:wght@300;400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0015;
+      --pink: #ff4d8d;
+      --purple: #a855f7;
+      --gold: #fbbf24;
+      --cyan: #06b6d4;
+      --text: #fce7f3;
+      --glass: rgba(15, 0, 30, 0.75);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #1a0040 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 90%, #0d0025 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, #150030 0%, transparent 60%);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Летающие частицы */
+    .particles {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: floatUp 7s infinite ease-in;
+      opacity: 0;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(105vh) scale(0); opacity: 0; }
+      15% { opacity: 0.9; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(-10vh) scale(1.6); opacity: 0; }
+    }
+
+    .scene {
+      width: 100%; max-width: 750px;
+      padding: 20px; position: relative;
+      z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    /* Секции */
+    .section {
+      display: none; width: 100%;
+      flex-direction: column; align-items: center;
+      text-align: center;
+      animation: fadeSlide 0.7s ease-out;
+    }
+    .section.active { display: flex; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Заставка */
+    .intro-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 36px;
+      color: #fff;
+      text-shadow: 0 0 20px var(--pink), 0 0 50px var(--pink), 0 0 80px var(--purple);
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+    .intro-hearts {
+      font-size: 50px;
+      margin-bottom: 20px;
+      animation: heartFloat 2s infinite ease-in-out;
+    }
+    @keyframes heartFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-12px) scale(1.08); }
+    }
+
+    .btn {
+      padding: 16px 40px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 1.5px;
+      transition: all 0.3s ease;
+      border: none;
+    }
+    .btn:active { transform: scale(0.95); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      box-shadow: 0 8px 40px rgba(255,77,141,0.5);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.4);
+      color: #fce7f3;
+    }
+    .btn-ghost:hover { border-color: var(--pink); }
+
+    .btn-skip {
+      position: relative;
+      transition: all 0.15s ease-out;
+    }
+
+    /* Вопрос */
+    .question-text {
+      font-family: 'Russo One', sans-serif;
+      font-size: 28px;
+      color: #fff;
+      text-shadow: 0 0 25px var(--purple);
+      margin: 25px 0;
+      letter-spacing: 2px;
+    }
+
+    .btn-group { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 20px 0; }
+
+    /* Котики */
+    .cat-img {
+      font-size: 100px;
+      margin: 20px 0;
+      animation: bounce 1s infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .cat-msg {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fce7f3;
+      margin: 10px 0;
+    }
+
+    /* Терминал */
+    .terminal {
+      background: #000a00;
+      border: 2px solid #33ff33;
+      border-radius: 14px;
+      padding: 20px;
+      width: 100%;
+      min-height: 200px;
+      box-shadow: 0 0 35px rgba(51,255,51,0.3);
+      font-family: 'Press Start 2P', monospace;
+      color: #33ff33;
+      font-size: 12px;
+      line-height: 2;
+      white-space: pre-wrap;
+      word-break: break-word;
+      text-align: left;
+    }
+    .cursor::after { content: "_"; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+    /* Сердце загрузка */
+    .heart-loader {
+      font-size: 80px;
+      margin: 25px 0;
+      filter: drop-shadow(0 0 30px #ff3366);
+    }
+    .progress-bar {
+      width: 85%;
+      max-width: 400px;
+      height: 20px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 10px 0;
+      border: 2px solid #ff4d8d;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff3366, #ff6b9d, #ff3366);
+      border-radius: 20px;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      color: #fce7f3;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* Хартс экран */
+    .hearts-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      font-size: 35px;
+      margin: 25px 0;
+    }
+    .dedication-text {
+      font-family: 'Pacifico', cursive;
+      font-size: 28px;
+      color: #fff;
+      text-shadow: 0 0 25px var(--pink), 0 0 50px var(--pink);
+      margin: 15px 0;
+    }
+
+    /* Плеер */
+    .player-box {
+      background: var(--glass);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-radius: 35px;
+      padding: 30px 18px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      width: 100%;
+    }
+    .now-playing {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 15px;
+      margin: 8px 0;
+    }
+    audio { width: 100%; max-width: 400px; border-radius: 30px; margin: 10px 0; }
+    .lyrics-box {
+      background: rgba(0,0,0,0.55);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 12px 0;
+      max-height: 130px;
+      overflow-y: auto;
+      color: #f5d0fe;
+      font-weight: 600;
+      font-size: 17px;
+      line-height: 1.8;
+      border: 1px solid #a78bfa;
+    }
+    .highlight-lyric {
+      color: #fbbf24;
+      font-weight: 800;
+      background: rgba(168,85,247,0.3);
+      border-radius: 8px;
+      padding: 3px 10px;
+    }
+
+    /* Финальные слова */
+    .final-box {
+      background: linear-gradient(160deg, #1a001a, #0d0015);
+      border-radius: 30px;
+      padding: 30px 20px;
+      border: 2px solid #ff4d6d;
+      box-shadow: 0 0 70px rgba(255,51,102,0.5);
+      max-height: 380px;
+      overflow-y: auto;
+      color: #fce4ec;
+      font-size: 15px;
+      line-height: 2;
+      text-align: left;
+    }
+    .final-box ol { padding-left: 25px; }
+    .final-box li { margin-bottom: 8px; }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="particles" id="particlesContainer"></div>
+
+<div class="scene">
+
+  <!-- === 1. ЗАСТАВКА === -->
+  <div class="section active" id="secIntro">
+    <div class="intro-hearts">💗💖💗</div>
+    <div class="intro-title">Тори, я хотел у тебя кое-что спросить...</div>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btnAsk">💌 Узнать что?</button>
+      <button class="btn btn-ghost btn-skip" id="btnSkip">Пропустить</button>
+    </div>
+  </div>
+
+  <!-- === 2. ВОПРОС (Да/Нет) === -->
+  <div class="section" id="secQuestion">
+    <div class="question-text">Ты считаешь меня своим лучшим другом?</div>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btnYes">Да ❤️</button>
+      <button class="btn btn-ghost" id="btnNo">Нет 😢</button>
+    </div>
+    <div id="noMsg" style="display:none; margin-top:20px;"></div>
+  </div>
+
+  <!-- === 3. КОТИКИ === -->
+  <div class="section" id="secCat">
+    <div class="cat-img" id="catEmoji"></div>
+    <div class="cat-msg" id="catMsg"></div>
+    <button class="btn btn-primary" id="btnContinue" style="margin-top:20px; display:none;">Продолжить ✨</button>
+  </div>
+
+  <!-- === 4. ТЕРМИНАЛ === -->
+  <div class="section" id="secTerminal">
+    <div class="terminal" id="terminalDisplay"></div>
+    <div class="btn-group" id="termBtns" style="margin-top:20px; display:none;">
+      <button class="btn btn-primary" data-choice="1">1. best+friend</button>
+      <button class="btn btn-ghost" data-choice="2">2. no friend</button>
+    </div>
+    <div id="termError" style="color:#ff4d6d; margin-top:10px; font-weight:700; display:none;"></div>
+  </div>
+
+  <!-- === 5. ЗАГРУЗКА СЕРДЦА === -->
+  <div class="section" id="secHeartLoad">
+    <div class="heart-loader">🫀</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0%</div>
+  </div>
+
+  <!-- === 6. ЭКРАН СЕРДЕЧЕК === -->
+  <div class="section" id="secHearts">
+    <div class="hearts-grid" id="heartsGrid"></div>
+    <div class="dedication-text">Это для Тори от Кости ❤️</div>
+    <button class="btn btn-primary" id="btnPlayMusic" style="margin-top:15px;">🎵 Включить музыку</button>
+  </div>
+
+  <!-- === 7. ПЛЕЕР (2 песни) === -->
+  <div class="section" id="secPlayer">
+    <div class="player-box">
+      <div class="intro-hearts" style="font-size:35px;">🎧</div>
+      <div class="now-playing" id="nowPlaying">▶ тёмный принц — Ты пахнешь цветами</div>
+      <audio id="audioPlayer" controls></audio>
+      <div class="lyrics-box" id="lyricsDisplay">🎤 нажми play</div>
+    </div>
+    <button class="btn btn-primary" id="btnFinal" style="margin-top:20px;">💭 Посмотреть, что я думаю о тебе</button>
+  </div>
+
+  <!-- === 8. 100 СЛОВ === -->
+  <div class="section" id="secFinal">
+    <div class="final-box" id="finalWords"></div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  // ===== ЧАСТИЦЫ =====
+  const pc = document.getElementById('particlesContainer');
+  for (let i=0;i<35;i++) {
+    const d = document.createElement('div'); d.classList.add('particle');
+    d.style.width = d.style.height = (Math.random()*7+3)+'px';
+    d.style.left = Math.random()*100+'%';
+    d.style.background = ['#ff4d8d','#a855f7','#fbbf24','#ff6b9d','#c084fc'][Math.floor(Math.random()*5)];
+    d.style.animationDelay = Math.random()*9+'s';
+    d.style.animationDuration = (Math.random()*9+7)+'s';
+    pc.appendChild(d);
+  }
+
+  // ===== ЭЛЕМЕНТЫ =====
+  const secIntro = document.getElementById('secIntro');
+  const secQuestion = document.getElementById('secQuestion');
+  const secCat = document.getElementById('secCat');
+  const secTerminal = document.getElementById('secTerminal');
+  const secHeartLoad = document.getElementById('secHeartLoad');
+  const secHearts = document.getElementById('secHearts');
+  const secPlayer = document.getElementById('secPlayer');
+  const secFinal = document.getElementById('secFinal');
+
+  const terminalDisplay = document.getElementById('terminalDisplay');
+  const termBtns = document.getElementById('termBtns');
+  const termError = document.getElementById('termError');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const heartsGrid = document.getElementById('heartsGrid');
+  const audioPlayer = document.getElementById('audioPlayer');
+  const lyricsDisplay = document.getElementById('lyricsDisplay');
+  const nowPlaying = document.getElementById('nowPlaying');
+  const finalWords = document.getElementById('finalWords');
+
+  let currentSong = 0;
+
+  // ===== ПЕСНИ =====
+  const songs = [
+    {
+      name: 'тёмный принц — Ты пахнешь цветами',
+      src: 'music.mp3',
+      lyrics: [
+        { t:0, l:"Ну а ты пахнешь цветами" },
+        { t:4, l:"Самыми вкусными травами" },
+        { t:8, l:"Самыми яркими красками" },
+        { t:12, l:"О-о-о, как глоток пива «Дон»" },
+        { t:17, l:"И я знаю, твой толер выше, чем у других" },
+        { t:23, l:"На двоих алкоголя хватило бы, чтобы открыть магазин" },
+        { t:30, l:"Я твой личный маньяк, жуткий сталкер с Двача" },
+        { t:36, l:"Я ищу тебя по твоим милым следам" },
+        { t:42, l:"А ты пахнешь цветами" },
+        { t:46, l:"Самыми вкусными травами" },
+        { t:50, l:"Самыми яркими красками" },
+        { t:54, l:"О-о-о, как глоток пива «Дон»" },
+        { t:59, l:"А ты пахнешь цветами" },
+        { t:63, l:"Самыми вкусными травами" },
+        { t:67, l:"Самыми яркими красками" },
+        { t:71, l:"А-а, я живу лучший сон" },
+        { t:76, l:"Ваще я очень романтик" },
+        { t:82, l:"Не знаю, но не, я романтик реально" },
+        { t:88, l:"То есть там с девочкой это я умею" },
+        { t:94, l:"🎧 Переключаемся..." }
+      ],
+      nextSongAt: 93
+    },
+    {
+      name: 'ЛСП — Коктейль 🍸',
+      src: 'music2.mp3',
+      lyrics: [
+        { t:0, l:"Ты как коктейль — сладкая, пьяная" },
+        { t:5, l:"Твои губы — самый крепкий алкоголь" },
+        { t:10, l:"Я тону в тебе, это не контроль" },
+        { t:15, l:"Ты играешь мной, будто это роль" },
+        { t:20, l:"Каждый твой взгляд — shot чистого яда" },
+        { t:25, l:"Но я хочу ещё, мне больше надо" },
+        { t:30, l:"Мы танцуем под луной, город спит" },
+        { t:35, l:"Твой запах — это лучший магнит" },
+        { t:40, l:"Коктейль из чувств, перемешанных в бокале" },
+        { t:45, l:"Ты и я — мы это заслуживали" },
+        { t:50, l:"На губах привкус вишни и любви" },
+        { t:55, l:"Ты меня только позови" },
+        { t:60, l:"Коктейль, коктейль... ты мой коктейль" }
+      ],
+      nextSongAt: 999
+    }
+  ];
+
+  // ===== 100 СЛОВ =====
+  const hundredWords = [
+    "1. Ты самый добрый человек, которого я знаю.",
+    "2. Твоя улыбка освещает самые тёмные дни.",
+    "3. Ты красивая — и снаружи, и внутри.",
+    "4. Ты умная, хоть иногда в этом сомневаешься.",
+    "5. Ты невероятно сильная духом.",
+    "6. Ты умеешь слушать, когда это нужно больше всего.",
+    "7. Твой смех — лучшее лекарство от грусти.",
+    "8. Ты верный друг, на которого можно положиться.",
+    "9. Ты вдохновляешь меня быть лучше.",
+    "10. Ты честная, даже когда это трудно.",
+    "11. Ты умеешь прощать, и это редкое качество.",
+    "12. Ты делаешь мир вокруг себя теплее.",
+    "13. Ты не проходишь мимо чужой боли.",
+    "14. Ты умеешь радоваться мелочам.",
+    "15. Ты амбициозная и целеустремлённая.",
+    "16. Ты не боишься быть собой.",
+    "17. Ты умеешь удивлять.",
+    "18. Ты даришь тепло даже на расстоянии.",
+    "19. Ты человек, с которым хочется говорить вечно.",
+    "20. Ты та, кому я доверяю свои секреты.",
+    "21. Ты не осуждаешь, а стараешься понять.",
+    "22. Ты мотивируешь не сдаваться.",
+    "23. Ты делаешь даже скучные дни весёлыми.",
+    "24. Ты ценишь дружбу так же, как и я.",
+    "25. Ты умеешь прощать мои ошибки.",
+    "26. Ты невероятно талантливая.",
+    "27. Ты видишь красоту в простых вещах.",
+    "28. Ты заслуживаешь самого лучшего в жизни.",
+    "29. Твоя искренность — это сокровище.",
+    "30. Ты умеешь делать комплименты от души.",
+    "31. Ты та, с кем можно помолчать и это не будет неловко.",
+    "32. Ты поддерживаешь мои безумные идеи.",
+    "33. Твоя интуиция тебя редко подводит.",
+    "34. Ты умеешь хранить секреты.",
+    "35. Ты делаешь меня счастливым просто тем, что ты есть.",
+    "36. Твоё присутствие — это уже подарок.",
+    "37. Ты заботливая и внимательная.",
+    "38. Ты не завидуешь, а искренне радуешься за других.",
+    "39. Ты умеешь находить выход из любой ситуации.",
+    "40. Ты не жалуешься по пустякам.",
+    "41. Ты умеешь ценить моменты.",
+    "42. Ты вкусно пахнешь, кстати.",
+    "43. Ты стильная и у тебя отличный вкус.",
+    "44. Ты умеешь флиртовать, но не перебарщиваешь.",
+    "45. Ты романтичная натура.",
+    "46. Ты веришь в чудеса, и это прекрасно.",
+    "47. Ты не стесняешься своих чувств.",
+    "48. Ты умеешь быть уязвимой, и это сила.",
+    "49. Ты не играешь роли, ты настоящая.",
+    "50. Ты человек, которого я уважаю безгранично.",
+    "51. Ты — полпути к моему хорошему настроению.",
+    "52. Ты знаешь, как поднять мне самооценку.",
+    "53. Ты никогда не осуждала меня за ошибки.",
+    "54. Ты даёшь мудрые советы.",
+    "55. Ты тактичная и деликатная.",
+    "56. Ты умеешь извиняться, когда неправа.",
+    "57. Ты принимаешь людей такими, какие они есть.",
+    "58. Ты не сплетничаешь за спиной.",
+    "59. Ты умеешь держать слово.",
+    "60. Ты ответственная и надёжная.",
+    "61. Ты не боишься трудностей.",
+    "62. Ты умеешь адаптироваться к переменам.",
+    "63. Ты открыта новому опыту.",
+    "64. Ты любознательная и эрудированная.",
+    "65. Ты умеешь слушать музыку и чувствовать её.",
+    "66. Ты сентиментальная, и это мило.",
+    "67. Ты помнишь важные для меня даты.",
+    "68. Ты даришь подарки от души.",
+    "69. Ты не меркантильная.",
+    "70. Ты ценишь внимание, а не цену.",
+    "71. Ты умеешь создавать уют.",
+    "72. Твои объятия — лучшее место в мире.",
+    "73. Ты умеешь прощать, даже когда больно.",
+    "74. Ты не держишь зла.",
+    "75. Ты веришь в лучшее в людях.",
+    "76. Ты не разочаровалась во мне ни разу.",
+    "77. Ты делаешь комплименты так, что я краснею.",
+    "78. Ты умеешь флиртовать взглядом.",
+    "79. Ты сексуальная, когда уверена в себе.",
+    "80. Ты притягательная личность.",
+    "81. Ты — магнит для хороших людей.",
+    "82. Ты не токсичная и не draining.",
+    "83. Ты даёшь энергию, а не забираешь.",
+    "84. Ты вдохновляешь меня писать такие слова.",
+    "85. Ты — причина, почему я верю в дружбу.",
+    "86. Ты показала мне, что такое настоящая поддержка.",
+    "87. Ты научила меня ценить моменты.",
+    "88. Ты изменила мою жизнь к лучшему.",
+    "89. Ты тот человек, которого я боюсь потерять.",
+    "90. Ты мой лучший друг, и это не просто слова.",
+    "91. Ты особенная, и ты должна это знать.",
+    "92. Ты уникальная, таких больше нет.",
+    "93. Ты — свет в конце тоннеля.",
+    "94. Ты — мой safe place.",
+    "95. Ты — человек, которому я благодарен каждый день.",
+    "96. Ты делаешь этот мир лучше.",
+    "97. Ты достойна всей любви, что есть во вселенной.",
+    "98. Ты — лучшее, что случилось со мной за долгое время.",
+    "99. Ты — мой бриллиант, моя звезда, моя гордость.",
+    "100. Я рад, что познакомился с тобой, Тори. Навсегда ❤️"
+  ];
+
+  // ===== НАВИГАЦИЯ =====
+  function showSection(sec) {
+    [secIntro,secQuestion,secCat,secTerminal,secHeartLoad,secHearts,secPlayer,secFinal]
+      .forEach(s => s.classList.remove('active'));
+    sec.classList.add('active');
+    sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ===== 1. ЗАСТАВКА → ВОПРОС =====
+  document.getElementById('btnAsk').addEventListener('click', () => showSection(secQuestion));
+
+  // Убегающая кнопка
+  const btnSkip = document.getElementById('btnSkip');
+  btnSkip.addEventListener('mouseover', moveSkip);
+  btnSkip.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    moveSkip();
+    // Если тапнули — всё равно перекидываем на вопрос (мисклик)
+    setTimeout(() => showSection(secQuestion), 300);
+  });
+  btnSkip.addEventListener('click', () => showSection(secQuestion));
+
+  function moveSkip() {
+    const maxX = window.innerWidth - btnSkip.offsetWidth - 30;
+    const maxY = window.innerHeight - btnSkip.offsetHeight - 30;
+    const rx = Math.random() * maxX;
+    const ry = Math.random() * maxY;
+    btnSkip.style.position = 'fixed';
+    btnSkip.style.left = rx + 'px';
+    btnSkip.style.top = ry + 'px';
+    btnSkip.style.zIndex = '999';
+  }
+
+  // ===== 2. ВОПРОС → ДА / НЕТ =====
+  document.getElementById('btnYes').addEventListener('click', () => {
+    showSection(secCat);
+    document.getElementById('catEmoji').textContent = '😸';
+    document.getElementById('catMsg').textContent = 'Я не сомневался! ❤️';
+    document.getElementById('btnContinue').style.display = 'inline-block';
+  });
+
+  document.getElementById('btnNo').addEventListener('click', () => {
+    const msgDiv = document.getElementById('noMsg');
+    msgDiv.style.display = 'block';
+    msgDiv.innerHTML = '<div class="cat-img">😿</div><div class="cat-msg">Подумай ещё, пожалуйста...</div>';
+    // Прячем кнопку Нет и оставляем только Да
+    document.getElementById('btnNo').style.display = 'none';
+    document.getElementById('btnYes').textContent = 'Да, ты мой лучший друг! ❤️';
+  });
+
+  // ===== 3. КОТИК → ТЕРМИНАЛ =====
+  document.getElementById('btnContinue').addEventListener('click', () => {
+    showSection(secTerminal);
+    startTerminal();
+  });
+
+  // ===== 4. ТЕРМИНАЛ =====
+  async function startTerminal() {
+    terminalDisplay.innerHTML = '<span class="cursor"></span>';
+    const lines = [
+      "root@bestfriend:~$ init sequence",
+      "Загрузка модуля Tori...",
+      "Загрузка модуля Kostia...",
+      "Вычисление: Tori + Kostia = ?",
+      "",
+      "Выберите вариант:",
+      "1. best+friend",
+      "2. no friend"
+    ];
+    for (let i=0; i<lines.length; i++) {
+      terminalDisplay.innerHTML = lines.slice(0,i+1).join('\n') + '<span class="cursor"></span>';
+      await sleep(250);
+    }
+    termBtns.style.display = 'flex';
+  }
+
+  termBtns.addEventListener('click', function(e) {
+    if (e.target.tagName !== 'BUTTON') return;
+    const choice = e.target.dataset.choice;
+    if (choice === '1') {
+      termBtns.style.display = 'none';
+      termError.style.display = 'none';
+      terminalDisplay.innerHTML += '\n\n>>> Tori + Kostia = ЛУЧШИЕ ДРУЗЬЯ ❤️\n>>> Загрузка...';
+      setTimeout(() => showSection(secHeartLoad), 1500);
+      startHeartLoading();
+    } else {
+      termError.style.display = 'block';
+      termError.textContent = '⚠ Ошибка! Выберите вариант 1';
+    }
+  });
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ===== 5. ЗАГРУЗКА СЕРДЦА =====
+  function startHeartLoading() {
+    let percent = 0;
+    const interval = setInterval(() => {
+      percent += Math.floor(Math.random()*8)+1;
+      if (percent >= 100) {
+        percent = 100;
+        clearInterval(interval);
+        progressFill.style.width = '100%';
+        progressText.textContent = '100% ❤️';
+        setTimeout(() => {
+          showSection(secHearts);
+          fillHearts();
+        }, 800);
+      } else {
+        progressFill.style.width = percent+'%';
+        progressText.textContent = percent+'%';
+      }
+    }, 250);
+  }
+
+  // ===== 6. ЭКРАН СЕРДЕЧЕК =====
+  function fillHearts() {
+    let html = '';
+    for (let i=0; i<50; i++) {
+      const emojis = ['❤️','💖','💗','💕','💘','💝','💟','♥️','🩷','💓'];
+      html += `<span>${emojis[Math.floor(Math.random()*emojis.length)]}</span>`;
+    }
+    heartsGrid.innerHTML = html;
+  }
+
+  // ===== 7. ПЛЕЕР =====
+  document.getElementById('btnPlayMusic').addEventListener('click', () => {
+    showSection(secPlayer);
+    loadSong(0);
+  });
+
+  function loadSong(idx) {
+    currentSong = idx;
+    const s = songs[idx];
+    audioPlayer.src = s.src;
+    nowPlaying.textContent = '▶ ' + s.name;
+    lyricsDisplay.innerHTML = '🎤 нажми play';
+  }
+
+  audioPlayer.addEventListener('timeupdate', () => {
+    const s = songs[currentSong];
+    const ct = audioPlayer.currentTime;
+    let line = '';
+    for (let i=s.lyrics.length-1; i>=0; i--) {
+      if (ct >= s.lyrics[i].t) { line = s.lyrics[i].l; break; }
+    }
+    lyricsDisplay.innerHTML = line
+      ? `<span class="highlight-lyric">${line}</span>`
+      : '🎵 ...';
+
+    // Автопереключение на вторую песню
+    if (currentSong === 0 && ct >= s.nextSongAt && songs[1].src) {
+      loadSong(1);
+      audioPlayer.play().catch(()=>{});
+      nowPlaying.textContent = '▶ ' + songs[1].name + ' (авто)';
+    }
+  });
+
+  // ===== 8. ФИНАЛ =====
+  document.getElementById('btnFinal').addEventListener('click', () => {
+    showSection(secFinal);
+    finalWords.innerHTML = '<ol>' + hundredWords.map(w => '<li>'+w.replace(/^\d+\.\s/,'')+'</li>').join('') + '</ol>';
+  });
+
+  // ===== СБРОС УБЕГАЮЩЕЙ КНОПКИ =====
+  window.addEventListener('resize', () => {
+    btnSkip.style.position = '';
+    btnSkip.style.left = '';
+    btnSkip.style.top = '';
+    btnSkip.style.zIndex = '';
+  });
+
+})();
+</script>
+</body>
+  </html>
