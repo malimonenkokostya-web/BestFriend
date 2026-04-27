@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <title>💜 ТОРИ ❤️ КОСТЯ | Бро-портал v2.0</title>
+  <title>💜 ТОРИ ❤️ КОСТЯ | Бро-портал 2.1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
@@ -207,25 +207,26 @@
     .card .text { font-size: 17px; font-weight: 500; color: #fff; }
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-    /* Quiz / Questions */
-    .quiz-box { width: 100%; max-width: 700px; }
-    .question { font-size: 22px; margin-bottom: 30px; color: #fff; font-weight: 600; }
-    .option-grid { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-    .option-btn {
-      width: 100%; padding: 18px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.03);
-      color: #fff; border-radius: var(--radius-sm); font-size: 16px; cursor: pointer;
-      transition: all var(--transition-bounce); text-align: center;
+    /* Прикольные фишки */
+    .easter-egg {
+      position: fixed; bottom: 20px; right: 20px; font-size: 30px; opacity: 0.2;
+      transition: opacity 0.3s; cursor: default; z-index: 999;
     }
-    .option-btn:hover { background: rgba(255,45,123,0.2); border-color: var(--pink); box-shadow: 0 0 20px rgba(255,45,123,0.3); }
+    .easter-egg:hover { opacity: 1; }
+
+    .confetti {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;
+    }
   </style>
 </head>
 <body>
   <canvas id="starfield"></canvas>
   <div class="noise-overlay"></div>
+  <div class="easter-egg" id="memeEgg" title="Пасхалка!">🥑</div>
 
   <div class="container" id="mainContainer">
     <div class="header">
-      <span class="header-left">✦ BRO SYSTEM v2.0 — ONLINE</span>
+      <span class="header-left">✦ BRO SYSTEM v2.1 — ONLINE</span>
       <span class="header-right">
         <span onclick="location.reload()">⟳ REBOOT</span>
         <span id="clock">00:00</span>
@@ -236,8 +237,9 @@
     <section class="stage active" id="s1">
       <p class="sub">Приватный бро-портал</p>
       <h1>BestFriendOS</h1>
-      <p class="desc">Тори, это твой личный портал. Мы дружим уже неделю, и я решил сделать кое-что особенное. Включи полный экран для максимального погружения 💜</p>
+      <p class="desc">Тори, добро пожаловать в нашу зону. Мы дружим уже неделю, и это портал, созданный только для тебя. Жми «Войти» и включай фулскрин для полного погружения 💜</p>
       <button class="btn btn-main" onclick="enterFullscreen()">Войти в систему ✦</button>
+      <p style="margin-top:20px; font-size:12px; color:var(--text-dim);">*Обязательно включи полный экран!</p>
     </section>
 
     <!-- S1b: Анкета (10 вопросов) -->
@@ -323,7 +325,7 @@
     <section class="stage" id="s8">
       <div class="karaoke-wrap">
         <div class="song-select">
-          <button class="song-btn active" id="btnSong1" onclick="loadSong(1)">🌸 MATRANG — Цветы</button>
+          <button class="song-btn active" id="btnSong1" onclick="loadSong(1)">🌸 Тёмный принц — Цветы</button>
           <button class="song-btn" id="btnSong2" onclick="loadSong(2)">🍸 ЛСП — Коктейль</button>
           <button class="song-btn" id="btnSong3" onclick="loadSong(3)">🍀 ЛСП — Фортуна</button>
         </div>
@@ -366,7 +368,7 @@
     function resize() {
       W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
-      stars = Array.from({length: 180}, () => ({
+      stars = Array.from({length: 200}, () => ({
         x: Math.random() * W, y: Math.random() * H,
         r: Math.random() * 2 + 0.5, s: Math.random() * 0.6 + 0.1,
         a: Math.random() * Math.PI * 2
@@ -389,6 +391,11 @@
     setInterval(() => {
       document.getElementById('clock').textContent = new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
     }, 1000);
+
+    // ==================== ПАСХАЛКА (клик по авокадо) ====================
+    document.getElementById('memeEgg').addEventListener('click', () => {
+      alert('🥑 Авокадо – символ нашей дружбы! Полезная и вечная, как мы с тобой.');
+    });
 
     // ==================== АНКЕТА (10 ВОПРОСОВ) ====================
     const quizQuestions = [
@@ -442,7 +449,7 @@
       if (id === 10) renderGrid();
     }
 
-    // ==================== КНОПКА "УБЕЖАТЬ" (БЕЗ КОЛЛИЗИЙ) ====================
+    // ==================== КНОПКА "УБЕЖАТЬ" ====================
     function dodgeBtn() {
       const btn = document.getElementById('runBtn');
       const stage = document.getElementById('s2');
@@ -519,54 +526,86 @@
       next.style.display = 'inline-block';
     }
 
-    // ==================== КАРАОКЕ-ПЛЕЕР ====================
+    // ==================== КАРАОКЕ-ПЛЕЕР (ПОЛНЫЕ ТЕКСТЫ) ====================
     const audio = document.getElementById('audioElement');
     let currentSongId = 1;
     let lyricsData = [];
     let isPlaying = false;
-    const ADVANCE = 0.35;
+    const ADVANCE = 0.35; // небольшое опережение для комфорта
 
     const songs = {
       1: {
         file: 'https://drive.google.com/uc?export=download&id=16IdeLNeY_UKTJqHLbzaNQUzzQB-Avw6G',
         lyrics: [
-          {t: 0, text: '🎵 (Музыка)'}, {t: 15, text: 'А ты пахнешь цветами, и я тоже цветами'},
-          {t: 19, text: 'Мы вдыхаем друг друга, забивая на память'}, {t: 22, text: 'Это небо над нами, это солнце над нами'},
-          {t: 25, text: 'Мы летим над мирами, мы горим именами'}, {t: 29, text: 'А ты пахнешь цветами, и я тоже цветами'},
-          {t: 33, text: 'Мы вдыхаем друг друга, забивая на память'}, {t: 36, text: 'Это небо над нами, это солнце над нами'},
-          {t: 40, text: 'Мы летим над мирами, мы горим именами'}, {t: 44, text: 'Ты — моё всё, ты — моё чудо'},
-          {t: 48, text: 'Я тебя ждал из ниоткуда'}, {t: 51, text: 'Твои глаза — это планета'},
-          {t: 54, text: 'В них я ищу свои ответы'}, {t: 58, text: 'Снова и снова я вижу твой свет'},
-          {t: 61, text: 'Ты мой закат, и ты мой рассвет'}, {t: 65, text: 'Руки сплетаются, души поют'},
-          {t: 68, text: 'В этом моменте наш главный уют'}, {t: 72, text: 'А ты пахнешь цветами...'}
+          {t: 0, text: '🎵 (Интро)'},
+          {t: 12, text: 'А ты пахнешь цветами самыми яркими'},
+          {t: 16, text: 'Я тону в аромате, мне не выбраться'},
+          {t: 20, text: 'Твои волосы — розы, твоя кожа — пион'},
+          {t: 24, text: 'Я влюбился в тебя, как в самый сладкий сон'},
+          {t: 28, text: 'А ты пахнешь цветами, и я тоже цветами'},
+          {t: 32, text: 'Мы вдыхаем друг друга, забивая на память'},
+          {t: 36, text: 'Это небо над нами, это солнце над нами'},
+          {t: 40, text: 'Мы летим над мирами, мы горим именами'},
+          {t: 44, text: 'Ты — моё всё, ты — моё чудо'},
+          {t: 48, text: 'Я тебя ждал из ниоткуда'},
+          {t: 52, text: 'Твои глаза — это планета'},
+          {t: 56, text: 'В них я ищу свои ответы'},
+          {t: 60, text: 'Снова и снова я вижу твой свет'},
+          {t: 64, text: 'Ты мой закат, и ты мой рассвет'},
+          {t: 68, text: 'Руки сплетаются, души поют'},
+          {t: 72, text: 'В этом моменте наш главный уют'},
+          {t: 76, text: 'А ты пахнешь цветами... (самыми яркими)'},
+          {t: 82, text: 'И я не могу надышаться тобой'},
+          {t: 88, text: 'Ты мой самый любимый сорт'},
+          {t: 94, text: 'Самый-самый, самый родной'},
+          {t: 100, text: '🎵 (Аутро)'}
         ]
       },
       2: {
         file: 'https://drive.google.com/uc?export=download&id=19ZA2yb2HxuqSDv1sJLLrpXrDOQDD8sdP',
         lyrics: [
-          {t: 0, text: '🎵 (Инструментал)'}, {t: 14, text: 'Ты — это всё, что мне нужно сейчас'},
-          {t: 17, text: 'Твой вкус на моих губах не погас'}, {t: 21, text: 'Мы перемешаны, как лед и сок'},
-          {t: 24, text: 'Я пью тебя залпом, нажимая курок'}, {t: 28, text: 'Мой коктейль, самый сладкий коктейль'},
-          {t: 31, text: 'Мы летим с тобой прямо в постель'}, {t: 35, text: 'Мой коктейль, самый горький коктейль'},
-          {t: 38, text: 'Я не верю, что это — апрель'}, {t: 41, text: 'Мой коктейль, самый сладкий коктейль'},
-          {t: 45, text: 'Мы летим с тобой прямо в постель'}, {t: 48, text: 'Мой коктейль, самый горький коктейль'},
-          {t: 52, text: 'Я не верю...'}, {t: 55, text: 'Внутри меня пожар, и ты — это бензин'},
-          {t: 59, text: 'Среди пустых витрин и ночных магазинов'}, {t: 62, text: 'Мы ищем то, чего уже давно нет'},
-          {t: 65, text: 'Выключая в этой комнате свет'}, {t: 69, text: 'Слишком много сахара, слишком мало льда'},
-          {t: 72, text: 'Ты говоришь «нет», когда хочешь «да»'}, {t: 75, text: 'Твои пузырьки бьют мне прямо в виски'},
-          {t: 79, text: 'Мы так далеко и мы так близки'}
+          {t: 0, text: '🎵 (Инструментал)'},
+          {t: 14, text: 'Ты — это всё, что мне нужно сейчас'},
+          {t: 17, text: 'Твой вкус на моих губах не погас'},
+          {t: 21, text: 'Мы перемешаны, как лед и сок'},
+          {t: 24, text: 'Я пью тебя залпом, нажимая курок'},
+          {t: 28, text: 'Мой коктейль, самый сладкий коктейль'},
+          {t: 31, text: 'Мы летим с тобой прямо в постель'},
+          {t: 35, text: 'Мой коктейль, самый горький коктейль'},
+          {t: 38, text: 'Я не верю, что это — апрель'},
+          {t: 41, text: 'Мой коктейль, самый сладкий коктейль'},
+          {t: 45, text: 'Мы летим с тобой прямо в постель'},
+          {t: 48, text: 'Мой коктейль, самый горький коктейль'},
+          {t: 52, text: 'Я не верю...'},
+          {t: 55, text: 'Внутри меня пожар, и ты — это бензин'},
+          {t: 59, text: 'Среди пустых витрин и ночных магазинов'},
+          {t: 62, text: 'Мы ищем то, чего уже давно нет'},
+          {t: 65, text: 'Выключая в этой комнате свет'},
+          {t: 69, text: 'Слишком много сахара, слишком мало льда'},
+          {t: 72, text: 'Ты говоришь «нет», когда хочешь «да»'},
+          {t: 75, text: 'Твои пузырьки бьют мне прямо в виски'},
+          {t: 79, text: 'Мы так далеко и мы так близки'},
+          {t: 83, text: 'Мой коктейль...'},
+          {t: 90, text: '🎵 (Финал)'}
         ]
       },
       3: {
-        file: '', // заглушка для Фортуны (можно добавить файл)
+        file: '', // Можно добавить позже
         lyrics: [
-          {t: 0, text: '🎵 (ЛСП — Фортуна)'}, {t: 12, text: 'Фортуна, ты где? Я жду тебя здесь'},
-          {t: 16, text: 'В этом городе снов, в этом мире чудес'}, {t: 20, text: 'Мы с тобой не знакомы, но я верю в успех'},
-          {t: 24, text: 'И в удачу, которую дарит нам смех'}, {t: 28, text: 'Фортуна улыбнётся, я знаю'},
-          {t: 32, text: 'Она меня не забывает'}, {t: 35, text: 'Даже когда тяжело, я иду вперёд'},
-          {t: 39, text: 'Фортуна, дай мне этот ход'}, {t: 43, text: 'Фортуна, ты капризна порой'},
-          {t: 47, text: 'Но я не сдамся, я буду с тобой'}, {t: 51, text: 'Твой шёпот слышу в шуме монет'},
-          {t: 55, text: 'Фортуна, дай мне зелёный свет'}
+          {t: 0, text: '🎵 (ЛСП — Фортуна)'},
+          {t: 12, text: 'Фортуна, ты где? Я жду тебя здесь'},
+          {t: 16, text: 'В этом городе снов, в этом мире чудес'},
+          {t: 20, text: 'Мы с тобой не знакомы, но я верю в успех'},
+          {t: 24, text: 'И в удачу, которую дарит нам смех'},
+          {t: 28, text: 'Фортуна улыбнётся, я знаю'},
+          {t: 32, text: 'Она меня не забывает'},
+          {t: 35, text: 'Даже когда тяжело, я иду вперёд'},
+          {t: 39, text: 'Фортуна, дай мне этот ход'},
+          {t: 43, text: 'Фортуна, ты капризна порой'},
+          {t: 47, text: 'Но я не сдамся, я буду с тобой'},
+          {t: 51, text: 'Твой шёпот слышу в шуме монет'},
+          {t: 55, text: 'Фортуна, дай мне зелёный свет'},
+          {t: 60, text: '🎵 (Окончание)'}
         ]
       }
     };
@@ -590,7 +629,7 @@
     function buildVisualizer() {
       const vis = document.getElementById('vis');
       vis.innerHTML = '';
-      for(let i=0; i<45; i++) {
+      for(let i=0; i<50; i++) {
         let b = document.createElement('div');
         b.className = 'bar';
         vis.appendChild(b);
@@ -744,6 +783,27 @@
         grid.appendChild(c);
       });
     }
+
+    // ==================== ДОП. ПРИКОЛ: КОНФЕТТИ ПРИ НАЖАТИИ НА СЕРДЦЕ ====================
+    document.addEventListener('click', function(e) {
+      if (e.target.id === 'hIcon' && e.target.classList.contains('full')) {
+        for (let i=0; i<30; i++) {
+          setTimeout(() => {
+            const conf = document.createElement('div');
+            conf.textContent = ['💖','✨','💜','🌟','🎉'][Math.floor(Math.random()*5)];
+            conf.style.position = 'fixed';
+            conf.style.left = Math.random() * 100 + '%';
+            conf.style.top = Math.random() * 100 + '%';
+            conf.style.fontSize = '30px';
+            conf.style.zIndex = '9999';
+            conf.style.pointerEvents = 'none';
+            conf.style.animation = 'float 2s ease-out forwards';
+            document.body.appendChild(conf);
+            setTimeout(() => conf.remove(), 2000);
+          }, i*30);
+        }
+      }
+    });
   </script>
 </body>
   </html>
