@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Открытка для Тори | Конверт и письмо</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Письмо для Тори | Италия, дружба и тёплые слова</title>
     <style>
         * {
             margin: 0;
@@ -14,18 +14,18 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(145deg, #fdeef9 0%, #e0d0ff 100%);
+            background: linear-gradient(135deg, #f3e6f0 0%, #d9cce6 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', 'Inter', 'Georgia', serif;
             padding: 20px;
-            overflow: hidden;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* Звёздная анимация фона */
-        .stars {
+        /* Фоновые облачка и итальянские мотивы */
+        .bg-italy {
             position: fixed;
             top: 0;
             left: 0;
@@ -33,24 +33,47 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
+            opacity: 0.25;
+            font-size: 80px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: flex-end;
+        }
+        .bg-italy span {
+            position: absolute;
+            animation: floatSlow 25s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0.3; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+        /* Звёзды */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
         .star {
             position: absolute;
-            background-color: #fff9e6;
+            background-color: #fffbe6;
             border-radius: 50%;
-            opacity: 0.6;
-            animation: twinkle 2.5s infinite alternate;
+            animation: twinkle 3s infinite alternate;
         }
         @keyframes twinkle {
             0% { opacity: 0.2; transform: scale(1);}
-            100% { opacity: 1; transform: scale(1.3);}
+            100% { opacity: 0.9; transform: scale(1.2);}
         }
 
-        /* Основной контейнер */
-        .card-container {
+        /* Контейнер */
+        .container {
             position: relative;
-            z-index: 10;
-            max-width: 600px;
+            z-index: 20;
+            max-width: 700px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -61,275 +84,364 @@
         /* Конверт */
         .envelope {
             width: 100%;
-            max-width: 400px;
-            background: #fdebd0;
-            border-radius: 26px;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 1px 0 #fff9;
+            max-width: 450px;
+            background: #f8ede8;
+            border-radius: 32px;
+            box-shadow: 0 28px 45px rgba(0,0,0,0.2), inset 0 1px 0 #fff9;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            position: relative;
+            transition: all 0.3s ease;
             overflow: hidden;
+            backdrop-filter: blur(2px);
         }
-        .envelope:hover {
-            transform: scale(1.01);
-        }
-        .envelope.hidden {
+        .envelope.hide-env {
             display: none;
         }
         .envelope-inner {
-            padding: 45px 35px 55px;
+            padding: 50px 35px 60px;
             text-align: center;
-            background: linear-gradient(145deg, #fff2e8, #ffe2d4);
-            border-radius: 26px;
-            border: 1px solid #ffccbb;
+            background: #fff5ef;
+            border-radius: 32px;
+            border: 1px solid #ffdbce;
         }
         .envelope-icon {
-            font-size: 80px;
+            font-size: 90px;
             display: inline-block;
-            animation: slightBounce 1.2s infinite alternate;
+            animation: gentleMove 1.4s infinite alternate;
         }
-        @keyframes slightBounce {
+        @keyframes gentleMove {
             from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
+            to { transform: translateY(-10px); }
         }
         .envelope h3 {
-            font-size: 1.8rem;
-            color: #aa6f8c;
-            margin: 20px 0 12px;
+            font-size: 2rem;
+            color: #b97f9b;
+            margin: 20px 0 10px;
         }
         .envelope p {
-            color: #9f7e92;
-            font-size: 1rem;
+            color: #b288a2;
+            font-size: 1.05rem;
         }
-        .click-hint {
-            margin-top: 25px;
+        .hint {
+            margin-top: 30px;
             font-size: 0.85rem;
-            color: #cc99b5;
             letter-spacing: 2px;
+            color: #cfa5be;
         }
 
-        /* Письмо (изначально скрыто) */
+        /* Письмо */
         .letter {
-            background: #fffef7;
-            background-image: radial-gradient(circle at 10% 30%, #fff1e6 1.5%, transparent 1.8%);
-            background-size: 24px 24px;
-            border-radius: 42px;
-            padding: 40px 32px;
-            box-shadow: 0 30px 55px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,200,0.8);
+            background: #fffef9;
+            border-radius: 48px;
             width: 100%;
+            padding: 45px 38px;
+            box-shadow: 0 35px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,250,210,0.9);
             display: none;
             opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
-            border: 1px solid #ffe2d0;
+            transform: scale(0.96) translateY(15px);
+            transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid #ffe0cf;
+            background-image: radial-gradient(circle at 10% 30%, #fff4ea 1.2%, transparent 1.5%);
+            background-size: 26px 26px;
         }
-        .letter.show {
+        .letter.show-letter {
             display: block;
-            animation: letterAppear 0.6s ease forwards;
+            animation: letterFloatIn 0.7s forwards;
         }
-        @keyframes letterAppear {
-            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+        @keyframes letterFloatIn {
+            0% { opacity: 0; transform: scale(0.94) translateY(25px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
         .letter h2 {
-            font-size: 2rem;
-            color: #bf7f9e;
+            font-size: 2.1rem;
+            color: #be7f9e;
             text-align: center;
-            margin-bottom: 25px;
             font-family: 'Georgia', serif;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
         }
-        .letter p {
-            font-size: 1.2rem;
-            line-height: 1.55;
-            color: #41303c;
+        .letter-line {
+            font-size: 1.18rem;
+            line-height: 1.6;
+            color: #3c2e3a;
+            margin-bottom: 20px;
             opacity: 0;
             transform: translateY(12px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            margin-bottom: 18px;
+            transition: opacity 0.45s ease, transform 0.45s ease;
         }
-        .letter p.revealed {
+        .letter-line.revealed {
             opacity: 1;
             transform: translateY(0);
         }
-        .signature {
-            margin-top: 30px;
-            text-align: right;
+        .poem-block {
             font-style: italic;
-            color: #bc85a4;
+            background: #fff3ed;
+            padding: 20px 20px;
+            border-radius: 48px;
+            margin: 20px 0;
+            color: #976b85;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+        .signature {
+            text-align: right;
+            margin-top: 35px;
             font-size: 1.1rem;
-            border-top: 1px dashed #ffcfdf;
+            font-weight: 500;
+            color: #c48aa8;
+            border-top: 2px dotted #ffddd0;
             padding-top: 20px;
         }
-        .reset-btn {
+
+        /* Кнопки управления */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
             margin-top: 35px;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
+            justify-content: center;
+        }
+        .ctrl-btn {
+            background: rgba(255, 245, 245, 0.8);
+            backdrop-filter: blur(12px);
             border: none;
             border-radius: 60px;
-            padding: 10px 24px;
-            color: #5a3e56;
+            padding: 10px 28px;
             font-weight: 600;
+            color: #7f5b72;
             cursor: pointer;
             transition: 0.2s;
             font-family: monospace;
             font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .reset-btn:hover {
-            background: #ecc9de;
-            color: #472f3f;
-            transform: scale(1.02);
+        .ctrl-btn:hover {
+            background: #f7d5e8;
+            transform: translateY(-2px);
+            color: #432c3a;
         }
         footer {
             position: fixed;
             bottom: 12px;
             font-size: 11px;
-            color: #b1809b;
-            z-index: 20;
-            background: rgba(255,245,245,0.5);
-            padding: 5px 12px;
-            border-radius: 60px;
-            backdrop-filter: blur(4px);
+            color: #ba98af;
+            background: rgba(255,250,245,0.6);
+            padding: 4px 18px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            z-index: 30;
         }
         @media (max-width: 550px) {
-            .envelope-inner { padding: 30px 20px 40px; }
-            .letter { padding: 30px 20px; }
-            .letter p { font-size: 1rem; }
+            .envelope-inner { padding: 30px 20px 45px; }
+            .letter { padding: 30px 22px; }
             .letter h2 { font-size: 1.7rem; }
+            .letter-line { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-<div class="stars" id="starsContainer"></div>
-<div class="card-container">
-    <!-- Конверт -->
-    <div class="envelope" id="envelope">
-        <div class="envelope-inner">
-            <div class="envelope-icon">✉️💌</div>
-            <h3>Тебе письмо, Тори!</h3>
-            <p>Нажми, чтобы открыть ➤</p>
-            <div class="click-hint">🌸 от Кости</div>
+    <div class="stars" id="starsContainer"></div>
+    <div class="bg-italy" id="italyEmojis"></div>
+    <div class="container">
+        <!-- Конверт -->
+        <div class="envelope" id="envelope">
+            <div class="envelope-inner">
+                <div class="envelope-icon">📮💌</div>
+                <h3>Письмо для Тори</h3>
+                <p>Нажми, чтобы открыть ✨</p>
+                <div class="hint">✉️ от Кости ✉️</div>
+            </div>
+        </div>
+
+        <!-- Письмо (будет заполнено строками) -->
+        <div class="letter" id="letter">
+            <h2>💌 Привет, Тори! 💌</h2>
+            <div id="letterLinesContainer"></div>
+            <div class="signature">Твой друг Костя ❤️</div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="ctrl-btn" id="refreshBtn">🔄 Прочитать снова</button>
+            <button class="ctrl-btn" id="reloadPageBtn">🌐 Обновить страницу</button>
         </div>
     </div>
+    <footer>✧ маленькое чудо для тебя ✧</footer>
 
-    <!-- Письмо + поздравление -->
-    <div class="letter" id="letter">
-        <h2>💌 Тори, с любовью!</h2>
-        <p id="line1">✨ Желаю тебе незабываемого отдыха в Италии! ✨</p>
-        <p id="line2">🍝 Пусть каждый день радует солнцем, вкусной пастой и ароматным эспрессо.</p>
-        <p id="line3">🌊 Наслаждайся морем, атмосферой и каждым моментом — ты это заслуживаешь.</p>
-        <p id="line4">❤️ Пусть время пролетит счастливо, а воспоминания согревают долго-долго.</p>
-        <p id="line5">😊 И помни: здесь тебя ждут и скучают. Отдыхай от души!</p>
-        <div class="signature">Твой друг Костя 💕</div>
-    </div>
-    <button class="reset-btn" id="resetBtn">✉️ Открыть снова</button>
-</div>
-<footer>✧ просто маленькое волшебство для тебя ✧</footer>
+    <script>
+        // ========== ФОН: звёзды и итальянские эмодзи ==========
+        const starsContainer = document.getElementById('starsContainer');
+        for (let i = 0; i < 180; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 3.5 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            star.style.animationDuration = Math.random() * 3 + 2 + 's';
+            starsContainer.appendChild(star);
+        }
 
-<script>
-    // создаём фон со звёздами
-    const starsContainer = document.getElementById('starsContainer');
-    for (let i = 0; i < 180; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        const size = Math.random() * 3 + 1;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 5 + 's';
-        star.style.animationDuration = Math.random() * 3 + 2 + 's';
-        starsContainer.appendChild(star);
-    }
+        const italyEmojis = ['🍕', '🍝', '🍷', '🌊', '☀️', '🛵', '⛲', '🍦', '🎭', '🏛️', '🍋', '🕊️', '🌿', '🎒', '📸'];
+        const bgDiv = document.getElementById('italyEmojis');
+        for (let i = 0; i < 35; i++) {
+            let span = document.createElement('span');
+            span.innerHTML = italyEmojis[Math.floor(Math.random() * italyEmojis.length)];
+            span.style.left = Math.random() * 100 + '%';
+            span.style.fontSize = (Math.random() * 40 + 24) + 'px';
+            span.style.animationDuration = (Math.random() * 20 + 15) + 's';
+            span.style.animationDelay = (Math.random() * 10) + 's';
+            span.style.opacity = 0.2 + Math.random() * 0.4;
+            bgDiv.appendChild(span);
+        }
 
-    // Получаем элементы
-    const envelope = document.getElementById('envelope');
-    const letterDiv = document.getElementById('letter');
-    const resetBtn = document.getElementById('resetBtn');
-    
-    // Текстовые строки
-    const lines = [
-        document.getElementById('line1'),
-        document.getElementById('line2'),
-        document.getElementById('line3'),
-        document.getElementById('line4'),
-        document.getElementById('line5')
-    ];
+        // ========== ТЕКСТ ПИСЬМА (длинное, тёплое, со стихами) ==========
+        const letterLines = [
+            "🌟 Как здорово, что мы познакомились! Пусть и недавно, но ты уже стала очень важным человеком.",
+            "🍃 С тобой легко и уютно. Твоя улыбка, чувство юмора и искренность — это невероятно.",
+            "💬 Каждый наш разговор — маленькое приключение. Спасибо за твою открытость и тепло.",
+            "",
+            "🍀 Я желаю тебе незабываемого отдыха в Италии! 💫",
+            "🍝 Пусть каждый день пахнет свежей пиццей, ароматным эспрессо и счастьем.",
+            "🌊 Море, солнце, узкие улочки и улыбки прохожих — пусть это будет твоя сказка.",
+            "📸 Сделай тысячи фото и запомни каждое мгновение — ты заслуживаешь лучшего отдыха.",
+            "",
+            "✨ А вот небольшой стишок для настроения ✨",
+            "«Пусть Италия нежно обнимет теплом,",
+            "Колизей удивит своим древним быльём,",
+            "Каналы Венеции шепчут секреты,",
+            "А лучшие будут с тобой моменты».",
+            "",
+            "❤️ И знай: здесь, далеко от Италии, тебя помнят и ждут. Отдыхай на все сто!",
+            "🎒 Набирайся сил, впечатлений и радости. А когда вернёшься — расскажешь мне обо всём!",
+            "",
+            "Ты классная, Тори. Пусть эта поездка станет одной из самых ярких страниц твоей жизни 🌸"
+        ];
 
-    let animationInProgress = false;
+        // Получаем элементы
+        const envelope = document.getElementById('envelope');
+        const letterDiv = document.getElementById('letter');
+        const linesContainer = document.getElementById('letterLinesContainer');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const reloadPageBtn = document.getElementById('reloadPageBtn');
 
-    // Функция очистки и сброса
-    function resetCard() {
-        if (animationInProgress) return;
-        // Скрываем письмо, показываем конверт
-        letterDiv.classList.remove('show');
-        envelope.classList.remove('hidden');
-        // Сбрасываем классы у строк
-        lines.forEach(line => {
-            line.classList.remove('revealed');
-        });
-        // Убираем возможные лишние стили
-        letterDiv.style.display = 'none';
-        setTimeout(() => {
-            letterDiv.style.display = '';
-        }, 10);
-        animationInProgress = false;
-    }
+        let currentRevealTimer = null;
+        let isOpen = false;
 
-    // Функция анимации появления строк
-    function revealLinesSequentially() {
-        let delay = 0;
-        lines.forEach((line, index) => {
+        // Очищаем контейнер письма и перестраиваем строки
+        function buildLetterLines() {
+            linesContainer.innerHTML = '';
+            letterLines.forEach((text, idx) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'letter-line';
+                if (text === '') {
+                    lineDiv.style.height = '15px';
+                    lineDiv.style.marginBottom = '5px';
+                } else {
+                    lineDiv.innerText = text;
+                }
+                lineDiv.setAttribute('data-index', idx);
+                linesContainer.appendChild(lineDiv);
+            });
+        }
+
+        // Функция сброса всего (закрыть письмо, показать конверт, очистить классы)
+        function resetToEnvelope() {
+            if (currentRevealTimer) {
+                clearTimeout(currentRevealTimer);
+                currentRevealTimer = null;
+            }
+            // скрываем письмо, показываем конверт
+            letterDiv.classList.remove('show-letter');
+            envelope.classList.remove('hide-env');
+            // сбрасываем все строки: убираем класс revealed
+            const allLines = document.querySelectorAll('.letter-line');
+            allLines.forEach(line => {
+                line.classList.remove('revealed');
+            });
+            isOpen = false;
+        }
+
+        // Построчное появление строк (медленно, красиво)
+        function revealLinesOneByOne() {
+            const allLines = document.querySelectorAll('.letter-line');
+            if (allLines.length === 0) return;
+            let delay = 0;
+            const stepDelay = 380; // миллисекунд между строками
+            for (let i = 0; i < allLines.length; i++) {
+                const line = allLines[i];
+                // Пропускаем пустые строки (они уже имеют высоту, но их тоже можно "обнаруживать" – но они невидимы, чтобы не нарушать ритм)
+                // Но анимацию добавим всем, включая пустые – они просто станут видимыми (но текста нет)
+                setTimeout(() => {
+                    if (line) line.classList.add('revealed');
+                }, delay);
+                delay += stepDelay;
+            }
+        }
+
+        // Открытие конверта и показ письма с анимацией
+        function openEnvelopeAndShowLetter() {
+            if (isOpen) return;
+            isOpen = true;
+
+            // Сначала прячем конверт с плавностью
+            envelope.style.transition = 'opacity 0.3s ease, transform 0.3s';
+            envelope.style.opacity = '0';
+            envelope.style.transform = 'scale(0.96)';
             setTimeout(() => {
-                if (line) line.classList.add('revealed');
-            }, delay);
-            delay += 380; // плавно, строка за строкой
-        });
-    }
+                envelope.classList.add('hide-env');
+                envelope.style.opacity = '';
+                envelope.style.transform = '';
+                // Показываем письмо
+                letterDiv.classList.add('show-letter');
+                // После появления письма запускаем построчное появление текста
+                // Небольшая задержка для плавности
+                setTimeout(() => {
+                    revealLinesOneByOne();
+                }, 300);
+            }, 280);
+        }
 
-    // Открытие конверта и показ письма
-    function openEnvelope() {
-        if (animationInProgress) return;
-        animationInProgress = true;
-        
-        // прячем конверт с небольшой задержкой (эффект исчезновения)
-        envelope.style.transition = 'opacity 0.3s ease, transform 0.3s';
-        envelope.style.opacity = '0';
-        envelope.style.transform = 'scale(0.95)';
-        
-        setTimeout(() => {
-            envelope.classList.add('hidden');
-            envelope.style.opacity = '';
-            envelope.style.transform = '';
-            // Показываем письмо
-            letterDiv.style.display = 'block';
-            setTimeout(() => {
-                letterDiv.classList.add('show');
-                // после появления письма запускаем построчное появление текста
-                revealLinesSequentially();
-            }, 80);
-        }, 280);
-    }
-
-    // Обработчик клика по конверту
-    envelope.addEventListener('click', openEnvelope);
-    
-    // Сброс: возвращаем конверт, скрываем письмо, очищаем строки
-    resetBtn.addEventListener('click', () => {
-        if (animationInProgress) return;
-        // Останавливаем возможные таймеры строк
-        lines.forEach(line => {
-            line.classList.remove('revealed');
-        });
-        // Сброс внешнего вида
-        letterDiv.classList.remove('show');
-        setTimeout(() => {
-            letterDiv.style.display = 'none';
-            envelope.classList.remove('hidden');
+        // Инициализация письма (сборка строк при загрузке, но строки скрыты)
+        function initLetter() {
+            buildLetterLines();
+            // по умолчанию письмо скрыто, конверт виден
+            envelope.classList.remove('hide-env');
             envelope.style.opacity = '1';
             envelope.style.transform = '';
-            animationInProgress = false;
-        }, 200);
-    });
-</script>
+            letterDiv.classList.remove('show-letter');
+            // сбросим все строки
+            const allLines = document.querySelectorAll('.letter-line');
+            allLines.forEach(line => line.classList.remove('revealed'));
+            isOpen = false;
+            if (currentRevealTimer) clearTimeout(currentRevealTimer);
+        }
+
+        // Обработчик клика на конверт
+        envelope.addEventListener('click', openEnvelopeAndShowLetter);
+
+        // Кнопка "Прочитать снова" (сбрасывает и заново открывает конверт)
+        refreshBtn.addEventListener('click', () => {
+            if (currentRevealTimer) clearTimeout(currentRevealTimer);
+            // Полный сброс
+            initLetter();
+            // мягко показываем конверт (если он был скрыт)
+            envelope.classList.remove('hide-env');
+            letterDiv.classList.remove('show-letter');
+            envelope.style.opacity = '1';
+            envelope.style.transform = '';
+            isOpen = false;
+            // маленькая анимация "привет"
+            envelope.style.transform = 'scale(1.01)';
+            setTimeout(() => { envelope.style.transform = ''; }, 200);
+        });
+
+        // Кнопка обновления страницы
+        reloadPageBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Запуск
+        initLetter();
+    </script>
 </body>
 </html>
