@@ -2,202 +2,433 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Тори — открытка от Кости</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Посылка для Тори | Самолётик и письмо</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      user-select: none;
     }
-
     body {
       min-height: 100vh;
-      background: linear-gradient(145deg, #f7eef9 0%, #e5d5f0 100%);
+      background: linear-gradient(145deg, #c1e4ff 0%, #f5deff 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Segoe UI', 'Inter', 'Georgia', serif;
-      padding: 20px;
+      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+      overflow: hidden;
       position: relative;
-      overflow-x: hidden;
     }
-
-    /* Лёгкие летающие сердечки */
-    .floating-hearts {
-      position: fixed;
+    .choice-screen {
+      position: absolute;
+      z-index: 20;
+      background: rgba(255,240,245,0.96);
+      backdrop-filter: blur(20px);
+      border-radius: 64px;
+      padding: 45px 35px;
+      text-align: center;
+      max-width: 450px;
+      width: 85%;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+      border: 1px solid #ffbbdd;
+    }
+    .choice-screen.hide {
+      transform: scale(0.8);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .choice-screen h2 {
+      font-size: 2rem;
+      color: #a1537a;
+      margin-bottom: 20px;
+    }
+    .choice-screen p {
+      font-size: 1.2rem;
+      margin-bottom: 35px;
+      color: #5d3a5c;
+    }
+    .btn-group {
+      display: flex;
+      gap: 25px;
+      justify-content: center;
+    }
+    .btn {
+      border: none;
+      padding: 12px 32px;
+      border-radius: 60px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      background: #eeddff;
+      color: #6a3e62;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn-yes {
+      background: #ffa5cf;
+      color: white;
+    }
+    .btn-yes:hover {
+      transform: scale(1.05);
+      background: #ff7bb5;
+    }
+    .btn-no:hover {
+      background: #d5bddf;
+      transform: translateY(-2px);
+    }
+    canvas {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 0;
+      z-index: 1;
     }
-    .heart-float {
+    .message-card {
       position: absolute;
-      color: rgba(255, 120, 160, 0.3);
-      font-size: 20px;
-      user-select: none;
-      animation: floatHeart 10s linear infinite;
-      bottom: -50px;
-    }
-    @keyframes floatHeart {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0.5; bottom: -50px; }
-      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; bottom: 110vh; }
-    }
-
-    /* Конверт / открытка */
-    .postcard {
-      position: relative;
-      z-index: 10;
-      max-width: 650px;
-      width: 100%;
-      background: rgba(255, 248, 245, 0.96);
-      border-radius: 48px;
-      box-shadow: 0 35px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,200,0.8);
-      overflow: hidden;
-      backdrop-filter: blur(3px);
-      transition: transform 0.3s ease;
-    }
-    .postcard:hover {
-      transform: scale(1.01);
-    }
-
-    /* Внутреннее содержимое */
-    .content {
-      padding: 45px 38px 55px;
+      z-index: 15;
+      background: #fffaf7;
+      border-radius: 56px;
+      max-width: 500px;
+      width: 85%;
+      padding: 35px 30px;
       text-align: center;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+      border: 1px solid #ffcce6;
     }
-
-    /* Цветочный уголок / декор */
-    .ornament {
-      font-size: 32px;
-      letter-spacing: 12px;
-      color: #dea5c4;
-      margin-bottom: 20px;
+    .message-card.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
     }
-
-    h1 {
-      font-size: 2.6rem;
-      font-weight: 600;
-      color: #4a2c5e;
-      margin-bottom: 12px;
-      font-family: 'Georgia', serif;
-      letter-spacing: -0.5px;
-    }
-
-    .subhead {
-      font-size: 1rem;
-      color: #b483a3;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      border-top: 1px solid #f0cae0;
-      border-bottom: 1px solid #f0cae0;
-      display: inline-block;
-      padding: 6px 20px;
-      margin-bottom: 30px;
-      font-weight: 500;
-    }
-
-    .message-text {
-      font-size: 1.18rem;
-      line-height: 1.65;
-      color: #382a44;
-      text-align: left;
-      margin: 30px 0 35px;
-      font-family: 'Inter', system-ui;
-    }
-
-    .message-text p {
-      margin-bottom: 20px;
-    }
-
-    .message-text .highlight {
-      background: linear-gradient(120deg, #ffe1f0 0%, #ffe1f0 40%, transparent 60%);
-      padding: 0 4px;
-      border-radius: 12px;
-      font-weight: 500;
-      color: #bc5c8c;
-    }
-
-    .signature {
-      font-size: 1.2rem;
-      font-weight: 500;
-      font-family: 'Georgia', serif;
-      color: #9b5e7e;
-      border-top: 2px dotted #ebc0da;
-      padding-top: 28px;
-      margin-top: 20px;
-      text-align: right;
-    }
-
-    .signature span {
+    .message-card h3 {
       font-size: 2rem;
-      vertical-align: middle;
+      color: #bc6f9c;
+      margin-bottom: 20px;
     }
-
-    /* маленькие цветочки в углах */
-    .corner-flower {
-      position: absolute;
-      font-size: 28px;
-      opacity: 0.35;
-      pointer-events: none;
+    .message-card p {
+      font-size: 1.18rem;
+      line-height: 1.5;
+      color: #392c3c;
     }
-    .corner1 { top: 15px; left: 20px; transform: rotate(-15deg); }
-    .corner2 { bottom: 15px; right: 20px; transform: rotate(10deg); }
-
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #b592b0;
-      margin-top: 15px;
-      padding-bottom: 15px;
+    .signature {
+      margin-top: 25px;
+      font-style: italic;
+      color: #b66a95;
+      border-top: 1px solid #ffe0ed;
+      padding-top: 18px;
     }
-    @media (max-width: 550px) {
-      .content { padding: 30px 22px 40px; }
-      .message-text { font-size: 1rem; }
-      h1 { font-size: 2rem; }
+    .reset-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 30;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      border: none;
+      border-radius: 60px;
+      padding: 10px 20px;
+      color: white;
+      cursor: pointer;
+      font-family: monospace;
+      pointer-events: auto;
     }
   </style>
 </head>
 <body>
-<div class="floating-hearts" id="heartsContainer"></div>
-<div class="postcard">
-  <div class="corner-flower corner1">🌸🌼</div>
-  <div class="corner-flower corner2">🌷✨</div>
-  <div class="content">
-    <div class="ornament">✧ ˚₊‧⁺˖♡˖⁺‧₊˚ ✧</div>
-    <h1>Тори, для меня ты — особенная</h1>
-    <div class="subhead">просто от сердца</div>
-
-    <div class="message-text">
-      <p>Мы знакомы совсем недолго, но почему-то с тобой <span class="highlight">легко и тепло</span>. Каждый раз, когда мы общаемся — будь то смешные переписки или просто разговоры ни о чём, — время летит незаметно. Ты умеешь создавать вокруг себя уют и радость.</p>
-      <p>Мне нравится твой <span class="highlight">стиль</span> — в одежде, в мыслях, в том, как ты смотришь на мир. В тебе есть искренность и лёгкость, которые подкупают. Даже когда мы просто обсуждаем ерунду или делимся мемами, я чувствую, что рядом со мной — настоящий, живой человек.</p>
-      <p>Ты важна для меня. Не потому что мы знакомы сто лет, а потому что ты умеешь быть <span class="highlight">настоящей</span>. И я ценю каждую минуту, проведённую с тобой.</p>
-    </div>
-
-    <div class="signature">
-      <span>💕</span> Твой друг Костя <span>💕</span>
-    </div>
+<div class="choice-screen" id="choiceScreen">
+  <h2>📦 Посылка для Тори</h2>
+  <p>Тебе пришло необычное письмо... Хочешь посмотреть?</p>
+  <div class="btn-group">
+    <button class="btn btn-yes" id="watchBtn">Да, посмотреть ✨</button>
+    <button class="btn btn-no" id="cancelBtn">Нет, не сейчас</button>
   </div>
-  <footer>✧ просто хотел сказать, как ты классная ✧</footer>
 </div>
+<canvas id="sceneCanvas"></canvas>
+<div class="message-card" id="letterCard">
+  <h3>💌 Тори, тебе письмо!</h3>
+  <p>Мы знакомы недавно, но с тобой так легко и уютно. Твой стиль, улыбка, искренность — это что-то особенное. Спасибо за каждый разговор, за смех и твою душу. Ты важна для меня ❤️</p>
+  <div class="signature">Твой друг Костя ✨</div>
+</div>
+<button class="reset-btn" id="resetAllBtn">✈️ Прожить заново</button>
 
 <script>
-  // Генерируем летающие сердечки для красоты
-  const heartsContainer = document.getElementById('heartsContainer');
-  const heartSymbols = ['❤️', '💖', '💗', '💓', '🌸', '✨', '💕', '💞'];
-  for (let i = 0; i < 35; i++) {
-    const heart = document.createElement('div');
-    heart.classList.add('heart-float');
-    heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-    heart.style.left = Math.random() * 100 + '%';
-    heart.style.animationDelay = Math.random() * 15 + 's';
-    heart.style.animationDuration = 8 + Math.random() * 7 + 's';
-    heart.style.fontSize = 16 + Math.random() * 28 + 'px';
-    heart.style.opacity = 0.2 + Math.random() * 0.4;
-    heartsContainer.appendChild(heart);
-  }
+  (function(){
+    const canvas = document.getElementById('sceneCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let animationId = null;
+    let animationActive = false;
+    let step = 0; // 0: ожидание, 1: полёт самолёта, 2: дом + руки открывают письмо
+    let planeX = -100, planeY = 150;
+    let letterRevealed = false;
+    let handsProgress = 0; // 0..1 открытие письма
+    let showLetterCard = false;
+
+    const choiceScreen = document.getElementById('choiceScreen');
+    const letterCard = document.getElementById('letterCard');
+    const watchBtn = document.getElementById('watchBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const resetBtn = document.getElementById('resetAllBtn');
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      drawStatic(); // если анимация не идёт, рисуем статику
+    }
+
+    function drawStatic() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      // небо градиент
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, '#c4e6ff');
+      grad.addColorStop(1, '#f0d7ff');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+      // облака
+      drawCloud(100, 80, 60);
+      drawCloud(width-150, 120, 70);
+      drawCloud(width-300, 200, 50);
+      // дом (всегда виден, но слегка)
+      drawHouse(width*0.7, height*0.6);
+    }
+
+    function drawCloud(x, y, size) {
+      ctx.fillStyle = 'rgba(255,255,245,0.8)';
+      ctx.beginPath();
+      ctx.arc(x, y, size*0.5, 0, Math.PI*2);
+      ctx.arc(x+size*0.4, y-size*0.2, size*0.45, 0, Math.PI*2);
+      ctx.arc(x-size*0.3, y-size*0.1, size*0.4, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    function drawHouse(x, y) {
+      // основание дома
+      ctx.fillStyle = '#e8c690';
+      ctx.fillRect(x-55, y-50, 110, 100);
+      ctx.fillStyle = '#c2814a';
+      ctx.fillRect(x-50, y-40, 100, 90);
+      // крыша
+      ctx.beginPath();
+      ctx.moveTo(x-65, y-50);
+      ctx.lineTo(x, y-110);
+      ctx.lineTo(x+65, y-50);
+      ctx.fillStyle = '#b5533f';
+      ctx.fill();
+      // окно
+      ctx.fillStyle = '#ffe9b0';
+      ctx.fillRect(x-20, y-35, 40, 40);
+      ctx.fillStyle = '#7d5d42';
+      ctx.fillRect(x-5, y-15, 10, 20);
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.rect(x-15, y-30, 10, 10);
+      ctx.rect(x+5, y-30, 10, 10);
+      ctx.fill();
+      ctx.fillStyle = '#a55233';
+      ctx.fillRect(x-25, y-20, 5, 30);
+      ctx.fillRect(x+20, y-20, 5, 30);
+    }
+
+    function drawPlane(x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.sin(Date.now()*0.008)*0.1);
+      ctx.fillStyle = '#f7e4e0';
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(25, 0);
+      ctx.lineTo(0, 10);
+      ctx.lineTo(-10, 5);
+      ctx.lineTo(-20, 0);
+      ctx.lineTo(-10, -5);
+      ctx.fill();
+      ctx.fillStyle = '#eebbcb';
+      ctx.beginPath();
+      ctx.moveTo(5, -3);
+      ctx.lineTo(20, 0);
+      ctx.lineTo(5, 3);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawHands(progress) {
+      // progress 0..1, руки подлетают и раскрывают конверт
+      let leftX = width*0.5 - 90;
+      let rightX = width*0.5 + 40;
+      let baseY = height*0.65;
+      let offsetY = -20 * (1-progress);
+      // левая рука
+      ctx.fillStyle = '#f9cfb0';
+      ctx.beginPath();
+      ctx.ellipse(leftX + 10, baseY + offsetY + 10, 25, 30, -0.3, 0, Math.PI*2);
+      ctx.fill();
+      for(let i=0;i<5;i++) {
+        ctx.beginPath();
+        ctx.moveTo(leftX + 5 + i*5, baseY + offsetY -5);
+        ctx.lineTo(leftX + i*4, baseY + offsetY -20);
+        ctx.lineTo(leftX + 10 + i*5, baseY + offsetY -8);
+        ctx.fillStyle = '#f5c8a5';
+        ctx.fill();
+      }
+      // правая рука
+      ctx.beginPath();
+      ctx.ellipse(rightX + 5, baseY + offsetY + 5, 28, 32, 0.2, 0, Math.PI*2);
+      ctx.fill();
+      for(let i=0;i<5;i++) {
+        ctx.beginPath();
+        ctx.moveTo(rightX + 2 + i*5, baseY + offsetY -2);
+        ctx.lineTo(rightX + i*5 -5, baseY + offsetY -20);
+        ctx.lineTo(rightX + 8 + i*5, baseY + offsetY -5);
+        ctx.fill();
+      }
+      // конверт между рук
+      let envProgress = Math.min(1, progress*1.2);
+      let envScale = 0.5 + envProgress*0.5;
+      ctx.save();
+      ctx.translate(width*0.5, baseY + offsetY -5);
+      ctx.scale(envScale, envScale);
+      ctx.fillStyle = '#fff2e0';
+      ctx.fillRect(-40, -30, 80, 60);
+      ctx.fillStyle = '#e0aa7c';
+      ctx.fillRect(-30, -20, 60, 40);
+      ctx.beginPath();
+      ctx.moveTo(-30, -20);
+      ctx.lineTo(0, -5);
+      ctx.lineTo(30, -20);
+      ctx.strokeStyle = '#cc8b5e';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#f3cca3';
+      ctx.fillRect(-15, -5, 30, 15);
+      ctx.restore();
+    }
+
+    function drawScene() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      // небо
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, '#bddbff');
+      grad.addColorStop(1, '#f7e4ff');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+      drawCloud(100, 70, 65);
+      drawCloud(width-180, 110, 75);
+      drawCloud(width-400, 180, 55);
+      // дом
+      let houseX = width*0.7;
+      let houseY = height*0.6;
+      drawHouse(houseX, houseY);
+      
+      if (animationActive) {
+        // полёт самолёта
+        if (step === 1 && planeX < width+150) {
+          planeX += 3.2;
+          planeY = 150 + Math.sin(planeX*0.02)*20;
+          drawPlane(planeX, planeY);
+        } else if (step === 1 && planeX >= width+50) {
+          step = 2;
+          handsProgress = 0;
+        }
+        if (step === 2) {
+          // самолёт уже улетел, рисуем руки и открытие письма
+          if (handsProgress < 1) {
+            handsProgress += 0.02;
+            if (handsProgress >= 1) {
+              // показать карточку письма
+              setTimeout(() => {
+                letterCard.classList.add('show');
+              }, 400);
+            }
+          }
+          drawHands(handsProgress);
+          // дорисуем дымок от самолёта
+        }
+        if (step === 2 && handsProgress >= 1) {
+          // продолжаем показывать руки с письмом
+          drawHands(1);
+        }
+      } else {
+        // статика без анимации
+        drawPlane(width*0.2, 120);
+      }
+      // солнце
+      ctx.beginPath();
+      ctx.arc(70, 70, 40, 0, Math.PI*2);
+      ctx.fillStyle = '#fffac2';
+      ctx.fill();
+    }
+
+    function startAnimation() {
+      if (animationId) cancelAnimationFrame(animationId);
+      animationActive = true;
+      step = 1;
+      planeX = -80;
+      planeY = 150;
+      handsProgress = 0;
+      letterCard.classList.remove('show');
+      showLetterCard = false;
+      function animate() {
+        drawScene();
+        if (step === 2 && handsProgress >= 1) {
+          // анимация завершена, но продолжаем рисовать
+          if (animationId) cancelAnimationFrame(animationId);
+          animationActive = false;
+          drawScene();
+          return;
+        }
+        animationId = requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    function resetEverything() {
+      if (animationId) cancelAnimationFrame(animationId);
+      animationActive = false;
+      step = 0;
+      planeX = -100;
+      handsProgress = 0;
+      letterCard.classList.remove('show');
+      choiceScreen.classList.remove('hide');
+      drawScene();
+    }
+
+    watchBtn.addEventListener('click', () => {
+      choiceScreen.classList.add('hide');
+      setTimeout(() => {
+        startAnimation();
+      }, 400);
+    });
+    cancelBtn.addEventListener('click', () => {
+      choiceScreen.classList.add('hide');
+      setTimeout(() => {
+        letterCard.classList.add('show');
+        letterCard.querySelector('p').innerHTML = 'Ничего страшного, письмо подождёт. Ты всё равно важна 💕';
+      }, 300);
+    });
+    resetBtn.addEventListener('click', () => {
+      resetEverything();
+    });
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      drawScene();
+    });
+    resizeCanvas();
+    drawScene();
+  })();
 </script>
 </body>
 </html>
