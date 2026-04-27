@@ -1,119 +1,127 @@
 <!DOCTYPE html>
 <html lang="ru">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <title>💜 ТОРИ ❤️ КОСТЯ | Бро-портал 3.0 (Ultra Edition)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <title>❓ БРО? ЗАВИСИМОСТЬ ❤️ ВОПРОСУ</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; /* улучшает впечатление от игровых элементов */ }
-    :root {
-      --pink: #ff2d7b; --pink-glow: #ff6b9d; --purple: #a34dff; --purple-glow: #c07cff;
-      --cyan: #00e5ff; --cyan-glow: #66f0ff; --gold: #ffd700; --gold-glow: #ffe566;
-      --green: #2ecc71; --green-glow: #6df0a1; --bg-deep: #0a0a14;
-      --bg-card: rgba(8, 8, 16, 0.85); --border-subtle: rgba(255,255,255,0.1);
-      --border-glow: rgba(163, 77, 255, 0.7); --text-primary: #f5f5ff;
-      --text-dim: #9a9eb0; --font-main: 'Inter', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace; --font-display: 'Playfair Display', serif;
-      --radius-sm: 14px; --radius-md: 22px; --radius-lg: 32px;
-      --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      --transition-smooth: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
     }
 
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(163,77,255,0.6); border-radius: 10px; }
+    :root {
+      --c-dark: #0a0a16;
+      --c-card: rgba(12, 12, 24, 0.85);
+      --c-pink: #ff2d8a;
+      --c-pink-glow: #ff6bb3;
+      --c-cyan: #00f2ff;
+      --c-cyan-glow: #88f5ff;
+      --c-purple: #b44cff;
+      --c-gold: #ffd966;
+      --c-green: #2eeb7a;
+      --c-text: #f0f0ff;
+      --c-dim: #8e92b0;
+      --border-glow: rgba(180, 76, 255, 0.6);
+      --border-subtle: rgba(255,255,255,0.1);
+      --radius-xl: 42px;
+      --radius-md: 28px;
+      --font-main: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
 
     body {
-      background: var(--bg-deep); color: var(--text-primary);
-      height: 100vh; width: 100vw; overflow: hidden;
+      background: radial-gradient(circle at 20% 30%, #0f0c1f, #03030a);
+      min-height: 100vh;
       font-family: var(--font-main);
+      color: var(--c-text);
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    /* Динамический градиентный фон */
-    .gradient-bg {
+    canvas#particleCanvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      pointer-events: none;
       z-index: 0;
-      background: radial-gradient(circle at 20% 30%, rgba(255,45,123,0.15), rgba(10,10,20,1) 80%);
-      animation: hueRotate 20s infinite alternate;
-    }
-    @keyframes hueRotate {
-      0% { filter: hue-rotate(0deg); }
-      100% { filter: hue-rotate(25deg); }
+      opacity: 0.6;
     }
 
-    canvas#starfield {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 1; pointer-events: none; opacity: 0.7;
+    .noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='nn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23nn)' opacity='0.06'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .noise-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 2; pointer-events: none; opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+    .glow-text {
+      text-shadow: 0 0 15px var(--c-pink), 0 0 35px rgba(255,45,138,0.6);
     }
 
     .container {
       position: relative;
-      z-index: 10;
-      width: 96vw;
-      height: 94vh;
-      max-width: 1500px;
-      max-height: 950px;
-      margin: 3vh auto;
-      background: var(--bg-card);
-      backdrop-filter: blur(40px) saturate(180%);
-      border-radius: var(--radius-lg);
+      z-index: 20;
+      width: 100%;
+      max-width: 1480px;
+      height: 90vh;
+      max-height: 920px;
+      background: var(--c-card);
+      backdrop-filter: blur(32px) saturate(200%);
+      border-radius: var(--radius-xl);
       border: 1px solid var(--border-glow);
-      box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 120px rgba(163,77,255,0.3);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.08), 0 0 0 2px rgba(255,45,138,0.2);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: all var(--transition-smooth);
+      transition: all 0.3s;
     }
 
-    :fullscreen .container, :-webkit-full-screen .container {
-      width: 100vw; height: 100vh; max-width: none; max-height: none;
-      border-radius: 0; margin: 0; border: none;
-    }
-
-    .header {
-      padding: 14px 30px;
-      border-bottom: 1px solid var(--border-subtle);
+    .top-bar {
+      padding: 16px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
-      letter-spacing: 2px;
       font-family: var(--font-mono);
-      background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
-      flex-shrink: 0;
+      font-size: 12px;
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: linear-gradient(135deg, rgba(255,45,138,0.1), transparent);
     }
-    .header-left {
-      color: var(--cyan-glow);
-      text-shadow: 0 0 12px rgba(0,229,255,0.8);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-    .header-right span {
-      cursor: pointer;
-      transition: all var(--transition-bounce);
-      color: var(--text-dim);
-    }
-    .header-right span:hover {
-      color: var(--pink-glow);
-      text-shadow: 0 0 10px var(--pink);
-    }
-    #clock {
-      color: var(--gold);
+
+    .logo {
+      color: var(--c-cyan);
       font-weight: 700;
+      text-shadow: 0 0 8px var(--c-cyan);
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%,100% { opacity: 0.9; text-shadow: 0 0 4px var(--c-cyan);}
+      50% { opacity: 1; text-shadow: 0 0 18px var(--c-cyan);}
+    }
+
+    .right-stats span {
+      margin-left: 28px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .right-stats span:hover {
+      color: var(--c-pink);
+      text-shadow: 0 0 12px var(--c-pink);
     }
 
     .stage {
@@ -125,352 +133,559 @@
       padding: 30px 20px;
       text-align: center;
       overflow-y: auto;
-      animation: fadeInScale 0.5s ease-out;
+      animation: fadeZoom 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     }
-    .stage.active { display: flex; }
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.96); filter: blur(6px); }
-      to { opacity: 1; transform: scale(1); filter: blur(0); }
+
+    .stage.active {
+      display: flex;
+    }
+
+    @keyframes fadeZoom {
+      0% { opacity: 0; transform: scale(0.96); filter: blur(6px);}
+      100% { opacity: 1; transform: scale(1); filter: blur(0);}
     }
 
     h1 {
-      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-size: clamp(2.8rem, 9vw, 5.8rem);
       font-weight: 900;
-      background: linear-gradient(135deg, #fff, var(--pink-glow), var(--purple-glow), var(--cyan-glow));
-      background-size: 200% auto;
+      background: linear-gradient(135deg, #ffffff, var(--c-pink-glow), var(--c-cyan), var(--c-purple));
+      background-size: 300% 300%;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      letter-spacing: -2px;
+      letter-spacing: -3px;
       margin-bottom: 20px;
-      animation: shimmer 6s linear infinite;
+      animation: gradientFlow 8s ease infinite;
     }
-    @keyframes shimmer {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%;}
+      50% { background-position: 100% 50%;}
+      100% { background-position: 0% 50%;}
     }
 
     .sub {
-      color: var(--cyan);
-      text-transform: uppercase;
-      letter-spacing: 8px;
-      font-size: 12px;
-      font-weight: 700;
+      color: var(--c-cyan);
       font-family: var(--font-mono);
-      margin-bottom: 15px;
+      letter-spacing: 6px;
+      font-size: 13px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
-    .desc {
-      color: var(--text-dim);
-      max-width: 550px;
-      line-height: 1.6;
-      margin: 15px 0 35px;
+    .question-block {
+      background: rgba(0,0,0,0.6);
+      padding: 40px 50px;
+      border-radius: 70px;
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      margin: 25px 0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 40px;
+      margin-top: 45px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .btn {
-      padding: 16px 42px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      border-radius: 60px;
-      font-weight: 700;
-      font-size: 14px;
+      padding: 18px 52px;
+      border: none;
+      font-weight: 800;
+      font-size: 20px;
       letter-spacing: 2px;
+      border-radius: 80px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      text-transform: uppercase;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    }
-    .btn:hover {
-      transform: translateY(-4px);
-      filter: brightness(1.1);
-      border-color: rgba(255,255,255,0.5);
-      box-shadow: 0 20px 35px rgba(0,0,0,0.5);
-    }
-    .btn-main {
-      background: rgba(255,45,123,0.2);
-      border-color: var(--pink);
-      color: var(--pink-glow);
-    }
-    .btn-main:hover {
-      background: var(--pink);
-      color: white;
-      box-shadow: 0 0 35px var(--pink);
-    }
-    .btn-green {
-      background: rgba(46,204,113,0.2);
-      border-color: var(--green);
-      color: var(--green-glow);
-    }
-    .btn-green:hover {
-      background: var(--green);
-      color: white;
-    }
-
-    .btn-runaway {
-      position: relative;
-      padding: 16px 42px;
-      background: rgba(0,0,0,0.4);
+      transition: all 0.2s cubic-bezier(0.2, 1.2, 0.4, 1);
+      background: rgba(10,10,22,0.7);
+      backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.2);
-      color: var(--text-dim);
-      border-radius: 60px;
-      font-weight: 600;
-      transition: left 0.05s linear, top 0.05s linear;
-      cursor: pointer;
+      color: white;
+      font-family: var(--font-main);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
 
-    .question { font-size: 26px; font-weight: 700; margin-bottom: 35px; color: var(--cyan-glow); }
-    .option-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 700px; }
-    .option-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border-subtle);
-      padding: 14px 24px;
-      border-radius: 50px;
-      color: var(--text-primary);
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
+    .btn-yes {
+      background: linear-gradient(145deg, #ff2d8a, #c2185b);
+      border: none;
+      box-shadow: 0 0 32px rgba(255,45,138,0.8);
     }
-    .option-btn:hover { background: rgba(255,45,123,0.3); transform: scale(1.03); border-color: var(--pink); }
+    .btn-yes:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 65px rgba(255,45,138,1);
+    }
 
-    .cat-box {
-      background: rgba(0,0,0,0.5);
+    .btn-no {
+      background: linear-gradient(145deg, #3a3a55, #20202e);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .btn-no:hover {
+      background: #4a4a6e;
+      transform: translateY(-4px);
+    }
+
+    .runaway-btn {
+      position: relative;
+      transition: left 0.05s linear, top 0.05s linear, transform 0.2s;
+    }
+
+    .cat-card {
+      background: rgba(0,0,0,0.7);
+      padding: 45px;
+      border-radius: 68px;
       backdrop-filter: blur(20px);
-      padding: 40px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-glow);
-      max-width: 500px;
+      border: 1px solid var(--c-pink);
+      max-width: 550px;
     }
-    .sticker-cat { width: 130px; margin-bottom: 20px; filter: drop-shadow(0 10px 15px black); animation: bounce 2s infinite; }
-    @keyframes bounce { 0%,100%{ transform: translateY(0);} 50%{transform: translateY(-12px);} }
+    .cat-emoji {
+      font-size: 110px;
+      filter: drop-shadow(0 12px 28px black);
+      animation: bounceCat 1.8s infinite;
+    }
+    @keyframes bounceCat {
+      0%,100% { transform: translateY(0);}
+      50% { transform: translateY(-16px);}
+    }
 
-    .console-box {
+    .console-wrap {
       width: 90%;
-      max-width: 1000px;
-      height: 60vh;
-      background: #05050c;
-      border: 1px solid var(--border-glow);
-      border-radius: 20px;
-      padding: 25px;
+      max-width: 1050px;
+      background: #03030b;
+      border-radius: 32px;
+      padding: 28px;
       font-family: var(--font-mono);
+      border: 1px solid var(--c-cyan);
+      box-shadow: inset 0 0 55px rgba(0,0,0,0.9), 0 20px 40px black;
+    }
+    .console-output {
+      height: 360px;
+      overflow-y: auto;
       text-align: left;
+      line-height: 1.7;
+    }
+    .console-line {
+      display: flex;
+      margin-top: 20px;
+      gap: 15px;
+      align-items: center;
+    }
+    .prompt {
+      color: var(--c-pink);
+      font-weight: bold;
+    }
+    .console-inp {
+      background: transparent;
+      border: none;
+      color: var(--c-gold);
+      font-family: monospace;
+      font-size: 16px;
+      flex: 1;
+      outline: none;
+    }
+
+    .heartBox {
+      text-align: center;
+    }
+    .bigHeart {
+      font-size: 130px;
+      filter: grayscale(0.5);
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .bigHeart.fullHeart {
+      filter: drop-shadow(0 0 45px var(--c-pink)) grayscale(0);
+      animation: heartbeat 1s infinite alternate;
+    }
+    @keyframes heartbeat {
+      from { transform: scale(1);}
+      to { transform: scale(1.12);}
+    }
+
+    .progressWrapper {
+      width: 70%;
+      max-width: 500px;
+      background: #1f1f2f;
+      border-radius: 60px;
+      height: 22px;
+      margin: 35px auto;
+      overflow: hidden;
+    }
+    .progressFill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--c-purple), var(--c-pink), var(--c-gold));
+      background-size: 200% auto;
+      animation: shimmer 1.2s linear infinite;
+      border-radius: 60px;
+    }
+
+    .karaokeRoom {
+      width: 100%;
       display: flex;
       flex-direction: column;
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+      align-items: center;
+      gap: 20px;
     }
-    .console-output { flex:1; overflow-y: auto; font-size: 15px; line-height: 1.7; }
-    .console-input-line { display: flex; margin-top: 20px; align-items: center; gap: 12px; }
-    .console-prompt { color: var(--pink); font-weight: bold; }
-    .console-input { background: transparent; border: none; color: var(--gold); font-family: monospace; font-size: 16px; outline: none; flex:1; }
-
-    .heart-icon { font-size: 8rem; filter: grayscale(0.6); transition: all 0.5s; margin-bottom: 30px; }
-    .heart-icon.full { filter: drop-shadow(0 0 40px var(--pink)); animation: pulseBeat 0.9s infinite alternate; }
-    @keyframes pulseBeat { from { transform: scale(1); } to { transform: scale(1.1); } }
-
-    .progress-bar { width: 80%; max-width: 500px; height: 20px; background: #1e1e2a; border-radius: 50px; overflow: hidden; margin: 20px 0; }
-    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--purple), var(--pink), var(--gold)); background-size: 200% auto; animation: shimmerMove 1.5s linear infinite; border-radius: 50px; }
-
-    .karaoke-wrap { width: 100%; max-width: 1200px; display: flex; flex-direction: column; align-items: center; gap: 25px; padding: 20px; }
-    .song-select { display: flex; gap: 20px; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 60px; }
-    .song-btn { background: transparent; border: none; color: var(--text-dim); font-weight: bold; padding: 10px 25px; border-radius: 40px; cursor: pointer; transition: 0.2s; }
-    .song-btn.active { background: var(--pink); color: white; box-shadow: 0 0 20px var(--pink); }
-
-    .visualizer { display: flex; gap: 8px; height: 60px; align-items: flex-end; justify-content: center; width: 100%; }
-    .bar { width: 10px; background: var(--cyan); border-radius: 6px; transition: height 0.05s linear; opacity: 0.6; }
-    .bar.active { background: var(--pink); box-shadow: 0 0 12px var(--pink); }
-
-    .lyric-box { position: relative; width: 100%; height: 260px; margin: 20px 0; }
-    .lyric-line {
-      position: absolute; width: 100%; text-align: center; transition: all 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      opacity: 0; font-weight: 800; font-family: var(--font-display);
+    .songTabs {
+      display: flex;
+      gap: 18px;
+      background: rgba(0,0,0,0.5);
+      padding: 12px 24px;
+      border-radius: 80px;
     }
-    .lyric-line.active {
-      opacity: 1; transform: translateY(0) scale(1); font-size: clamp(1.8rem, 4vw, 3rem);
-      color: white; text-shadow: 0 0 25px var(--pink); z-index: 3;
+    .songTab {
+      background: transparent;
+      border: none;
+      color: var(--c-dim);
+      padding: 12px 32px;
+      border-radius: 60px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .lyric-line.prev { opacity: 0.4; transform: translateY(-60px) scale(0.8); font-size: 1.5rem; filter: blur(2px); }
-    .lyric-line.next { opacity: 0.4; transform: translateY(60px) scale(0.8); font-size: 1.5rem; filter: blur(2px); }
+    .songTab.active {
+      background: var(--c-pink);
+      color: white;
+      box-shadow: 0 0 18px var(--c-pink);
+    }
+    .visBars {
+      display: flex;
+      gap: 10px;
+      height: 70px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .visBar {
+      width: 12px;
+      background: var(--c-cyan);
+      border-radius: 12px;
+      transition: 0.05s linear;
+    }
+    .lyricsStage {
+      position: relative;
+      width: 100%;
+      min-height: 200px;
+      margin: 20px 0;
+    }
+    .lyricLine {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      transition: all 0.4s;
+      opacity: 0;
+    }
+    .lyricLine.active {
+      opacity: 1;
+      transform: translateY(0) scale(1.2);
+      font-size: 2.3rem;
+      color: var(--c-cyan);
+      text-shadow: 0 0 20px white;
+      z-index: 5;
+    }
+    .playerBar {
+      background: #0b0b14;
+      padding: 15px 28px;
+      border-radius: 80px;
+      width: 90%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .playPause {
+      background: var(--c-pink);
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      cursor: pointer;
+    }
 
-    .player-controls {
-      background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 60px; width: 90%; max-width: 550px;
-      display: flex; align-items: center; gap: 20px; backdrop-filter: blur(16px);
+    .grid100 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      width: 100%;
+      padding: 20px;
+      max-height: 65vh;
+      overflow-y: auto;
     }
-    .play-btn-circle {
-      width: 55px; height: 55px; border-radius: 50%; background: var(--pink); border: none; color: white; font-size: 24px;
-      cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+    .reasonCard {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 20px;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
-    .track-info { flex: 1; }
-    .track-bar { height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; cursor: pointer; margin-top: 10px; position: relative; }
-    .track-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--pink)); border-radius: 10px; }
+    .reasonCard:hover {
+      background: rgba(255,45,138,0.15);
+      transform: translateY(-6px);
+      border-color: var(--c-pink);
+    }
+    .reasonNum {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--c-cyan);
+      font-family: monospace;
+    }
 
-    .grid-wrap {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-      gap: 16px; width: 100%; padding: 20px; max-height: 70vh; overflow-y: auto;
-    }
-    .card {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 18px;
-      transition: all 0.25s; animation: cardRise 0.4s ease-out forwards;
-    }
-    .card:hover { transform: translateY(-6px); background: rgba(255,45,123,0.1); border-color: var(--pink); }
-    @keyframes cardRise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-    .card .num { font-size: 24px; font-weight: 800; color: var(--cyan); font-family: monospace; }
-    .card .text { font-size: 18px; font-weight: 500; }
-
-    .easter-egg { position: fixed; bottom: 18px; right: 18px; font-size: 42px; opacity: 0.3; z-index: 200; cursor: pointer; transition: 0.2s; }
-    .easter-egg:hover { opacity: 1; transform: scale(1.2); }
-
-    .toast-msg {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f1f2e;
-      color: var(--pink-glow); padding: 12px 28px; border-radius: 50px; font-weight: bold;
-      z-index: 300; backdrop-filter: blur(20px); border: 1px solid var(--pink); animation: fadeUp 0.3s;
+    .toastMsg {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e1a2f;
+      padding: 14px 30px;
+      border-radius: 60px;
+      color: var(--c-pink);
+      font-weight: bold;
+      backdrop-filter: blur(20px);
+      z-index: 300;
+      border: 1px solid var(--c-pink);
       pointer-events: none;
+    }
+
+    footer {
+      font-size: 10px;
+      text-align: center;
+      padding: 12px;
+      color: var(--c-dim);
+      border-top: 1px solid var(--border-subtle);
     }
   </style>
 </head>
 <body>
-<div class="gradient-bg"></div>
-<canvas id="starfield"></canvas>
-<div class="noise-overlay"></div>
-<div class="easter-egg" id="megaEgg">🥑</div>
-
+<canvas id="particleCanvas"></canvas>
+<div class="noise"></div>
 <div class="container">
-  <div class="header">
-    <span class="header-left">✦ BRO SYSTEM v3.0 — NEO</span>
-    <span class="header-right"><span onclick="location.reload()">⟳ REBOOT</span><span id="clock">--:--</span></span>
+  <div class="top-bar">
+    <span class="logo">✦ BRO:DEPENDENCY v3.0 ✦</span>
+    <div class="right-stats"><span onclick="location.reload()">⟳ RESTART</span><span id="liveClock">--:--</span></div>
   </div>
 
-  <!-- Stage 1 -->
-  <section class="stage active" id="s1">
-    <p class="sub">Приватный бро-портал</p>
-    <h1>BestFriendOS<br>3.0</h1>
-    <p class="desc">Тори, это твоя вселенная. Полное погружение с фулскрином и музыкой души.</p>
-    <button class="btn btn-main" onclick="enterFullscreen()">⟡ Войти в систему ⟡</button>
-  </section>
-
-  <!-- Stage 1b: опросник -->
-  <section class="stage" id="s1b">
-    <p class="sub">Короткий опрос</p>
-    <div id="questionText" class="question"></div>
-    <div id="optionsGrid" class="option-grid"></div>
-  </section>
-
-  <!-- Stage 2: убегающая кнопка -->
-  <section class="stage" id="s2">
-    <p class="sub">Входящий запрос</p>
-    <h1 style="font-size: 3rem;">Тори, у меня вопрос...</h1>
-    <div style="display: flex; gap: 30px; margin-top: 50px;">
-      <button class="btn btn-green" onclick="go(3)">Слушаю!</button>
-      <button class="btn-runaway" id="runBtn">Убежать</button>
+  <!-- stage 1: главный вопрос -->
+  <div class="stage active" id="s1">
+    <div class="sub">⚡ ЭКСКЛЮЗИВНЫЙ БРО-ПОРТАЛ ⚡</div>
+    <h1>БРО?<br>ЗАВИСИМОСТЬ ВОПРОСУ</h1>
+    <div class="question-block">
+      <p style="font-size: 26px; font-weight: 700;">Тори, ты — мой лучший друг?</p>
+      <div class="btn-group">
+        <button class="btn btn-yes" id="yesMainBtn">КОНЕЧНО ДА!</button>
+        <button class="btn btn-no" id="noMainBtn">НЕТ</button>
+      </div>
     </div>
-  </section>
+    <p style="margin-top: 35px; color: var(--c-dim);">✧ нажми ДА — откроется вселенная ✧</p>
+  </div>
 
-  <!-- Stage 3: главный вопрос -->
-  <section class="stage" id="s3">
-    <p class="sub">Главный вопрос</p>
-    <h1>Ты считаешь меня <span style="color:var(--pink-glow);">лучшим другом</span>?</h1>
-    <div style="display: flex; gap: 30px; margin-top: 50px;">
-      <button class="btn btn-main" onclick="go(4)">ДА!</button>
-      <button class="btn" onclick="go('3b')">Нет</button>
+  <!-- stage 2: короткий опросник -->
+  <div class="stage" id="s2">
+    <div class="sub">♥ СОВМЕСТИМОСТЬ БРО</div>
+    <div id="quizQ" style="font-size: 28px; font-weight: 800; margin-bottom: 30px;"></div>
+    <div id="quizOpts" class="btn-group" style="gap: 15px;"></div>
+  </div>
+
+  <!-- stage 3: пасхалка с убегающей кнопкой -->
+  <div class="stage" id="s3">
+    <h1 style="font-size: 3rem;">Подтверди статус</h1>
+    <div style="position: relative; min-height: 200px; width: 100%; display: flex; justify-content: center; margin-top: 40px;">
+      <button id="runawayBtn" class="btn btn-no" style="position: relative;">НАЖМИ МЕНЯ</button>
     </div>
-  </section>
+    <p class="sub" style="margin-top: 30px;">(попробуй поймать)</p>
+  </div>
 
-  <!-- Stage 3b: ошибка -->
-  <section class="stage" id="s3b">
-    <div class="cat-box"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63f/512.webp" class="sticker-cat"><p style="color:gold;">❌ Системная ошибка ❌</p><button class="btn btn-main" onclick="go(4)">Передумать и сказать ДА</button></div>
-  </section>
+  <!-- stage 4: консольный брутал -->
+  <div class="stage" id="s4">
+    <div class="console-wrap">
+      <div class="console-output" id="conOut"></div>
+      <div class="console-line" id="conLine" style="display: none;">
+        <span class="prompt">bro@tori:~$</span>
+        <input type="text" id="conInput" class="console-inp" maxlength="1" autocomplete="off">
+      </div>
+    </div>
+    <button id="conNextBtn" style="margin-top: 30px; display: none;" class="btn btn-yes" onclick="nextAfterConsole()">ПРОДОЛЖИТЬ</button>
+  </div>
 
-  <!-- Stage 4: успех -->
-  <section class="stage" id="s4"><div class="cat-box"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f638/512.webp" class="sticker-cat"><p style="color:lime;">Бро навсегда!</p><button class="btn btn-green" onclick="go(5)">Дальше →</button></div></section>
+  <!-- stage 5: сердце-загрузка -->
+  <div class="stage" id="s5">
+    <div class="heartBox">
+      <div class="bigHeart" id="bigHeartEmoji">🖤</div>
+      <div class="progressWrapper"><div class="progressFill" id="heartFill"></div></div>
+      <div id="heartPercent" style="font-family: monospace; font-size: 22px; margin-top: 20px;">0%</div>
+      <button id="heartNext" style="margin-top: 45px; display: none;" class="btn btn-yes">ОТКРЫТЬ МИР</button>
+    </div>
+  </div>
 
-  <!-- Stage 5: консоль -->
-  <section class="stage" id="s5"><div class="console-box"><div class="console-output" id="cOut"></div><div class="console-input-line" id="cInputLine" style="display:none;"><span class="console-prompt">bro@Tori:~$</span><input type="text" id="cInput" class="console-input" maxlength="1"></div></div><button class="btn btn-main" id="cNext" style="display:none; margin-top:20px;" onclick="go(6)">Продолжить</button></section>
+  <!-- stage 6: караоке / аудио рай -->
+  <div class="stage" id="s6">
+    <div class="karaokeRoom">
+      <div class="songTabs">
+        <button class="songTab" data-idx="1">🌺 Цветы (Т. Принц)</button>
+        <button class="songTab" data-idx="2">🍸 Коктейль (ЛСП)</button>
+        <button class="songTab" data-idx="3">🍀 Фортуна (ЛСП)</button>
+      </div>
+      <div class="visBars" id="vizBars"></div>
+      <div class="lyricsStage" id="lyricsStage"></div>
+      <div class="playerBar">
+        <div class="playPause" id="playPauseBtn">▶</div>
+        <div style="flex:1"><div id="trackTime">00:00 / 00:00</div><div style="background:#2a2a3a; border-radius:20px; height:6px; margin-top:6px; cursor:pointer;" id="trackSeek"><div id="seekFill" style="width:0%; height:6px; background:var(--c-pink); border-radius:20px;"></div></div></div>
+      </div>
+      <button class="btn" id="skipToHundred" style="margin-top: 15px;">✨ 100 причин ✨</button>
+      <p style="font-size: 11px; margin-top: 8px;">🎵 Перетащи MP3 файл, если треки молчат</p>
+    </div>
+    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+  </div>
 
-  <!-- Stage 6: сердце -->
-  <section class="stage" id="s6"><div class="heart-icon" id="hIcon">🖤</div><div class="progress-bar"><div class="progress-fill" id="hFill"></div></div><div class="progress-label" id="hLabel">ЗАГРУЗКА 0%</div><button id="hNext" style="display:none;" class="btn btn-main" onclick="go(7)">Открыть</button></section>
-
-  <!-- Stage 7: рукопожатие -->
-  <section class="stage" id="s7"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f91d/512.webp" style="width:120px"><h1>Тори ❤️ Костя</h1><p class="desc">Навсегда в одном окопе.</p><button class="btn btn-main" onclick="go(8)">🎵 Врубить наш вайб</button></section>
-
-  <!-- Stage 8: караоке -->
-  <section class="stage" id="s8"><div class="karaoke-wrap"><div class="song-select"><button class="song-btn active" data-song="1">🌹 Тёмный принц — Цветы</button><button class="song-btn" data-song="2">🍸 ЛСП — Коктейль</button><button class="song-btn" data-song="3">🍀 ЛСП — Фортуна</button></div><div class="visualizer" id="vis"></div><div class="lyric-box" id="lyricsContainer"></div><div class="player-controls"><button class="play-btn-circle" id="playBtn">▶</button><div class="track-info"><div class="time-wrap"><span id="tCurr">00:00</span><span id="tTotal">00:00</span></div><div class="track-bar" id="trackBar"><div class="track-fill" id="trackFill"></div></div></div></div><span class="skip-text" onclick="skipToGrid()">Пропустить музыку →</span><p class="desc" style="font-size:12px;">💡 Перетащи свой MP3-файл, если треки не играют</p></div><audio id="audioElement"></audio></section>
-
-  <!-- Stage 10: 100 причин -->
-  <section class="stage" id="s10"><p class="sub">ФАКТЫ О ТЕБЕ</p><h1 style="font-size:2.5rem;">100 причин любить</h1><div class="grid-wrap" id="grid"></div></section>
+  <!-- stage 7: 100 причин -->
+  <div class="stage" id="s7">
+    <div class="sub">💎 ПОЧЕМУ ТЫ ЛУЧШАЯ 💎</div>
+    <div class="grid100" id="reasonsGrid"></div>
+  </div>
+  <footer>❄️ BRO FOREVER · НАВСЕГДА В СЕРДЦЕ ❄️</footer>
 </div>
 
 <script>
-  // ========== ЗВЁЗДЫ ==========
-  const canvas = document.getElementById('starfield'), ctx = canvas.getContext('2d');
-  let W, H, stars = [];
-  function resizeStars() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; stars = Array.from({length: 250}, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 2.2 + 0.8, s: Math.random() * 0.5 + 0.1, a: Math.random() * 6.28 })); }
-  function drawStars() { ctx.clearRect(0,0,W,H); stars.forEach(s => { ctx.fillStyle = `rgba(255,220,200,${0.3+Math.sin(s.a)*0.5})`; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.y -= s.s; if(s.y < -5) { s.y = H+5; s.x = Math.random() * W; } s.a += 0.03; }); requestAnimationFrame(drawStars); }
-  window.addEventListener('resize', resizeStars); resizeStars(); drawStars();
+  (function(){
+    // ---- звездное поле с частицами
+    const canv = document.getElementById('particleCanvas');
+    const ctx = canv.getContext('2d');
+    let w,h, particles=[];
+    function resizePart(){ w=canv.width=window.innerWidth; h=canv.height=window.innerHeight; particles = Array.from({length:180},()=>({x:Math.random()*w, y:Math.random()*h, r:Math.random()*2.5+1, vx:(Math.random()-0.5)*0.3, vy:Math.random()*0.6+0.2, alpha:Math.random()*0.6+0.2})); }
+    function animPart(){ if(!ctx) return; ctx.clearRect(0,0,w,h); for(let p of particles){ ctx.fillStyle=`rgba(255,190,230,${p.alpha+Math.sin(Date.now()*0.003+p.x)*0.2})`; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); p.x+=p.vx; p.y+=p.vy; if(p.y>h+20) p.y=-20; if(p.x< -20) p.x=w+20; if(p.x>w+20) p.x=-20; } requestAnimationFrame(animPart); }
+    window.addEventListener('resize',()=>{ resizePart(); }); resizePart(); animPart();
 
-  setInterval(() => document.getElementById('clock').textContent = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}), 1000);
-
-  // ========== Easter egg audio ==========
-  let audioCtx = null;
-  function playBeep(freq=880, type='sine') { try { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value = freq; osc.type = type; gain.gain.value = 0.2; osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6); osc.stop(audioCtx.currentTime + 0.6); audioCtx.resume(); } catch(e){} }
-
-  // ========== Пасхалки ==========
-  let clickCount = 0;
-  document.getElementById('megaEgg').addEventListener('click', () => { clickCount++; if(clickCount === 3) { alert('🥑 Ты нашла секрет! Бро-авокадо защищает дружбу!'); playBeep(523); } if(clickCount === 7) { document.body.style.filter = 'hue-rotate(90deg)'; setTimeout(()=>document.body.style.filter='',2000); playBeep(660); } });
-  document.addEventListener('keydown', (e) => { if(e.code === 'KeyC' && e.ctrlKey) { alert('🎉 Секретный код: BRO LOVE! Конфетти!'); for(let i=0;i<50;i++){ let div = document.createElement('div'); div.textContent = ['💖','💜','✨','⭐','🎵'][Math.floor(Math.random()*5)]; div.style.position='fixed'; div.style.left=Math.random()*100+'%'; div.style.top='-20px'; div.style.fontSize='28px'; div.style.pointerEvents='none'; div.style.zIndex=9999; div.style.animation='fall 2s linear forwards'; document.body.appendChild(div); setTimeout(()=>div.remove(),2000); } playBeep(440); } });
-  const style = document.createElement('style'); style.textContent = `@keyframes fall { to { transform: translateY(100vh); opacity: 0; } }`; document.head.appendChild(style);
-
-  // ========== Навигация ==========
-  function enterFullscreen() { const el = document.documentElement; if(el.requestFullscreen) el.requestFullscreen(); go('1b'); }
-  function go(id) { document.querySelectorAll('.stage').forEach(s => s.classList.remove('active')); const target = document.getElementById('s'+id); if(target) target.classList.add('active'); if(id === '1b') startQuiz(); if(id===5) startConsole(); if(id===6) startHeart(); if(id===8) initKaraoke(); if(id===10) renderGrid(); }
-  function startQuiz() { quizStep=0; loadQuiz(); }
-  const qList = [{q:"Любимый цвет?", opts:["Розовый","Фиолетовый","Чёрный","Синий"]},{q:"Что ценишь в друзьях?", opts:["Честность","Юмор","Верность","Всё"]},{q:"Идеальный вечер?", opts:["Кино","Гулять","Игры","Разговор"]},{q:"Любимый напиток?", opts:["Чай","Кофе","Сок","Вода"]},{q:"Ты веришь в судьбу?", opts:["Да","Нет","Иногда","Создаю сам"]},{q:"Музыкальный стиль?", opts:["Рэп","Поп","Рок","Электроника"]},{q:"Что важно в друге?", opts:["Поддержка","Понимание","Доверие","Всё сразу"]},{q:"Как реагируешь на комплименты?", opts:["Смущаюсь","Радуюсь","Благодарю","Краснею"]},{q:"Насколько мне доверяешь?", opts:["100%","200%","Безгранично","Бро-уровень"]},{q:"Финальный: ты супер?", opts:["Да!","Однозначно!","Конечно!","Легенда!"]}];
-  let quizStep = 0;
-  function loadQuiz() { if(quizStep >= qList.length) { go(2); return; } document.getElementById('questionText').innerText = `${quizStep+1}/10: ${qList[quizStep].q}`; const grid = document.getElementById('optionsGrid'); grid.innerHTML = ''; qList[quizStep].opts.forEach(opt => { let btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = opt; btn.onclick = () => { quizStep++; loadQuiz(); playBeep(600, 'triangle'); }; grid.appendChild(btn); }); }
-
-  // ========== Убегающая кнопка ==========
-  let runBtn = document.getElementById('runBtn');
-  function dodgeBtn(e) { if(!runBtn) return; const stage = document.getElementById('s2'); const rect = stage.getBoundingClientRect(); const w = runBtn.offsetWidth, h = runBtn.offsetHeight; const maxX = rect.width - w - 40, maxY = rect.height - h - 40; const x = Math.random() * maxX + 20, y = Math.random() * maxY + 20; runBtn.style.position = 'absolute'; runBtn.style.left = `${x}px`; runBtn.style.top = `${y}px`; playBeep(300, 'square'); }
-  if(runBtn) runBtn.addEventListener('mouseover', dodgeBtn);
-  window.addEventListener('resize', () => { if(runBtn) runBtn.style.position = 'relative'; });
-
-  // ========== Консоль ==========
-  async function startConsole() { const out = document.getElementById('cOut'), inpLine = document.getElementById('cInputLine'), inp = document.getElementById('cInput'), next = document.getElementById('cNext'); out.innerHTML = ''; inpLine.style.display = 'none'; next.style.display = 'none'; const lines = ['<span class="c-dim">[BRO-LINK] Установка защищённого канала...</span>','<span class="c-dim">[SCAN] Тори идентифицирована.</span>','<span class="c-pink">Доступ: MAX BRO</span>','<br><span class="c-cyan">Совместимость: Тори + Костя?<br>[1] Идеальные бро<br>[2] Знакомые</span>']; for(let l of lines) { out.innerHTML += l+'<br>'; out.scrollTop = out.scrollHeight; await delay(350); } inpLine.style.display = 'flex'; inp.focus(); inp.onkeydown = async (ev) => { if(ev.key === 'Enter'){ let val = inp.value.trim(); if(val === '1' || val === '2'){ inpLine.style.display = 'none'; out.innerHTML += `<span class="c-cyan">> ${val}</span><br>`; if(val === '2'){ out.innerHTML += `<span class="c-pink">Ошибка! Автокоррекция на 1...</span><br>`; await delay(400); } out.innerHTML += `<br><span class="c-result">РЕЗУЛЬТАТ: 100% БРО!</span><br>`; await delay(1000); next.style.display = 'block'; } } }; }
-  function delay(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-  // ========== Загрузка сердца ==========
-  async function startHeart() { let icon = document.getElementById('hIcon'), fill = document.getElementById('hFill'), label = document.getElementById('hLabel'), next = document.getElementById('hNext'); for(let i=0;i<=100;i++){ fill.style.width = i+'%'; label.innerText = `ЗАГРУЗКА ${i}%`; if(i===25) icon.innerText='💜'; if(i===55) icon.innerText='💝'; if(i===85) icon.innerText='❤️'; await delay(i<60?20:40); } icon.classList.add('full'); label.innerText = 'СВЯЗЬ УСТАНОВЛЕНА'; label.style.color = 'lime'; next.style.display='inline-block'; }
-
-  // ========== Караоке + пасхалки ==========
-  const audioEl = document.getElementById('audioElement');
-  let currentSong = 1, lyrics = [], isPlaying = false;
-  const songsData = {
-    1: { lyrics: [{t:0,text:'🎵 Интро'},{t:12,text:'А ты пахнешь цветами самыми яркими'},{t:17,text:'Я тону в аромате, мне не выбраться'},{t:22,text:'Твои волосы — розы, твоя кожа — пион'},{t:27,text:'Влюбился в тебя, как в сладкий сон'},{t:32,text:'Мы вдыхаем друг друга'},{t:37,text:'Это небо над нами, солнце над нами'},{t:42,text:'Ты — моё всё, моё чудо'},{t:47,text:'Твои глаза — это планета'},{t:52,text:'Снова и снова твой свет'},{t:58,text:'А ты пахнешь цветами...'},{t:65,text:'Самый любимый сорт'},{t:72,text:'🎵 Финал'}] },
-    2: { lyrics: [{t:0,text:'🍸 Коктейль'},{t:12,text:'Ты — всё, что нужно сейчас'},{t:16,text:'Твой вкус на губах не погас'},{t:20,text:'Мы перемешаны, как лёд и сок'},{t:24,text:'Пью тебя залпом'},{t:28,text:'Мой коктейль, самый сладкий'},{t:32,text:'Мы летим в постель'},{t:36,text:'Слишком много сахара, мало льда'},{t:41,text:'Ты говоришь «нет», когда хочешь «да»'},{t:46,text:'Пузырьки бьют в виски'},{t:52,text:'Мой коктейль...'}] },
-    3: { lyrics: [{t:0,text:'🍀 Фортуна'},{t:10,text:'Фортуна, ты где? Я жду тебя здесь'},{t:15,text:'В этом городе снов'},{t:19,text:'Мы не знакомы, но верю в успех'},{t:23,text:'Фортуна улыбнётся, я знаю'},{t:28,text:'Она меня не забывает'},{t:33,text:'Даже когда тяжело, иду вперёд'},{t:38,text:'Фортуна, дай мне зелёный свет'},{t:44,text:'Твой шёпот в шуме монет'},{t:50,text:'🎵 Финал'}] }
-  };
-  function initKaraoke() { buildVis(); loadSong(1, false); audioEl.ontimeupdate = () => { updateProgress(); syncLyrics(); }; audioEl.onerror = () => showToast('⚠️ Файл не найден, перетащите MP3'); }
-  function buildVis() { const vis = document.getElementById('vis'); vis.innerHTML = ''; for(let i=0;i<45;i++){ let b = document.createElement('div'); b.className='bar'; vis.appendChild(b); } setInterval(()=>{ if(!audioEl.paused) document.querySelectorAll('.bar').forEach(b=>{ let h = 6+Math.random()*50; b.style.height=h+'px'; b.classList.toggle('active', Math.random()>0.6); }); }, 80); }
-  function loadSong(id, autoPlay=true){ currentSong=id; document.querySelectorAll('.song-btn').forEach((btn,idx)=>{ btn.classList.toggle('active', idx+1==id); }); lyrics = songsData[id].lyrics; renderLyrics(); if(autoPlay) togglePlay(true); }
-  function renderLyrics(){ const cont = document.getElementById('lyricsContainer'); cont.innerHTML=''; lyrics.forEach((l,i)=>{ let d = document.createElement('div'); d.className='lyric-line'; d.id=`l_${i}`; d.innerText = l.text; cont.appendChild(d); }); }
-  function syncLyrics(){ let time = audioEl.currentTime + 0.3; let idx = -1; for(let i=0;i<lyrics.length;i++) if(time >= lyrics[i].t) idx = i; for(let i=0;i<lyrics.length;i++){ let el = document.getElementById(`l_${i}`); if(!el) continue; el.classList.remove('active','prev','next'); if(i===idx) el.classList.add('active'); else if(i===idx-1) el.classList.add('prev'); else if(i===idx+1) el.classList.add('next'); } }
-  function togglePlay(force){ isPlaying = (force!==undefined)?force:!isPlaying; const btn = document.getElementById('playBtn'); if(isPlaying) { audioEl.play().catch(e=>showToast('🔇 Автоплей заблокирован, кликни по странице')); btn.textContent='⏸'; } else { audioEl.pause(); btn.textContent='▶'; } }
-  function updateProgress(){ if(!audioEl.duration) return; let pct = (audioEl.currentTime/audioEl.duration)*100; document.getElementById('trackFill').style.width=pct+'%'; document.getElementById('tCurr').innerText=formatTime(audioEl.currentTime); document.getElementById('tTotal').innerText=formatTime(audioEl.duration); }
-  function seekTrack(e){ let bar = document.getElementById('trackBar'); let rect = bar.getBoundingClientRect(); let pct = (e.clientX - rect.left)/rect.width; audioEl.currentTime = pct * audioEl.duration; }
-  function formatTime(s){ if(isNaN(s)) return '00:00'; let m=Math.floor(s/60), sec=Math.floor(s%60); return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }
-  function skipToGrid(){ togglePlay(false); go(10); }
-  document.getElementById('playBtn')?.addEventListener('click',()=>togglePlay());
-  document.getElementById('trackBar')?.addEventListener('click',seekTrack);
-  document.querySelectorAll('.song-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ let id = parseInt(btn.dataset.song || btn.innerText.includes('1')?'1':btn.innerText.includes('2')?'2':'3'); loadSong(id, true); }); });
-
-  function showToast(msg){ let t = document.createElement('div'); t.className='toast-msg'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(), 2500); }
-
-  // Перетаскивание mp3
-  window.addEventListener('dragover', e=>e.preventDefault());
-  window.addEventListener('drop', e=>{ e.preventDefault(); let file = e.dataTransfer.files[0]; if(file && file.type.includes('audio')){ let url = URL.createObjectURL(file); audioEl.src = url; audioEl.play().catch(e=>null); showToast('🎵 Трек загружен!'); } });
-
-  // ========== 100 причин ==========
-  function renderGrid() { if(document.getElementById('grid').children.length>0) return; const reasons = Array.from({length:100}, (_,i)=>`${i+1}. Ты мой бро`); const custom = ["Ты настоящий друг","Ты поддержишь","Ты честная","Ты искренняя","Верность","Надёжность","Умная","Красивая","Вдохновляешь","С тобой не скучно","Ты мой антидепрессант","Моя скала","Понимаешь без слов","Ты уникальная","Навсегда в сердце"]; const full = [...custom]; for(let i=full.length;i<100;i++) full.push(`Причина #${i+1}: люблю твою душу`); const grid = document.getElementById('grid'); full.forEach((txt,idx)=>{ let c = document.createElement('div'); c.className='card'; c.innerHTML = `<span class="num">#${idx+1}</span><span class="text">${txt}</span>`; grid.appendChild(c); }); }
+    // часы
+    setInterval(()=>{ let d=new Date(); document.getElementById('liveClock').innerText=d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}); },1000);
+    
+    // аудиоконтекст для звуков
+    let audioCtx=null;
+    function beep(freq=780, type='sine'){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); let osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=freq; osc.type=type; gain.gain.value=0.15; osc.start(); gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.5); osc.stop(audioCtx.currentTime+0.5); audioCtx.resume(); }catch(e){} }
+    
+    // переходы
+    function goTo(stageId){ document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active')); document.getElementById(stageId).classList.add('active'); }
+    let quizIndex=0;
+    const quizList=[
+      {q:"Твой любимый цвет?", opts:["Розовый","Фиолетовый","Чёрный","Синий"]},
+      {q:"Что главное в дружбе?", opts:["Доверие","Весёлость","Честность","Поддержка"]},
+      {q:"Твоя суперсила?", opts:["Эмпатия","Юмор","Забота","Мудрость"]},
+      {q:"Мы с тобой навсегда?", opts:["ДА!","Однозначно","Бесконечно","Бро-код"]}
+    ];
+    function loadQuiz(){
+      if(quizIndex>=quizList.length){ goTo('s3'); return; }
+      let qq=quizList[quizIndex];
+      document.getElementById('quizQ').innerText=`${quizIndex+1}/4: ${qq.q}`;
+      let wrap=document.getElementById('quizOpts'); wrap.innerHTML='';
+      qq.opts.forEach(opt=>{ let b=document.createElement('button'); b.className='btn'; b.innerText=opt; b.onclick=()=>{ quizIndex++; loadQuiz(); beep(640,'triangle'); }; wrap.appendChild(b); });
+    }
+    
+    // убегающая кнопка
+    let runaway=document.getElementById('runawayBtn');
+    function escapeMove(e){
+      if(!runaway) return;
+      let container=document.getElementById('s3');
+      let rect=container.getBoundingClientRect();
+      let bw=runaway.offsetWidth, bh=runaway.offsetHeight;
+      let maxX=rect.width-bw-30, maxY=rect.height-bh-30;
+      let x=Math.random()*maxX+15, y=Math.random()*maxY+15;
+      runaway.style.position='absolute';
+      runaway.style.left=`${x}px`; runaway.style.top=`${y}px`;
+      beep(420,'square');
+    }
+    if(runaway) runaway.addEventListener('mouseover', escapeMove);
+    
+    // обработка главных кнопок
+    document.getElementById('yesMainBtn').onclick=()=>{ beep(880,'sine'); goTo('s2'); loadQuiz(); };
+    document.getElementById('noMainBtn').onclick=()=>{
+      let cont=document.createElement('div'); cont.className='toastMsg'; cont.innerText='❌ Ошибка дружбы! Система перезагрузит ответ на ДА ❌'; document.body.appendChild(cont); setTimeout(()=>cont.remove(),2000);
+      beep(330,'triangle'); setTimeout(()=>{ goTo('s2'); loadQuiz(); },800);
+    };
+    
+    // консоль
+    let consoleDone=false;
+    async function startConsole(){
+      let outDiv=document.getElementById('conOut'), inpLine=document.getElementById('conLine'), inp=document.getElementById('conInput'), nextBtn=document.getElementById('conNextBtn');
+      outDiv.innerHTML=''; inpLine.style.display='none'; nextBtn.style.display='none';
+      let msg=['<span style="color:#b44cff">[BroDaemon] Установка связи...</span>','<span style="color:#00e5ff">[SCAN] ТОРИ · ДОСТУП РАЗРЕШЁН</span>','<span style="color:#ff6bb3">Совместимость: 100% BRO</span><br><span style="color:#ffd966">Введи код подтверждения 1 или 2:</span><br><span style="color:#aaa">   [1] Лучшие друзья навек</span><br><span style="color:#aaa">   [2] Просто знакомые</span>'];
+      for(let m of msg){ outDiv.innerHTML+=m+'<br>'; outDiv.scrollTop=outDiv.scrollHeight; await delay(400); }
+      inpLine.style.display='flex'; inp.focus();
+      inp.onkeydown=async (e)=>{
+        if(e.key==='Enter'){
+          let val=inp.value.trim();
+          if(val==='1'||val==='2'){
+            inpLine.style.display='none';
+            outDiv.innerHTML+=`<span style="color:#88f5ff">> ${val}</span><br>`;
+            if(val==='2'){ outDiv.innerHTML+=`<span style="color:#ff2d8a">❗Некорректно! Авто-исправление на [1]</span><br>`; await delay(600);}
+            outDiv.innerHTML+=`<br><span style="background:#ff2d8a; padding:4px 18px; border-radius:60px;">★ РЕЗУЛЬТАТ: БРО НАВСЕГДА ★</span><br>`;
+            await delay(1100);
+            nextBtn.style.display='block';
+          }
+        }
+      };
+    }
+    function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+    function nextAfterConsole(){ goTo('s5'); startHeartLoader(); }
+    
+    // сердце
+    async function startHeartLoader(){
+      let fillDiv=document.getElementById('heartFill'), percentSpan=document.getElementById('heartPercent'), heartIcon=document.getElementById('bigHeartEmoji'), nextBtn=document.getElementById('heartNext');
+      for(let p=0;p<=100;p++){
+        fillDiv.style.width=p+'%';
+        percentSpan.innerText=p+'%';
+        if(p===25) heartIcon.innerText='💜';
+        if(p===55) heartIcon.innerText='💖';
+        if(p===85) heartIcon.innerText='❤️';
+        heartIcon.classList.add('fullHeart');
+        await delay(p<40?20:35);
+      }
+      heartIcon.classList.add('fullHeart');
+      percentSpan.innerText='СВЯЗЬ АКТИВИРОВАНА 💘';
+      nextBtn.style.display='inline-block';
+    }
+    document.getElementById('heartNext').onclick=()=>{ goTo('s6'); initKaraokeFull(); };
+    
+    // КАРАОКЕ
+    let audioElem=document.getElementById('audioPlayer');
+    let currentSong=1, lyricsMap=[], isPlaying=false, lyricInterval=null;
+    const songLib={
+      1:{ lyrics:[{t:0,text:'🎵 Интро'},{t:10,text:'А ты пахнешь цветами самыми яркими'},{t:15,text:'Я тону в аромате, мне не выбраться'},{t:20,text:'Твои волосы — розы, кожа — пион'},{t:25,text:'Влюблён в тебя, как в самый сладкий сон'},{t:30,text:'Мы вдыхаем друг друга'},{t:36,text:'Это небо над нами, солнце над нами'},{t:42,text:'Ты — моё чудо, мой свет'},{t:48,text:'А ты пахнешь цветами...'},{t:56,text:'Самый любимый сорт'},{t:63,text:'🎵 Финал'}]},
+      2:{ lyrics:[{t:0,text:'🍸 Коктейль'},{t:13,text:'Ты — всё, что нужно сейчас'},{t:17,text:'Твой вкус на губах не погас'},{t:21,text:'Мы перемешаны, как лёд и сок'},{t:25,text:'Пью тебя залпом'},{t:30,text:'Мой коктейль, самый сладкий'},{t:34,text:'Мы летим в постель'},{t:39,text:'Слишком много сахара'},{t:44,text:'Ты говоришь «нет», когда хочешь «да»'},{t:50,text:'Мой коктейль...'}]},
+      3:{ lyrics:[{t:0,text:'🍀 Фортуна'},{t:10,text:'Фортуна, ты где? Я жду тебя здесь'},{t:16,text:'В этом городе снов'},{t:21,text:'Мы не знакомы, но верю в успех'},{t:26,text:'Фортуна улыбнётся, я знаю'},{t:31,text:'Она меня не забывает'},{t:36,text:'Даже когда тяжело'},{t:41,text:'Фортуна, дай мне зелёный свет'},{t:47,text:'Твой шёпот в шуме монет'},{t:53,text:'🎵 Аутро'}]}
+    };
+    function buildVisualizer(){ let barsDiv=document.getElementById('vizBars'); barsDiv.innerHTML=''; for(let i=0;i<45;i++){ let bar=document.createElement('div'); bar.className='visBar'; barsDiv.appendChild(bar); } setInterval(()=>{ if(!audioElem.paused){ let bars=document.querySelectorAll('.visBar'); for(let b of bars){ let h=6+Math.random()*54; b.style.height=h+'px'; b.style.background=Math.random()>0.6?'var(--c-pink)':'var(--c-cyan)'; } } },90); }
+    function renderLyrics(lyrics){ let container=document.getElementById('lyricsStage'); container.innerHTML=''; lyrics.forEach((l,i)=>{ let d=document.createElement('div'); d.className='lyricLine'; d.id=`lyr_${i}`; d.innerText=l.text; container.appendChild(d); }); }
+    function syncLyric(){ let ct=audioElem.currentTime+0.25; let idx=-1; for(let i=0;i<lyricsMap.length;i++) if(ct>=lyricsMap[i].t) idx=i; for(let i=0;i<lyricsMap.length;i++){ let el=document.getElementById(`lyr_${i}`); if(el){ el.classList.remove('active','prev','next'); if(i===idx) el.classList.add('active'); else if(i===idx-1) el.classList.add('prev'); else if(i===idx+1) el.classList.add('next'); } } }
+    function loadSong(id,autoPlay=true){ currentSong=id; lyricsMap=songLib[id].lyrics; renderLyrics(lyricsMap); if(autoPlay){ audioElem.play().catch(e=>showToastMsg('🔊 Автовоспроизведение заблокировано, кликни по странице')); isPlaying=true; document.getElementById('playPauseBtn').innerText='⏸'; } else { audioElem.pause(); isPlaying=false; document.getElementById('playPauseBtn').innerText='▶'; } }
+    function initKaraokeFull(){ buildVisualizer(); loadSong(1,false); audioElem.ontimeupdate=()=>{ syncLyric(); updateTrackBar(); }; audioElem.onerror=()=>showToastMsg('⚠️ MP3 не найден, перетащите аудиофайл'); document.querySelectorAll('.songTab').forEach(btn=>{ btn.onclick=()=>{ let idx=parseInt(btn.dataset.idx); document.querySelectorAll('.songTab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); loadSong(idx,true); }; }); document.getElementById('playPauseBtn').onclick=()=>{ if(isPlaying){ audioElem.pause(); isPlaying=false; document.getElementById('playPauseBtn').innerText='▶'; }else{ audioElem.play().catch(e=>null); isPlaying=true; document.getElementById('playPauseBtn').innerText='⏸'; } }; document.getElementById('trackSeek').addEventListener('click',(e)=>{ let rect=e.target.closest('#trackSeek').getBoundingClientRect(); let x=e.clientX-rect.left; let percent=x/rect.width; audioElem.currentTime=percent*audioElem.duration; }); document.getElementById('skipToHundred').onclick=()=>{ goTo('s7'); renderHundredReasons(); if(audioElem) audioElem.pause(); }; window.addEventListener('dragover',e=>e.preventDefault()); window.addEventListener('drop',e=>{ e.preventDefault(); let file=e.dataTransfer.files[0]; if(file && file.type.includes('audio')){ let url=URL.createObjectURL(file); audioElem.src=url; audioElem.play().catch(e=>null); showToastMsg('🎶 трек загружен!'); } }); }
+    function updateTrackBar(){ if(audioElem.duration){ let percent=(audioElem.currentTime/audioElem.duration)*100; document.getElementById('seekFill').style.width=percent+'%'; let cur=formatTime(audioElem.currentTime), dur=formatTime(audioElem.duration); document.getElementById('trackTime').innerText=`${cur} / ${dur}`; } }
+    function formatTime(sec){ if(isNaN(sec)) return '00:00'; let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+    function showToastMsg(msg){ let t=document.createElement('div'); t.className='toastMsg'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2500);}
+    
+    // 100 причин
+    function renderHundredReasons(){
+      let grid=document.getElementById('reasonsGrid'); if(grid.children.length>0) return;
+      let reasons=["Ты мой бро","Верность","Ты понимаешь без слов","Честность","Не предашь","Доброта","Светлая душа","Красота","Интеллект","Юмор","С тобой легко","Ты моя поддержка","Мой антидепрессант","Ты вдохновляешь","Ты особенная","Ты редкая","Ты сияешь","Надёжность","С тобой можно всё","Ты мой якорь","Ты меня принимаешь","Ты не осуждаешь","Твоя улыбка","Твой смех","Твоя энергия","Ты моя скала","Ты изменила жизнь","Ты даришь радость","Мы одно целое","Бро навсегда"];
+      for(let i=0;i<100;i++){ let text=reasons[i%reasons.length]+(i>=reasons.length?` ✨#${i+1}`:` #${i+1}`); let card=document.createElement('div'); card.className='reasonCard'; card.innerHTML=`<span class="reasonNum">${(i+1).toString().padStart(2,'0')}</span><span>${text}</span>`; grid.appendChild(card); }
+    }
+    window.nextAfterConsole=nextAfterConsole;
+    window.startConsole=startConsole;
+    window.initKaraokeFull=initKaraokeFull;
+    setTimeout(()=>{ if(document.getElementById('s4').classList.contains('active')) startConsole(); },100);
+    document.getElementById('conNextBtn').onclick=nextAfterConsole;
+    document.getElementById('heartNext').onclick=()=>{ goTo('s6'); initKaraokeFull(); };
+    window.goTo=goTo;
+    // если вдруг перешли на s4 активируем консоль
+    let observer=new MutationObserver(()=>{ if(document.getElementById('s4').classList.contains('active') && !consoleDone){ startConsole(); consoleDone=true; } });
+    observer.observe(document.querySelector('.container'),{attributes:true, subtree:false, attributeFilter:['class']});
+  })();
 </script>
 </body>
 </html>
